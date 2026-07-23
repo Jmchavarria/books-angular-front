@@ -1,0 +1,65 @@
+<!-- Contenedor principal que ocupa exactamente el 100% de la altura de la ventana (h-screen) -->
+<div class="flex flex-col h-screen ">
+  
+  <!-- Barra superior (mantiene su altura automática o definida internamente) -->
+  <app-topbar></app-topbar>
+
+  <!-- El catálogo toma todo el espacio restante gracias a flex-1 -->
+  <div class="p-6 flex-1 bg-white rounded-t-lg md:rounded-lg shadow-md grid grid-cols-[1.5fr_5fr] overflow-hidden">
+    
+    <!-- Lado Izquierdo: Filtros y Categorías -->
+    <!-- overflow-y-auto permite hacer scroll solo en los filtros si la pantalla es pequeña -->
+    <div class="p-8 flex flex-col gap-10 overflow-y-auto border-r border-gray-100">
+      
+      <!-- Listar cada una de las categorias provenientes del backend -->
+      <div class="flex flex-col gap-6">
+        <h1 class="font-bold text-2xl text-gray-800">Catalog</h1>
+        
+        <div class="flex flex-col gap-3">
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Genre</span>
+          <label class="text-sm font-medium text-blue-600 cursor-pointer hover:underline">All Genres</label>
+          <label class="text-sm text-gray-600 cursor-pointer hover:text-gray-900">Fiction</label>
+          <label class="text-sm text-gray-600 cursor-pointer hover:text-gray-900">Non Fiction</label>
+          <label class="text-sm text-gray-600 cursor-pointer hover:text-gray-900">Art and design</label>
+          <label class="text-sm text-gray-600 cursor-pointer hover:text-gray-900">Poetry</label>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Price range</span>
+        <!-- Aquí puedes añadir tu input de rango más adelante -->
+      </div>
+    </div>
+
+    <!-- Lado Derecho: Cuadrícula de Libros -->
+    <!-- overflow-y-auto hace que solo la sección de libros tenga scroll independiente -->
+    <div class="p-8 overflow-y-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        @for (book of bestsellers; track book.id) {
+          <div class="flex flex-col gap-3 cursor-pointer group">
+            <!-- Portada -->
+            <div class="relative w-full aspect-3/4 rounded-xl overflow-hidden bg-gray-100 shadow-sm">
+              <img
+                [src]="book.cover"
+                [alt]="book.title"
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+              />
+            </div>
+
+            <!-- Información del libro -->
+            <div class="flex flex-col gap-1">
+              <p class="font-bold text-[#0f172a] text-sm leading-tight line-clamp-2 group-hover:text-blue-600 transition">
+                {{ book.title }}
+              </p>
+              <p class="text-xs text-blue-500 font-medium">
+                {{ book.author }}
+              </p>
+              <p class="text-sm font-bold text-[#0f172a] mt-1">${{ book.price }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>

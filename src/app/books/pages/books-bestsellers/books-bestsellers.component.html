@@ -1,0 +1,102 @@
+<app-topbar></app-topbar>
+<div class="w-full flex flex-col gap-10">
+  <div class="min-h-screen w-full px-20 flex flex-col gap-10">
+    <div class="w-full flex flex-col gap-10 border-b border-gray-200 py-10">
+      <div class="">
+        <h1 class="font-bold text-2xl text-[#0f172a]">Bestsellers</h1>
+        <p class="max-w-xl">
+          Our most loved titles this month. Curated selections that have captured the minds of our
+          community.
+        </p>
+      </div>
+
+      <div class="flex gap-2 justify-between">
+        <div class="flex gap-2">
+          <button class="rounded-full px-5 bg-[#003646] text-white cursor-pointer">Monthly</button>
+          <button class="rounded-full px-5 bg-[#E2E7FF] cursor-pointer">All-time</button>
+          <button class="rounded-full px-5 bg-[#E2E7FF] cursor-pointer">Fiction</button>
+          <button class="rounded-full px-5 bg-[#E2E7FF] cursor-pointer">Philosophy</button>
+          <button class="rounded-full px-5 bg-[#E2E7FF] cursor-pointer">Art & Design</button>
+        </div>
+
+        <div class="flex gap-3 items-center">
+          SORT BY
+          <button
+            class="p-1 border rounded-sm border-gray-400 text-center flex gap-1 items-center cursor-pointer"
+          >
+            Popularity
+
+            <ng-icon name="heroChevronDown"></ng-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overflow-y-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        @for (book of bestsellers; track book.id) {
+          <div class="flex flex-col gap-3 cursor-pointer group">
+            <!-- Portada -->
+            <div
+              class="relative w-full aspect-3/4 rounded-xl overflow-hidden bg-gray-100 shadow-sm"
+            >
+              <img
+                [src]="book.cover"
+                [alt]="book.title"
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+              />
+            </div>
+
+            <!-- Información del libro -->
+            <div class="flex flex-col gap-1">
+              <p
+                class="font-bold text-[#0f172a] text-sm leading-tight line-clamp-2 group-hover:text-blue-600 transition"
+              >
+                {{ book.title }}
+              </p>
+              <p class="text-xs text-blue-500 font-medium">
+                {{ book.author }}
+              </p>
+              <p class="text-sm font-bold text-[#0f172a] mt-1">${{ book.price }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-center">
+    <button
+      class="max-w-xl px-4 py-3 bg-[#003646] rounded-full text-white flex gap-2 items-center cursor-pointer"
+    >
+      View More Bestsellers
+
+      <ng-icon name="heroArrowRightSolid"></ng-icon>
+    </button>
+  </div>
+
+  <div class="min-h-screen w-full bg-[#F2F3FF] grid grid-cols-2 px-20">
+    <div class="min-h-screen w-full flex flex-col gap-5 py-50">
+      <h1 class="font-bold text-3xl text-[#0f172a]">Stay curious.</h1>
+      <p class="font-normal max-w-xl">
+        Join 15,000+ readers who receive our weekly curation of new arrivals, exclusive interviews,
+        and literary reflections.
+      </p>
+      <div class="w-full flex gap-2">
+        <input
+          type="email"
+          class="border border-gray-400 rounded-xl px-5 w-full max-w-sm placeholder:text-gray-800 outline-none"
+          placeholder="Your email address"
+        />
+
+        <button class="p-2 bg-[#003646] w-full text-white max-w-34 rounded-xl">Suscribe</button>
+      </div>
+      <label for=""> Unsubscribe at any time. View our Privacy Policy.</label>
+    </div>
+
+    <div class="min-h-screen w-full items-center flex justify-center">
+      <div class="h-1/2 w-xl shadow-xl rounded-xl">FOTO DE LA IMAGEN</div>
+    </div>
+  </div>
+  <app-footer></app-footer>
+</div>

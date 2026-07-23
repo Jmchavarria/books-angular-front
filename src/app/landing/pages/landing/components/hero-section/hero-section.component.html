@@ -1,0 +1,51 @@
+<div class="grid grid-cols-2 min-h-screen bg-gray-50">
+  <div class="flex flex-col justify-center p-8 gap-8">
+    <div class="rounded-full bg-[#a0cde1] w-fit px-3 text-sm text-[#41484b]">
+      <label class="text-semibold">ESTABLISHED 2026</label>
+    </div>
+    <h1 class="font-extrabold text-5xl text-[#0f172a] m-0">
+      Curating the world's finest literature.
+    </h1>
+
+    <p class="max-w-sm text-gray-500 font-semibold">
+      A sanctuary for the discerning reader. Discover a meticulously handpicked selection of
+      contemporary masterpieces and timeless classics.
+    </p>
+
+    <div class="flex gap-2">
+      <button
+        class="border bg-[#1e4d5e] p-2 px-6 rounded-full text-white flex items-center justify-center gap-2"
+      >
+        Explore Catalog
+
+        <ng-icon
+          name="heroArrowRightSolid"
+          class="text-white text-xl shrink-0 cursor-pointer"
+        ></ng-icon>
+      </button>
+      <button class="border border-gray-500 p-2 px-6 rounded-full">Our Story</button>
+    </div>
+  </div>
+
+  <div class="relative flex items-center justify-center p-8">
+    <!-- Imagen grande (fondo texturizado con el libro crema) -->
+    <div class="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-xl">
+      <img
+        src="/ruta/a/tu-imagen-grande.jpg"
+        alt="Libro sobre fondo texturizado"
+        class="w-full h-full object-cover"
+      />
+    </div>
+
+    <!-- Imagen pequeña (libro teal), superpuesta abajo a la izquierda -->
+    <div
+      class="absolute bottom-8 left-0 w-40 aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border-4 border-white"
+    >
+      <img
+        src="/ruta/a/tu-imagen-pequena.jpg"
+        alt="Libro con portada teal"
+        class="w-full h-full object-cover"
+      />
+    </div>
+  </div>
+</div>

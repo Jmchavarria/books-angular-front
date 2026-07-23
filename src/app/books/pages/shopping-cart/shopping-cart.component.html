@@ -1,0 +1,61 @@
+<app-topbar></app-topbar>
+
+<div class="min-h-screen w-full p-6 bg-gray-50 flex flex-col">
+  <div class="pt-8 pb-6 px-12 flex flex-col">
+    <h1 class="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+    <p class="text-sm text-gray-600 mt-1">You have 3 items in your curated collection.</p>
+  </div>
+
+  <div class="px-12 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 w-full items-start">
+    <div class="flex flex-col gap-4 w-full">
+      <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex gap-6 items-center">
+        <div class="w-24 h-32 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+          <img src="https://placeholder.com" alt="Cover" class="w-full h-full object-cover" />
+        </div>
+
+        <div class="flex-1 flex flex-col">
+          <h2 class="font-bold text-lg text-gray-900">Cyberpunk Collection</h2>
+          <p class="text-sm text-gray-500 line-clamp-2 mt-1">
+            A curated list of sci-fi novels and artbooks.
+          </p>
+          <a href="#" class="text-sm font-semibold text-blue-600 hover:underline mt-2 self-start"
+            >View collection</a
+          >
+        </div>
+
+        <div class="flex flex-col items-end gap-4 min-w-20">
+          <span class="font-bold text-lg text-gray-900">$49.99</span>
+          <button class="text-xs text-red-500 hover:text-red-700 font-medium">Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="p-6 bg-white rounded-xl shadow-sm border border-gray-100 sticky top-6 flex flex-col gap-4"
+    >
+      <h3 class="text-lg font-bold text-gray-900">Order Summary</h3>
+
+      <div class="flex flex-col gap-2 border-b border-gray-100 pb-4 text-sm text-gray-600">
+        <div class="flex justify-between">
+          <span>Subtotal (3 items)</span>
+          <span class="font-medium text-gray-900">$149.97</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Shipping</span>
+          <span class="text-green-600 font-medium">Free</span>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center font-bold text-lg text-gray-900 pt-2">
+        <span>Total</span>
+        <span>$149.97</span>
+      </div>
+
+      <button
+        class="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition mt-2"
+      >
+        Proceed to Checkout
+      </button>
+    </div>
+  </div>
+</div>

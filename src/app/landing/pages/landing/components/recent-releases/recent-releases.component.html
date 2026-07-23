@@ -1,0 +1,53 @@
+<div class="grid grid-cols-[1.5fr_3fr] bg-gray-50">
+  <div class="flex flex-col justify-center p-8 gap-8">
+    <label class="font-semibold text-sm">JUST ARRIVED</label>
+    <h1 class="font-bold text-3xl">Fresh from the Press</h1>
+    <p class="font-semibold text-gray-400">
+      Our latest curation features groundbreaking new voices and long-awaited releases from the
+      world's most acclaimed authors. Updated daily.
+    </p>
+
+    <div class="flex gap-3">
+      <button
+        class="border border-gray-300 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer"
+      >
+        <ng-icon name="heroArrowSmallLeftSolid" class="text-xl shrink-0 cursor-pointer"></ng-icon>
+      </button>
+      <button
+        class="border border-gray-300 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer"
+      >
+        <ng-icon
+          name="heroArrowRightSolid"
+          class="text-white text-xl shrink-0 cursor-pointer"
+        ></ng-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="relative flex items-center justify-center p-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      @for (book of bestsellers; track book.id) {
+        <div class="flex flex-col gap-3 cursor-pointer group">
+          <!-- Portada -->
+          <div class="relative w-full aspect-3/4 rounded-xl overflow-hidden">
+            <img
+              [src]="book.cover"
+              [alt]="book.title"
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <p class="font-bold text-[#0f172a] text-sm leading-tight line-clamp-2">
+              {{ book.title }}
+            </p>
+            <p class="text-xs text-blue-500 font-medium">
+              {{ book.author }}
+            </p>
+            <p class="text-sm font-bold text-[#0f172a] mt-1">${{ book.price }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="flex items-center justify-between border-b border-gray-300 p-5 px-20">
+  <div class="flex gap-60">
+    <a routerLink="/" class="font-semibold text-xl">Marlin library</a>
+
+    <div class="flex gap-5 items-center">
+      <a routerLink="/catalog" class="text-sm hover:text-[#0f172a] transition cursor-pointer"
+        >Catalog</a
+      >
+      <a routerLink="/collections" class="text-sm hover:text-[#0f172a] transition cursor-pointer"
+        >Collection</a
+      >
+      <a routerLink="/bestsellers" class="text-sm hover:text-[#0f172a] transition cursor-pointer"
+        >Bestsellers</a
+      >
+    </div>
+  </div>
+
+  <div class="flex items-center gap-5 justify-center">
+    <div class="w-full max-w-2xl">
+      <app-search-bar></app-search-bar>
+    </div>
+
+    <div class="flex gap-4 items-center">
+      <div class="flex items-center">
+        <ng-icon
+          name="heroShoppingCartSolid"
+          class="text-xl shrink-0 cursor-pointer"
+          routerLink="/shoppingCart"
+        ></ng-icon>
+      </div>
+      <div class="flex items-center">
+        <ng-icon
+          routerLink="/login"
+          name="heroUserSolid"
+          class="text-gray-400 text-xl shrink-0 cursor-pointer"
+        ></ng-icon>
+      </div>
+    </div>
+  </div>
+</div>

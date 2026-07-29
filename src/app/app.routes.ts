@@ -7,6 +7,7 @@ import { ShoppingCartComponent } from './books/pages/shopping-cart/shopping-cart
 import { BooksBestsellersComponents } from './books/pages/books-bestsellers/books-bestsellers.component';
 import { LoginComponent } from './books/pages/auth/login/login.component';
 import { ResetPasswordComponent } from './books/pages/auth/reset-password/reset-password.component';
+import { CreateAccountComponent } from './books/pages/auth/create-account/create-account.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -17,4 +18,5 @@ export const routes: Routes = [
   { path: 'bestsellers', component: BooksBestsellersComponents },
   { path: 'login', component: LoginComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'create-account', component: CreateAccountComponent },
 ];

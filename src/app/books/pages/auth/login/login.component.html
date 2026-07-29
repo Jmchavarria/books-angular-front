@@ -1,11 +1,11 @@
 <div class="h-screen flex flex-col overflow-hidden bg-gray-50">
   <app-minimal-top-bar class="shrink-0"></app-minimal-top-bar>
 
-  <div class="flex-1 grid grid-cols-2 px-20 py-6 min-h-0">
+  <div class="flex-1 grid grid-cols-2 px-20 py-5 min-h-0">
     <div
       class="relative rounded-l-xl overflow-hidden flex items-end p-10 h-full shadow-2xl"
       style="
-        background-image: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&auto=format&fit=crop&q=80');
+        background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600&h=1000&fit=crop&crop=center');
         background-size: cover;
         background-position: center;
       "
@@ -23,7 +23,7 @@
     </div>
 
     <div
-      class="shadow-2xl rounded-r-xl p-8 bg-white flex items-center justify-center border-l border-gray-100 h-full overflow-y-auto"
+      class="shadow-2xl rounded-r-xl bg-white flex items-center justify-center border-l border-gray-100 h-full overflow-y-auto"
     >
       <div class="w-full max-w-md flex flex-col gap-5">
         <!-- Encabezado -->
@@ -85,15 +85,26 @@
 
           <button
             type="submit"
-            class="w-full bg-[#003646] hover:bg-[#002834] p-3.5 rounded-xl font-semibold cursor-pointer text-white flex gap-2 items-center justify-center transition-colors shadow-lg mt-2"
+            c
+            class="w-full bg-[#003646] hover:bg-[#002834] p-3.5 rounded-xl font-semibold cursor-pointer text-white items-center justify-center transition-colors shadow-lg mt-2"
           >
             <span>Sign In</span>
-            <ng-icon name="heroArrowRightSolid" class="text-white text-xl shrink-0"></ng-icon>
           </button>
+
+          <div class="justify-center flex">
+            <label for="" class="text-sm text-gray-500">OR</label>
+          </div>
+
+          <div id="google-signin-button"></div>
 
           <div class="flex gap-2 items-center justify-center text-sm mt-1">
             <span class="text-gray-600">New to the collection?</span>
-            <a href="#" class="font-semibold text-[#003646] hover:underline">Create an account</a>
+            <a
+              href="#"
+              routerLink="/create-account"
+              class="font-semibold text-[#003646] hover:underline"
+              >Create an account</a
+            >
           </div>
         </div>
       </div>

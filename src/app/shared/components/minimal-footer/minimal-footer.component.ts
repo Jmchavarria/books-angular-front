@@ -3,10 +3,9 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-minimal-footer',
   standalone: true,
-  imports: [
-  ],
+  imports: [],
   templateUrl: './minimal-footer.component.html',
 })
 export class MinimalFooterComponent {
-new: any;
+  new: any;
 }

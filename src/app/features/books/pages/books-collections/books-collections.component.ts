@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
-import { TopBarComponent } from '../../../shared/components/topbar/topbar.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroChevronRightSolid } from '@ng-icons/heroicons/solid';
+import { TopBarComponent } from '../../../../shared/components/topbar/topbar.component';
 
 @Component({
-  selector: 'app-shopping-cart',
+  selector: 'app-books-collections',
   standalone: true,
-  imports: [TopBarComponent],
-  templateUrl: './shopping-cart.component.html',
+  providers: [provideIcons({ heroChevronRightSolid })],
+  imports: [TopBarComponent, NgIcon],
+  templateUrl: './books-collections.component.html',
 })
-export class ShoppingCartComponent {
+export class BooksCollectionsComponent {
   collectionsList = [
     {
       name: 'x project',

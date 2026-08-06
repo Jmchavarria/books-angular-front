@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GetBooksUseCase } from '../../application/use-cases/get-books.use-case';
 import { Book } from '../../domain/entities/book.entity';
-import { TopBarComponent } from '../../../shared/components/topbar/topbar.component';
+import { TopBarComponent } from '../../../../shared/components/topbar/topbar.component';
 
 @Component({
   selector: 'app-books-catalog',

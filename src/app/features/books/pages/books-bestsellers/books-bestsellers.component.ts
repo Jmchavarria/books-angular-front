@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { TopBarComponent } from '../../../shared/components/topbar/topbar.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroChevronDown } from '@ng-icons/heroicons/outline';
 import { heroArrowRightSolid } from '@ng-icons/heroicons/solid';
-import { FooterComponent } from "../../../landing/pages/landing/components/footer/footer.component";
+import { FooterComponent } from '../../../../landing/pages/landing/components/footer/footer.component';
+import { TopBarComponent } from '../../../../shared/components/topbar/topbar.component';
 
 @Component({
   selector: 'app-books-bestsellers',

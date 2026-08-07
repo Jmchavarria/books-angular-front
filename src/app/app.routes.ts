@@ -1,12 +1,12 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
-import { CreateAccountComponent } from './features/books/pages/auth/create-account/create-account.component';
-import { LoginComponent } from './features/books/pages/auth/login/login.component';
-import { ResetPasswordComponent } from './features/books/pages/auth/reset-password/reset-password.component';
-import { BooksBestsellersComponents } from './features/books/pages/books-bestsellers/books-bestsellers.component';
-import { BooksCatalogComponent } from './features/books/pages/books-catalog/books-catalog.component';
-import { BooksCollectionsComponent } from './features/books/pages/books-collections/books-collections.component';
-import { ShoppingCartComponent } from './features/books/pages/shopping-cart/shopping-cart.component';
+import { CreateAccountComponent } from './features/auth/ui/pages/auth/create-account/create-account.component';
+import { LoginComponent } from './features/auth/ui/pages/auth/login/login.component';
+import { ResetPasswordComponent } from './features/auth/ui/pages/auth/reset-password/reset-password.component';
+import { BooksBestsellersComponents } from './features/books/presentation/pages/books-bestsellers/books-bestsellers.component';
+import { BooksCatalogComponent } from './features/books/presentation/pages/books-catalog/books-catalog.component';
+import { BooksCollectionsComponent } from './features/books/presentation/pages/books-collections/books-collections.component';
+import { ShoppingCartComponent } from './features/shopping-cart/presentation/pages/shopping-cart/shopping-cart.component';
 import { HomeComponent } from './home/pages/home/home.component';
 import { AuthGuard } from './core/guards/auth.guard';
 

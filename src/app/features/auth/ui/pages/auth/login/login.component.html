@@ -1,0 +1,132 @@
+<div class="h-screen w-full relative overflow-hidden flex items-center justify-center">
+  <!-- fondo: foto de biblioteca -->
+  <div
+    class="absolute inset-0 bg-cover bg-center scale-105"
+    style="
+      background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&q=80&auto=format&fit=crop');
+    "
+  ></div>
+
+  <!-- overlay para legibilidad, degradado cálido -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/55 via-black/15 to-[#f4ede0]/95"></div>
+
+  <!-- anillos decorativos detrás de la card -->
+  <div
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] rounded-full border border-dashed border-white/25 pointer-events-none"
+  ></div>
+  <div
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full border border-dashed border-white/20 pointer-events-none"
+  ></div>
+
+  <!-- marca, arriba a la izquierda -->
+  <div class="absolute top-6 left-8 z-10 flex items-center gap-2">
+    <div class="w-8 h-8 rounded-lg bg-[#0e3521] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4">
+        <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" fill="#c9a961" />
+        <path
+          d="M13 4h5.5c.83 0 1.5.67 1.5 1.5v13a1.5 1.5 0 0 1-1.5 1.5H13V4Z"
+          fill="#c9a961"
+          opacity="0.6"
+        />
+      </svg>
+    </div>
+    <span class="font-bold text-white text-lg drop-shadow-sm" routerLink="/">Curated Library</span>
+  </div>
+
+  <!-- card -->
+  <div
+    class="relative z-10 w-full max-w-md mx-4 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 flex flex-col gap-6"
+  >
+    <!-- badge -->
+    <div class="mx-auto w-14 h-14 rounded-2xl bg-[#f4ede0] flex items-center justify-center">
+      <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6">
+        <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" fill="#0e3521" />
+        <path
+          d="M13 4h5.5c.83 0 1.5.67 1.5 1.5v13a1.5 1.5 0 0 1-1.5 1.5H13V4Z"
+          fill="#0e3521"
+          opacity="0.5"
+        />
+      </svg>
+    </div>
+
+    <!-- encabezado -->
+    <div class="flex flex-col gap-1 text-center">
+      <h1 class="font-bold text-2xl text-[#0e3521]">Welcome back, reader</h1>
+      <p class="text-gray-500 text-sm">Sign in to pick up right where you left off.</p>
+    </div>
+
+    <!-- formulario -->
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label for="email" class="font-semibold text-gray-800 text-sm">Email</label>
+        <div
+          class="w-full p-2.5 bg-gray-100 flex gap-2 items-center rounded-xl border border-gray-300 focus-within:border-[#0e3521]"
+        >
+          <ng-icon name="heroEnvelopeSolid" class="text-gray-500 shrink-0"></ng-icon>
+          <input
+            id="email"
+            type="email"
+            class="outline-none w-full bg-transparent text-sm"
+            placeholder="Enter your email"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <div class="flex justify-between items-center">
+          <label for="password" class="font-semibold text-gray-800 text-sm">Password</label>
+          <a
+            href="#"
+            routerLink="/reset-password"
+            class="text-[#165070] text-xs cursor-pointer hover:text-[#2778a3] hover:underline"
+            >Forgot password?</a
+          >
+        </div>
+        <div
+          class="w-full p-2.5 bg-gray-100 flex gap-2 items-center rounded-xl border border-gray-300 focus-within:border-[#0e3521]"
+        >
+          <ng-icon name="heroLockClosedSolid" class="text-gray-500 shrink-0"></ng-icon>
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            class="outline-none w-full bg-transparent text-gray-800 text-sm"
+            placeholder="Enter your password"
+          />
+          <button
+            type="button"
+            (click)="showPassword = !showPassword"
+            class="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none shrink-0"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+          >
+            <ng-icon [name]="showPassword ? 'heroEyeSlashSolid' : 'heroEyeSolid'"></ng-icon>
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full bg-[#0e3521] hover:bg-[#0a2a1a] p-3.5 rounded-xl font-semibold cursor-pointer text-white transition-colors shadow-lg mt-1"
+      >
+        Sign In
+      </button>
+
+      <div class="flex items-center gap-3 my-1">
+        <div class="flex-1 h-px bg-gray-200"></div>
+        <span class="text-xs text-gray-400 uppercase tracking-wide">Or continue with</span>
+        <div class="flex-1 h-px bg-gray-200"></div>
+      </div>
+
+      <div id="google-signin-button"></div>
+
+      <div class="flex gap-2 items-center justify-center text-sm">
+        <span class="text-gray-600">New to the collection?</span>
+        <a
+          href="#"
+          routerLink="/create-account"
+          class="font-semibold text-[#0e3521] hover:underline"
+          >Create an account</a
+        >
+      </div>
+    </div>
+  </div>
+</div>

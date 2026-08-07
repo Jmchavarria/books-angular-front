@@ -1,21 +1,16 @@
-import { Observable } from "rxjs";
-import { Book } from "../entities/book.entity";
+import { Observable } from 'rxjs';
+import { Book } from '../entities/book.entity';
+import { Pagination } from '../../../../core/types/pagination';
+import { PaginatedResponse } from '../../../../core/types/paginated-response';
 
-export interface BooksFilters {
+export interface GetAllBooksProps extends Pagination {
   title?: string;
-  categoryId?: number;
-  page?: number;
-  take?: number;
-}
-
-export interface PaginatedResult<T> {
-  data: T[];
-  total: number;
-  page: number;
-  totalPages: number;
+  isActive?: boolean;
+  publishedYear?: number;
+  search?: string;
 }
 
 export abstract class BooksRepository {
-  abstract getAll(filters: BooksFilters): Observable<PaginatedResult<Book>>;
+  abstract getAll(input: GetAllBooksProps): Observable<PaginatedResponse<Book[]>>;
   abstract getById(id: number): Observable<Book>;
 }

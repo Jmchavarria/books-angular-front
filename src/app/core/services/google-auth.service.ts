@@ -40,15 +40,8 @@ export class GoogleAuthService {
    */
   private handleCredentialResponse(response: any): void {
     const token = response.credential;
-    const decoded: any = jwtDecode(token);
 
     console.log('Encoded JWT ID token: ' + response.credential);
-
-    const user = {
-      email: decoded.email,
-      given_name: decoded.given_name,
-      family_name: decoded.family_name,
-    };
 
     this.http.post(`${environment.apiUrl}/auth/verify-token-google`, { token }).subscribe({
       next: (res) => {

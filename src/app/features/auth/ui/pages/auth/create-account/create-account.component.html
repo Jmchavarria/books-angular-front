@@ -1,0 +1,245 @@
+<div class="h-screen w-full relative overflow-hidden flex items-center justify-center p-3 sm:p-6">
+  <!-- fondo: foto de biblioteca -->
+  <div
+    class="fixed inset-0 bg-cover bg-center scale-105"
+    style="
+      background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&q=80&auto=format&fit=crop');
+    "
+  ></div>
+
+  <!-- overlay para legibilidad -->
+  <div
+    class="fixed inset-0 bg-linear-to-b from-black/60 via-black/30 to-[#f4ede0]/95 pointer-events-none"
+  ></div>
+
+  <!-- anillos decorativos -->
+  <div
+    class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-162.5 h-162.5 rounded-full border border-dashed border-white/25 pointer-events-none hidden md:block"
+  ></div>
+  <div
+    class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 rounded-full border border-dashed border-white/20 pointer-events-none hidden md:block"
+  ></div>
+
+  <!-- marca, arriba a la izquierda -->
+  <div
+    class="absolute top-4 left-4 sm:top-6 sm:left-8 z-20 flex items-center gap-2 cursor-pointer"
+    routerLink="/"
+  >
+    <div
+      class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#0e3521] flex items-center justify-center shrink-0"
+    >
+      <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4">
+        <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" fill="#c9a961" />
+        <path
+          d="M13 4h5.5c.83 0 1.5.67 1.5 1.5v13a1.5 1.5 0 0 1-1.5 1.5H13V4Z"
+          fill="#c9a961"
+          opacity="0.6"
+        />
+      </svg>
+    </div>
+    <span class="font-bold text-white text-sm sm:text-base md:text-lg drop-shadow-sm"
+      >Curated Library</span
+    >
+  </div>
+
+  <!-- 🟢 CARD COMPACTA Y SIN SCROLL -->
+  <div
+    class="relative z-10 w-full max-w-2xl md:max-w-3xl bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 flex flex-col gap-3 sm:gap-4"
+  >
+    <!-- Encabezado compacto -->
+    <div class="flex flex-col items-center gap-0.5 sm:gap-1 text-center">
+      <div
+        class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-[#f4ede0] flex items-center justify-center mb-0.5"
+      >
+        <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5 sm:w-6 sm:h-6">
+          <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" fill="#0e3521" />
+          <path
+            d="M13 4h5.5c.83 0 1.5.67 1.5 1.5v13a1.5 1.5 0 0 1-1.5 1.5H13V4Z"
+            fill="#0e3521"
+            opacity="0.5"
+          />
+        </svg>
+      </div>
+      <h1 class="font-bold text-xl sm:text-2xl md:text-3xl text-[#0e3521]">Create an account</h1>
+      <p class="text-gray-500 text-xs sm:text-sm">Join our collection and start reading today.</p>
+    </div>
+
+    <form class="flex flex-col gap-2.5 sm:gap-3" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <!-- Grid de 2 columnas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-1 sm:gap-y-1.5">
+        <!-- Campo Full Name -->
+        <div class="flex flex-col gap-1">
+          <label for="fullName" class="font-semibold text-gray-800 text-xs">Full Name</label>
+          <div
+            class="w-full px-3 py-2 sm:py-2.5 bg-gray-100 flex gap-2 items-center rounded-xl border transition-colors focus-within:border-[#0e3521]"
+            [class.border-red-500]="registerForm.get('fullName')?.invalid && isSubmitted"
+            [class.border-gray-300]="!(registerForm.get('fullName')?.invalid && isSubmitted)"
+          >
+            <ng-icon name="heroUserSolid" class="text-gray-500 shrink-0"></ng-icon>
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
+              class="outline-none w-full bg-transparent text-xs sm:text-sm text-gray-800"
+              placeholder="John Doe"
+            />
+          </div>
+          <div class="h-3.5 flex items-center px-1">
+            @if (registerForm.get('fullName')?.invalid && isSubmitted) {
+              <span class="text-red-500 text-[11px]">
+                @if (registerForm.get('fullName')?.errors?.['required']) {
+                  El nombre es obligatorio.
+                }
+                @if (registerForm.get('fullName')?.errors?.['minlength']) {
+                  Mínimo 3 caracteres.
+                }
+                @if (registerForm.get('fullName')?.errors?.['maxlength']) {
+                  Máximo 200 caracteres.
+                }
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Campo Email -->
+        <div class="flex flex-col gap-1">
+          <label for="email" class="font-semibold text-gray-800 text-xs">Email</label>
+          <div
+            class="w-full px-3 py-2 sm:py-2.5 bg-gray-100 flex gap-2 items-center rounded-xl border transition-colors focus-within:border-[#0e3521]"
+            [class.border-red-500]="registerForm.get('email')?.invalid && isSubmitted"
+            [class.border-gray-300]="!(registerForm.get('email')?.invalid && isSubmitted)"
+          >
+            <ng-icon name="heroEnvelopeSolid" class="text-gray-500 shrink-0"></ng-icon>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="outline-none w-full bg-transparent text-xs sm:text-sm text-gray-800"
+              placeholder="you@example.com"
+            />
+          </div>
+          <div class="h-3.5 flex items-center px-1">
+            @if (registerForm.get('email')?.invalid && isSubmitted) {
+              <span class="text-red-500 text-[11px]">
+                @if (registerForm.get('email')?.errors?.['required']) {
+                  El email es obligatorio.
+                }
+                @if (registerForm.get('email')?.errors?.['email']) {
+                  Ingresa un correo válido.
+                }
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Campo Password -->
+        <div class="flex flex-col gap-1">
+          <label for="password" class="font-semibold text-gray-800 text-xs">Password</label>
+          <div
+            class="w-full px-3 py-2 sm:py-2.5 bg-gray-100 flex gap-2 items-center rounded-xl border transition-colors focus-within:border-[#0e3521]"
+            [class.border-red-500]="registerForm.get('password')?.invalid && isSubmitted"
+            [class.border-gray-300]="!(registerForm.get('password')?.invalid && isSubmitted)"
+          >
+            <ng-icon name="heroLockClosedSolid" class="text-gray-500 shrink-0"></ng-icon>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="outline-none w-full bg-transparent text-gray-800 text-xs sm:text-sm"
+              placeholder="Create a password"
+            />
+            <button
+              type="button"
+              (click)="showPassword = !showPassword"
+              class="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none shrink-0"
+            >
+              <ng-icon [name]="showPassword ? 'heroEyeSlashSolid' : 'heroEyeSolid'"></ng-icon>
+            </button>
+          </div>
+          <div class="h-3.5 flex items-center px-1">
+            @if (registerForm.get('password')?.invalid && isSubmitted) {
+              <span class="text-red-500 text-[11px]">
+                @if (registerForm.get('password')?.errors?.['required']) {
+                  La contraseña es obligatoria.
+                }
+                @if (registerForm.get('password')?.errors?.['minlength']) {
+                  Mínimo 6 caracteres.
+                }
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Campo Confirm Password -->
+        <div class="flex flex-col gap-1">
+          <label for="confirmPassword" class="font-semibold text-gray-800 text-xs"
+            >Confirm Password</label
+          >
+          <div
+            class="w-full px-3 py-2 sm:py-2.5 bg-gray-100 flex gap-2 items-center rounded-xl border transition-colors focus-within:border-[#0e3521]"
+            [class.border-red-500]="registerForm.get('confirmPassword')?.invalid && isSubmitted"
+            [class.border-gray-300]="!(registerForm.get('confirmPassword')?.invalid && isSubmitted)"
+          >
+            <ng-icon name="heroLockClosedSolid" class="text-gray-500 shrink-0"></ng-icon>
+            <input
+              id="confirmPassword"
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              class="outline-none w-full bg-transparent text-gray-800 text-xs sm:text-sm"
+              placeholder="Confirm password"
+            />
+            <button
+              type="button"
+              (click)="showConfirmPassword = !showConfirmPassword"
+              class="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none shrink-0"
+            >
+              <ng-icon
+                [name]="showConfirmPassword ? 'heroEyeSlashSolid' : 'heroEyeSolid'"
+              ></ng-icon>
+            </button>
+          </div>
+          <div class="h-3.5 flex items-center px-1">
+            @if (registerForm.get('confirmPassword')?.invalid && isSubmitted) {
+              <span class="text-red-500 text-[11px]">
+                @if (registerForm.get('confirmPassword')?.errors?.['required']) {
+                  Confirma tu contraseña.
+                }
+                @if (registerForm.get('confirmPassword')?.errors?.['passwordMismatch']) {
+                  Las contraseñas no coinciden.
+                }
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones agrupadas -->
+      <div class="w-full max-w-xs sm:max-w-sm mx-auto flex flex-col gap-2 mt-0.5">
+        <button
+          type="submit"
+          class="w-full bg-[#0e3521] hover:bg-[#0a2a1a] py-2.5 sm:py-3 px-4 rounded-xl font-semibold cursor-pointer text-white transition-colors shadow-md text-xs sm:text-sm"
+        >
+          Sign Up
+        </button>
+
+        <div class="flex items-center gap-2 my-0.5">
+          <div class="flex-1 h-px bg-gray-200"></div>
+          <span class="text-[10px] text-gray-400 uppercase tracking-wide">Or continue with</span>
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <div id="google-signin-button" class="w-full"></div>
+
+        <div class="flex gap-1.5 items-center justify-center text-xs pt-0.5">
+          <span class="text-gray-600">Already have an account?</span>
+          <a
+            routerLink="/login"
+            class="font-semibold text-[#0e3521] hover:underline cursor-pointer"
+          >
+            Sign in
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

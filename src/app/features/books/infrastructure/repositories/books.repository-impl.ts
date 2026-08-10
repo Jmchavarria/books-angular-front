@@ -10,7 +10,7 @@ import { PaginatedResponse } from '../../../../core/types/paginated-response';
 import { ApiPaginatedResponse, ApiSingleResponse } from '../../../../core/types/api-envelope';
 
 @Injectable()
-export class BooksHttpRepository implements BooksRepository {
+export class BooksRepositoryImpl implements BooksRepository {
   constructor(private readonly http: HttpClient) {}
 
   // Usamos PaginatedResponse<Book[]>
@@ -24,13 +24,7 @@ export class BooksHttpRepository implements BooksRepository {
         map((response) => {
           const { data, total, page, limit } = response.data;
 
-          return {
-            data: data.map(BookMapper.toDomain), // Mapea a Book[], que coincide con T = Book[]
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-          };
+          return new PaginatedResponse(data.map(BookMapper.toDomain), total, page, limit);
         }),
       );
   }

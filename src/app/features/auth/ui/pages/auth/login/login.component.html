@@ -139,14 +139,6 @@
         </div>
       </div>
 
-      <div class="h-5 flex items-center justify-center">
-        @if (errorMessage()) {
-          <span class="text-red-500 text-sm">
-            {{ errorMessage() }}
-          </span>
-        }
-      </div>
-
       <!-- Submit -->
       <button
         type="submit"
@@ -179,3 +171,4 @@
     </div>
   </div>
 </div>
+<app-toast-container></app-toast-container>

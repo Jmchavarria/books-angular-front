@@ -1,0 +1,86 @@
+/* Contenedor flotante general en la esquina superior derecha */
+.toast-wrapper {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none; /* Asegura que no interfiera con los clics en el fondo de tu app */
+}
+
+/* Estilo base de cada tarjeta de notificación */
+.toast-card {
+  pointer-events: auto; /* Reactiva los clics dentro de la tarjeta */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 320px;
+  max-width: 420px;
+  padding: 16px;
+  border-radius: 6px;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-left: 5px solid transparent;
+
+  /* Disparador de la animación CSS pura */
+  animation: slideInFromRight 250ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Variaciones de color de fondo y bordes decorativos */
+.toast-card.error {
+  background-color: #dc2626; /* Rojo oscuro */
+  border-left-color: #991b1b;
+}
+
+.toast-card.success {
+  background-color: #16a34a; /* Verde oscuro */
+  border-left-color: #166534;
+}
+
+.toast-card.info {
+  background-color: #2563eb; /* Azul oscuro */
+  border-left-color: #1e40af;
+}
+
+/* Ajustes del texto informativo */
+.toast-text {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  padding-right: 14px;
+  word-break: break-word;
+}
+
+/* Estilos del botón de cierre interno (X) */
+.toast-btn-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.15s ease;
+}
+
+.toast-btn-close:hover {
+  color: #ffffff;
+}
+
+/* Animación nativa del navegador: Entrada rápida desde la derecha */
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

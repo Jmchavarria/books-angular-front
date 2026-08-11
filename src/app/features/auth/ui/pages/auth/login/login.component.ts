@@ -17,11 +17,13 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { ToastService } from '../../../../../../core/services/toast.service';
+import { ToastContainerComponent } from '../../../../../../core/components/toast-container/toast-container.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIcon, RouterLink, FormsModule, ReactiveFormsModule],
+  imports: [NgIcon, RouterLink, FormsModule, ReactiveFormsModule, ToastContainerComponent],
   providers: provideIcons({
     heroEnvelopeSolid,
     heroArrowRightSolid,
@@ -38,12 +40,12 @@ export class LoginComponent implements OnInit {
   isSubmitted = false;
 
   isLoading = signal(false);
-  errorMessage = signal<string | null>(null);
 
   constructor(
     private readonly googleAuthService: GoogleAuthService,
     private readonly loginUseCase: LoginUseCase,
     private readonly fb: FormBuilder,
+    private readonly toastService: ToastService,
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -66,12 +68,9 @@ export class LoginComponent implements OnInit {
     const { email, password } = this.loginForm.value;
 
     this.isLoading.set(true);
-    this.errorMessage.set(null);
 
     this.loginUseCase.execute(email, password).subscribe({
       next: (response) => {
-        console.log('Login exitoso:', response);
-
         this.isLoading.set(false);
 
         // Aquí puedes hacer la navegación
@@ -79,13 +78,12 @@ export class LoginComponent implements OnInit {
       },
 
       error: (err) => {
-        this.errorMessage.set(err.error?.error?.message ?? 'Ocurrió un error al iniciar sesión');
+        this.toastService.show(
+          err.error?.error?.message ?? 'Ocurrió un error al iniciar sesión',
+          'error',
+        );
 
         this.isLoading.set(false);
-
-        setTimeout(() => {
-          this.errorMessage.set(null);
-        }, 3000);
       },
     });
   }

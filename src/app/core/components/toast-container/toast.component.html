@@ -1,0 +1,25 @@
+<div
+  class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none"
+  role="alert"
+  aria-live="assertive"
+>
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div
+      class="pointer-events-auto flex items-center justify-between min-w-[300px] max-w-md p-4 rounded-lg shadow-xl text-white font-sans border-l-4 transition-all duration-300"
+      [ngClass]="{
+        'bg-red-500 border-red-700': toast.type === 'error',
+        'bg-emerald-500 border-emerald-700': toast.type === 'success',
+        'bg-blue-500 border-blue-700': toast.type === 'info',
+      }"
+      [@slideInOut]
+    >
+      <span class="text-sm font-medium pr-4 break-words">{{ toast.text }}</span>
+      <button
+        class="text-white/70 hover:text-white text-xl font-bold transition-colors focus:outline-none"
+        (click)="toastService.remove(toast.id)"
+      >
+        &times;
+      </button>
+    </div>
+  }
+</div>

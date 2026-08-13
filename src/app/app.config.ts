@@ -5,7 +5,7 @@ import { routes } from './app.routes';
 import { BooksRepositoryImpl } from './features/books/infrastructure/repositories/books.repository-impl';
 import { BooksRepository } from './features/books/domain/repositories/books.repository';
 import { AuthRepository } from './features/auth/domain/repositories/auth.repository';
-import { AuthRepositoryImpl } from './features/auth/infrastructure/auth.repository-impl';
+import { AuthRepositoryImpl } from './features/auth/infrastructure/repositories/auth.repository-impl';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),

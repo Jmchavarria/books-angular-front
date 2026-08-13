@@ -1,14 +1,7 @@
 // infrastructure/mappers/auth.mapper.ts
 import { jwtDecode } from 'jwt-decode';
 import { UserAuth } from '../../domain/interfaces/user-auth';
-
-// Define la estructura de lo que guardaste dentro de tu JWT en el backend
-interface JwtPayload {
-  sub: string;
-  email: string;
-  name: string;
-  roles: string[];
-}
+import { JwtPayload } from '../../domain/interfaces/jwt-auth.interface';
 
 export interface LoginApiResponse {
   accessToken: string;
@@ -24,7 +17,7 @@ export class AuthMapper {
       id: decoded.sub,
       email: decoded.email,
       name: decoded.name,
-      roles: decoded.roles,
+      role: decoded.role,
     };
   }
 }

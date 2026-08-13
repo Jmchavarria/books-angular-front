@@ -1,0 +1,416 @@
+<div class="min-h-screen bg-gray-50 text-gray-900">
+  <!-- Sidebar -->
+  <aside class="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-gray-200 bg-white lg:block">
+    <div class="flex h-full flex-col">
+      <!-- Logo -->
+      <div class="flex h-16 items-center border-b border-gray-200 px-6">
+        <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0e3521]">
+            <span class="text-lg text-white">📚</span>
+          </div>
+
+          <span class="text-lg font-bold text-[#0e3521]"> Curated Library </span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 space-y-1 px-4 py-6">
+        <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Menu</p>
+
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-xl bg-[#0e3521] px-3 py-2.5 text-sm font-medium text-white"
+        >
+          <span>▦</span>
+          Dashboard
+        </a>
+
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+        >
+          <span>📚</span>
+          Books
+        </a>
+
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+        >
+          <span>✍️</span>
+          Authors
+        </a>
+
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+        >
+          <span>🏷️</span>
+          Categories
+        </a>
+
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+        >
+          <span>⭐</span>
+          Favorites
+        </a>
+
+        <div class="my-6 border-t border-gray-100"></div>
+
+        <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">System</p>
+
+        <a
+          href="#"
+          class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+        >
+          <span>⚙️</span>
+          Settings
+        </a>
+      </nav>
+
+      <!-- User -->
+      <div class="border-t border-gray-200 p-4">
+        <div class="flex items-center gap-3 rounded-xl p-2">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-[#dbe8df] font-semibold text-[#0e3521]"
+          >
+            JM
+          </div>
+
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-semibold">Jhon Marlon</p>
+
+            <p class="truncate text-xs text-gray-500">Administrator</p>
+          </div>
+
+          <button class="text-gray-400 hover:text-gray-700">⋮</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="lg:pl-64">
+    <!-- Header -->
+    <header
+      class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white/90 px-6 backdrop-blur"
+    >
+      <div>
+        <h1 class="text-lg font-bold text-gray-900">Dashboard</h1>
+
+        <p class="hidden text-xs text-gray-500 sm:block">
+          Welcome back, here's what's happening today.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Search -->
+        <div class="hidden items-center gap-2 rounded-xl bg-gray-100 px-3 py-2 md:flex">
+          <span class="text-gray-400">⌕</span>
+
+          <input
+            type="text"
+            placeholder="Search..."
+            class="w-40 bg-transparent text-sm outline-none placeholder:text-gray-400"
+          />
+        </div>
+
+        <!-- Notification -->
+        <button
+          class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-gray-600 transition hover:bg-gray-50"
+        >
+          🔔
+
+          <span class="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"></span>
+        </button>
+
+        <!-- Avatar -->
+        <div
+          class="flex h-10 w-10 items-center justify-center rounded-full bg-[#0e3521] text-sm font-semibold text-white"
+        >
+          JM
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="p-6">
+      <!-- Welcome -->
+      <section class="mb-6">
+        <div class="rounded-2xl bg-[#0e3521] p-6 text-white shadow-sm">
+          <div class="flex flex-col justify-between gap-5 md:flex-row md:items-center">
+            <div>
+              <p class="mb-1 text-sm text-emerald-100">Wednesday, August 12</p>
+
+              <h2 class="text-2xl font-bold">Welcome back, Jhon 👋</h2>
+
+              <p class="mt-2 max-w-xl text-sm text-emerald-100">
+                Keep your library organized and discover your next great read.
+              </p>
+            </div>
+
+            <button
+              class="w-fit rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[#0e3521] transition hover:bg-gray-100"
+            >
+              + Add new book
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Statistics -->
+      <section class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <!-- Card -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500">Total books</p>
+
+              <p class="mt-2 text-3xl font-bold">1,284</p>
+            </div>
+
+            <div
+              class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-xl"
+            >
+              📚
+            </div>
+          </div>
+
+          <p class="mt-4 text-xs font-medium text-emerald-600">
+            ↑ 12.5% <span class="font-normal text-gray-400">this month</span>
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500">Authors</p>
+
+              <p class="mt-2 text-3xl font-bold">346</p>
+            </div>
+
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl">
+              ✍️
+            </div>
+          </div>
+
+          <p class="mt-4 text-xs font-medium text-blue-600">
+            ↑ 8.2% <span class="font-normal text-gray-400">this month</span>
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500">Categories</p>
+
+              <p class="mt-2 text-3xl font-bold">28</p>
+            </div>
+
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-50 text-xl">
+              🏷️
+            </div>
+          </div>
+
+          <p class="mt-4 text-xs font-medium text-purple-600">
+            ↑ 4 new <span class="font-normal text-gray-400">this month</span>
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500">Favorites</p>
+
+              <p class="mt-2 text-3xl font-bold">86</p>
+            </div>
+
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-yellow-50 text-xl">
+              ⭐
+            </div>
+          </div>
+
+          <p class="mt-4 text-xs font-medium text-gray-500">6 added this week</p>
+        </div>
+      </section>
+
+      <!-- Main grid -->
+      <section class="grid gap-6 xl:grid-cols-3">
+        <!-- Recent books -->
+        <div class="rounded-2xl border border-gray-200 bg-white shadow-sm xl:col-span-2">
+          <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+            <div>
+              <h3 class="font-bold text-gray-900">Recent books</h3>
+
+              <p class="text-xs text-gray-500">Recently added to your library</p>
+            </div>
+
+            <button class="text-sm font-semibold text-[#0e3521] hover:underline">View all</button>
+          </div>
+
+          <div class="divide-y divide-gray-100">
+            <!-- Book -->
+            <div class="flex items-center gap-4 px-5 py-4">
+              <div
+                class="flex h-14 w-11 shrink-0 items-center justify-center rounded-lg bg-[#dbe8df] text-lg"
+              >
+                📕
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <h4 class="truncate text-sm font-semibold">The Midnight Library</h4>
+
+                <p class="mt-1 text-xs text-gray-500">Matt Haig</p>
+              </div>
+
+              <span
+                class="hidden rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 sm:block"
+              >
+                Fiction
+              </span>
+
+              <span class="text-xs text-gray-400"> 2 min ago </span>
+            </div>
+
+            <div class="flex items-center gap-4 px-5 py-4">
+              <div
+                class="flex h-14 w-11 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-lg"
+              >
+                📙
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <h4 class="truncate text-sm font-semibold">Atomic Habits</h4>
+
+                <p class="mt-1 text-xs text-gray-500">James Clear</p>
+              </div>
+
+              <span
+                class="hidden rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-600 sm:block"
+              >
+                Self-help
+              </span>
+
+              <span class="text-xs text-gray-400"> 15 min ago </span>
+            </div>
+
+            <div class="flex items-center gap-4 px-5 py-4">
+              <div
+                class="flex h-14 w-11 shrink-0 items-center justify-center rounded-lg bg-yellow-50 text-lg"
+              >
+                📗
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <h4 class="truncate text-sm font-semibold">Clean Code</h4>
+
+                <p class="mt-1 text-xs text-gray-500">Robert C. Martin</p>
+              </div>
+
+              <span
+                class="hidden rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600 sm:block"
+              >
+                Technology
+              </span>
+
+              <span class="text-xs text-gray-400"> 1 hour ago </span>
+            </div>
+
+            <div class="flex items-center gap-4 px-5 py-4">
+              <div
+                class="flex h-14 w-11 shrink-0 items-center justify-center rounded-lg bg-red-50 text-lg"
+              >
+                📘
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <h4 class="truncate text-sm font-semibold">The Pragmatic Programmer</h4>
+
+                <p class="mt-1 text-xs text-gray-500">David Thomas</p>
+              </div>
+
+              <span
+                class="hidden rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600 sm:block"
+              >
+                Technology
+              </span>
+
+              <span class="text-xs text-gray-400"> 3 hours ago </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity -->
+        <div class="rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <div class="border-b border-gray-100 px-5 py-4">
+            <h3 class="font-bold text-gray-900">Recent activity</h3>
+
+            <p class="text-xs text-gray-500">Latest changes in your library</p>
+          </div>
+
+          <div class="space-y-6 p-5">
+            <div class="flex gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-sm"
+              >
+                +
+              </div>
+
+              <div>
+                <p class="text-sm text-gray-700">Added <strong>The Midnight Library</strong></p>
+
+                <p class="mt-1 text-xs text-gray-400">2 minutes ago</p>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-yellow-50 text-sm"
+              >
+                ⭐
+              </div>
+
+              <div>
+                <p class="text-sm text-gray-700">
+                  Added <strong>Atomic Habits</strong> to favorites
+                </p>
+
+                <p class="mt-1 text-xs text-gray-400">15 minutes ago</p>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm"
+              >
+                ✏️
+              </div>
+
+              <div>
+                <p class="text-sm text-gray-700">Updated <strong>Clean Code</strong></p>
+
+                <p class="mt-1 text-xs text-gray-400">1 hour ago</p>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-50 text-sm"
+              >
+                +
+              </div>
+
+              <div>
+                <p class="text-sm text-gray-700">Created category <strong>Technology</strong></p>
+
+                <p class="mt-1 text-xs text-gray-400">Yesterday</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

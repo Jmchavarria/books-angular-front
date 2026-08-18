@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
+import { RegisterDto } from './register.dto';
 import { AuthRepository } from '../../domain/repositories/auth.repository';
-import { UserAuth } from '../../domain/interfaces/user-auth';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GetUserAuthUseCase {
+export class RegisterUseCase {
   constructor(private readonly repository: AuthRepository) {}
-
-  execute(): Observable<UserAuth | null> {
-    return this.repository.getUserAuth();
+  execute(input: RegisterDto) {
+    return this.repository.register(input);
   }
 }

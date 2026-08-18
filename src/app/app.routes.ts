@@ -22,13 +22,13 @@ export const routes: Routes = [
   { path: 'bestsellers', component: BooksBestsellersComponents },
   { path: 'login', component: LoginComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
-  { path: 'create-account', component: CreateAccountComponent },
+  { path: 'register', component: CreateAccountComponent },
 
   // Rutas asignadas solo para el acceso a usuarios logueados con rol Admin
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthGuard, rolesGuard],
+    // canActivate: [rolesGuard],
     data: { role: RoleTypeEnum.admin },
   },
 

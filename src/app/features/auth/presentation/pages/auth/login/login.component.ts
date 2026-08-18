@@ -7,7 +7,7 @@ import {
   heroEyeSolid,
   heroLockClosedSolid,
 } from '@ng-icons/heroicons/solid';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { GoogleAuthService } from '../../../../../../core/services/google-auth.service';
 import { LoginUseCase } from '../../../../application/login.use-case';
 import {
@@ -19,6 +19,8 @@ import {
 } from '@angular/forms';
 import { ToastService } from '../../../../../../core/services/toast.service';
 import { ToastContainerComponent } from '../../../../../../core/components/toast-container/toast-container.component';
+import { UserAuth } from '../../../../domain/interfaces/user-auth';
+import { RoleTypeEnum } from '../../../../../../core/enums/role.enum';
 
 @Component({
   selector: 'app-login',
@@ -35,10 +37,8 @@ import { ToastContainerComponent } from '../../../../../../core/components/toast
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-
   showPassword = false;
   isSubmitted = false;
-
   isLoading = signal(false);
 
   constructor(
@@ -46,6 +46,7 @@ export class LoginComponent implements OnInit {
     private readonly loginUseCase: LoginUseCase,
     private readonly fb: FormBuilder,
     private readonly toastService: ToastService,
+    private readonly router: Router,
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -70,11 +71,17 @@ export class LoginComponent implements OnInit {
     this.isLoading.set(true);
 
     this.loginUseCase.execute(email, password).subscribe({
-      next: (response) => {
+      next: (response: UserAuth) => {
         this.isLoading.set(false);
+        // se debe verificar que rol tiene para saber a que modulo será redirigido, se debe actualizar el userAuth
 
-        // Aquí puedes hacer la navegación
-        // this.router.navigate(['/']);
+        console.log(typeof response.role);
+        console.log(typeof RoleTypeEnum.admin);
+        if (response.role === RoleTypeEnum.admin) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/']);
+        }
       },
 
       error: (err) => {

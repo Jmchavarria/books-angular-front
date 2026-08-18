@@ -62,33 +62,66 @@
     <form class="flex flex-col gap-2.5 sm:gap-3" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <!-- Grid de 2 columnas -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-1 sm:gap-y-1.5">
-        <!-- Campo Full Name -->
+        <!-- Campo First Name -->
         <div class="flex flex-col gap-1">
-          <label for="fullName" class="font-semibold text-gray-800 text-xs">Full Name</label>
+          <label for="firstName" class="font-semibold text-gray-800 text-xs">First Name</label>
           <div
             class="w-full px-3 py-2 sm:py-2.5 bg-gray-100 flex gap-2 items-center rounded-xl border transition-colors focus-within:border-[#0e3521]"
-            [class.border-red-500]="registerForm.get('fullName')?.invalid && isSubmitted"
-            [class.border-gray-300]="!(registerForm.get('fullName')?.invalid && isSubmitted)"
+            [class.border-red-500]="registerForm.get('firstName')?.invalid && isSubmitted"
+            [class.border-gray-300]="!(registerForm.get('firstName')?.invalid && isSubmitted)"
           >
             <ng-icon name="heroUserSolid" class="text-gray-500 shrink-0"></ng-icon>
             <input
-              id="fullName"
+              id="firstName"
               type="text"
-              formControlName="fullName"
+              formControlName="firstName"
               class="outline-none w-full bg-transparent text-xs sm:text-sm text-gray-800"
               placeholder="John Doe"
             />
           </div>
           <div class="h-3.5 flex items-center px-1">
-            @if (registerForm.get('fullName')?.invalid && isSubmitted) {
+            @if (registerForm.get('firstName')?.invalid && isSubmitted) {
               <span class="text-red-500 text-[11px]">
-                @if (registerForm.get('fullName')?.errors?.['required']) {
+                @if (registerForm.get('firstName')?.errors?.['required']) {
                   El nombre es obligatorio.
                 }
-                @if (registerForm.get('fullName')?.errors?.['minlength']) {
+                @if (registerForm.get('firstName')?.errors?.['minlength']) {
                   Mínimo 3 caracteres.
                 }
-                @if (registerForm.get('fullName')?.errors?.['maxlength']) {
+                @if (registerForm.get('firstName')?.errors?.['maxlength']) {
+                  Máximo 200 caracteres.
+                }
+              </span>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="lastName" class="font-semibold text-gray-800 text-xs">Last Name</label>
+          <div
+            class="w-full px-3 py-2 sm:py-2.5 bg-gray-100 flex gap-2 items-center rounded-xl border transition-colors focus-within:border-[#0e3521]"
+            [class.border-red-500]="registerForm.get('lastName')?.invalid && isSubmitted"
+            [class.border-gray-300]="!(registerForm.get('lastName')?.invalid && isSubmitted)"
+          >
+            <ng-icon name="heroUserSolid" class="text-gray-500 shrink-0"></ng-icon>
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              class="outline-none w-full bg-transparent text-xs sm:text-sm text-gray-800"
+              placeholder="John Doe"
+            />
+          </div>
+          <div class="h-3.5 flex items-center px-1">
+            @if (registerForm.get('lastName')?.invalid && isSubmitted) {
+              <span class="text-red-500 text-[11px]">
+                @if (registerForm.get('lastName')?.errors?.['required']) {
+                  El apellido es obligatorio.
+                }
+                @if (registerForm.get('lastName')?.errors?.['minlength']) {
+                  Mínimo 3 caracteres.
+                }
+                @if (registerForm.get('lastName')?.errors?.['maxlength']) {
                   Máximo 200 caracteres.
                 }
               </span>
@@ -159,48 +192,6 @@
                 }
                 @if (registerForm.get('password')?.errors?.['minlength']) {
                   Mínimo 6 caracteres.
-                }
-              </span>
-            }
-          </div>
-        </div>
-
-        <!-- Campo Confirm Password -->
-        <div class="flex flex-col gap-1">
-          <label for="confirmPassword" class="font-semibold text-gray-800 text-xs"
-            >Confirm Password</label
-          >
-          <div
-            class="w-full px-3 py-2 sm:py-2.5 bg-gray-100 flex gap-2 items-center rounded-xl border transition-colors focus-within:border-[#0e3521]"
-            [class.border-red-500]="registerForm.get('confirmPassword')?.invalid && isSubmitted"
-            [class.border-gray-300]="!(registerForm.get('confirmPassword')?.invalid && isSubmitted)"
-          >
-            <ng-icon name="heroLockClosedSolid" class="text-gray-500 shrink-0"></ng-icon>
-            <input
-              id="confirmPassword"
-              [type]="showConfirmPassword ? 'text' : 'password'"
-              formControlName="confirmPassword"
-              class="outline-none w-full bg-transparent text-gray-800 text-xs sm:text-sm"
-              placeholder="Confirm password"
-            />
-            <button
-              type="button"
-              (click)="showConfirmPassword = !showConfirmPassword"
-              class="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none shrink-0"
-            >
-              <ng-icon
-                [name]="showConfirmPassword ? 'heroEyeSlashSolid' : 'heroEyeSolid'"
-              ></ng-icon>
-            </button>
-          </div>
-          <div class="h-3.5 flex items-center px-1">
-            @if (registerForm.get('confirmPassword')?.invalid && isSubmitted) {
-              <span class="text-red-500 text-[11px]">
-                @if (registerForm.get('confirmPassword')?.errors?.['required']) {
-                  Confirma tu contraseña.
-                }
-                @if (registerForm.get('confirmPassword')?.errors?.['passwordMismatch']) {
-                  Las contraseñas no coinciden.
                 }
               </span>
             }

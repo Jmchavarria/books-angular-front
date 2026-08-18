@@ -10,6 +10,8 @@ export const rolesGuard: CanActivateFn = (route) => {
 
   const requiredRole = route.data['role'] as RoleTypeEnum;
 
+  console.log('si se está ejecutando');
+
   return getUserAuthUseCase.execute().pipe(
     take(1),
     map((userAuth) => {
@@ -23,7 +25,7 @@ export const rolesGuard: CanActivateFn = (route) => {
       }
 
       if (userAuth.role === RoleTypeEnum.admin) {
-        router.navigate(['/admin']);
+        router.navigate(['/dashboard']);
       } else {
         router.navigate(['/']);
       }

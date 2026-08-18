@@ -3,12 +3,13 @@ import { AuthRepository } from '../../domain/repositories/auth.repository';
 import { BehaviorSubject, map, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../enviroments/enviroment';
-import { AuthMapper, LoginApiResponse } from '../mappers/auth.mapper';
+import { AuthMapper, AuthApiResponse } from '../mappers/auth.mapper';
 import { UserAuth } from '../../domain/interfaces/user-auth';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '../../domain/interfaces/jwt-auth.interface';
 import { RoleTypeEnum } from '../../../../core/enums/role.enum';
 import { Router } from '@angular/router';
+import { RegisterDto } from '../../application/register/register.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -31,33 +32,49 @@ export class AuthRepositoryImpl implements AuthRepository {
     return this.userAuth$.asObservable();
   }
 
+  private decodedJWT<T>(data: string): T {
+    return jwtDecode<T>(data);
+  }
+
   login(email: string, password: string): Observable<UserAuth> {
     return this.http
-      .post<LoginApiResponse>(`${environment.apiUrl}/auth/login`, { email, password })
+      .post<AuthApiResponse>(`${environment.apiUrl}/auth/login`, { email, password })
       .pipe(
         map((response) => {
           // 1. Guardar tokens en el almacenamiento local
-          localStorage.setItem('access_token', response.accessToken);
-          localStorage.setItem('refresh_token', response.refreshToken);
+          localStorage.setItem('access_token', response.data.accessToken);
+          localStorage.setItem('refresh_token', response.data.refreshToken);
 
-          const decoded = jwtDecode<JwtPayload>(response.accessToken);
-
-          if (decoded.role === RoleTypeEnum.admin) {
-            this.router.navigate(['/dashboard']);
-          } else {
-            this.router.navigate(['/']);
-          }
+          const decoded = this.decodedJWT<JwtPayload>(response.data.accessToken);
 
           this.updateUserAuth({
             email: decoded.email,
             id: decoded.sub,
-            name: decoded.name,
+            fullName: decoded.fullName,
             role: decoded.role,
           });
 
           return AuthMapper.toDomain(response);
         }),
       );
+  }
+
+  register(input: RegisterDto): Observable<UserAuth> {
+    console.log(input);
+
+    return this.http.post<AuthApiResponse>(`${environment.apiUrl}/auth/register`, input).pipe(
+      map((response) => {
+        const decoded = this.decodedJWT<JwtPayload>(response.data.accessToken);
+        this.updateUserAuth({
+          email: decoded.email,
+          id: decoded.sub,
+          fullName: decoded.fullName,
+          role: decoded.role,
+        });
+
+        return AuthMapper.toDomain(response);
+      }),
+    );
   }
 
   verifyGoogleToken(token: string): Observable<any> {

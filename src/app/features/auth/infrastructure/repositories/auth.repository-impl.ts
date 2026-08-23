@@ -1,15 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { AuthRepository } from '../../domain/repositories/auth.repository';
 import { BehaviorSubject, map, Observable, of } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 import { environment } from '../../../../../enviroments/enviroment';
 import { AuthMapper, AuthApiResponse } from '../mappers/auth.mapper';
 import { UserAuth } from '../../domain/interfaces/user-auth';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '../../domain/interfaces/jwt-auth.interface';
-import { RoleTypeEnum } from '../../../../core/enums/role.enum';
 import { Router } from '@angular/router';
 import { RegisterDto } from '../../application/register/register.dto';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -20,17 +20,11 @@ export class AuthRepositoryImpl implements AuthRepository {
     private readonly router: Router,
   ) {}
 
-  private userAuth$ = new BehaviorSubject<UserAuth | null>(null);
+  _currentUser = signal<UserAuth | null>(null);
 
-  updateUserAuth(newUser: UserAuth): Observable<void> {
-    this.userAuth$.next(newUser);
+  readonly currentUser = this._currentUser.asReadonly();
 
-    return of(void 0);
-  }
-
-  getUserAuth(): Observable<UserAuth | null> {
-    return this.userAuth$.asObservable();
-  }
+  // en el logout se debe hacer un set _currentUser = null
 
   private decodedJWT<T>(data: string): T {
     return jwtDecode<T>(data);
@@ -47,28 +41,26 @@ export class AuthRepositoryImpl implements AuthRepository {
 
           const decoded = this.decodedJWT<JwtPayload>(response.data.accessToken);
 
-          this.updateUserAuth({
+          this._currentUser.set({
             email: decoded.email,
-            id: decoded.sub,
             fullName: decoded.fullName,
+            id: decoded.sub,
             role: decoded.role,
           });
-
           return AuthMapper.toDomain(response);
         }),
       );
   }
 
   register(input: RegisterDto): Observable<UserAuth> {
-    console.log(input);
-
     return this.http.post<AuthApiResponse>(`${environment.apiUrl}/auth/register`, input).pipe(
       map((response) => {
         const decoded = this.decodedJWT<JwtPayload>(response.data.accessToken);
-        this.updateUserAuth({
+
+        this._currentUser.set({
           email: decoded.email,
-          id: decoded.sub,
           fullName: decoded.fullName,
+          id: decoded.sub,
           role: decoded.role,
         });
 

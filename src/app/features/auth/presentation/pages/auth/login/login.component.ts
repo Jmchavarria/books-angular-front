@@ -73,6 +73,9 @@ export class LoginComponent implements OnInit {
     this.loginUseCase.execute(email, password).subscribe({
       next: (response: UserAuth) => {
         this.isLoading.set(false);
+        
+      
+
         // se debe verificar que rol tiene para saber a que modulo será redirigido, se debe actualizar el userAuth
 
         console.log(typeof response.role);

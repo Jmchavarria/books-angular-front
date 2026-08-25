@@ -12,6 +12,8 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './features/admin/dashboard/presentation/pages/dashboard.component';
 import { rolesGuard } from './core/guards/role.guard';
 import { RoleTypeEnum } from './core/enums/role.enum';
+import { UsersComponent } from './features/admin/users/presentation/pages/users.component';
+import { AdminLayoutComponent } from './core/layouts/admin-layouts/admin-layout.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,11 +28,30 @@ export const routes: Routes = [
 
   // Rutas asignadas solo para el acceso a usuarios logueados con rol Admin
   {
-    path: 'dashboard',
-    component: DashboardComponent,
+    path: 'admin',
+    component: AdminLayoutComponent,
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/admin/dashboard/presentation/pages/dashboard.component').then(
+            (m) => m.DashboardComponent,
+          ),
+        data: { role: RoleTypeEnum.admin },
+      },
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./features/admin/users/presentation/pages/users.component').then(
+            (m) => m.UsersComponent,
+          ),
+        // canActivate: [rolesGuard],
+        data: { role: RoleTypeEnum.admin },
+      },
+    ],
     // canActivate: [rolesGuard],
-    data: { role: RoleTypeEnum.admin },
   },
+  { path: '**', redirectTo: 'admin/dashboard' },
 
   //esta seria la forma de asignar el auth guard a una ruta especifica
   // { path: 'users-management', component: CreateAccountComponent, canActivate: [AuthGuard] },

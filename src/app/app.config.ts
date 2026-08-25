@@ -6,11 +6,14 @@ import { BooksRepositoryImpl } from './features/books/infrastructure/repositorie
 import { BooksRepository } from './features/books/domain/repositories/books.repository';
 import { AuthRepository } from './features/auth/domain/repositories/auth.repository';
 import { AuthRepositoryImpl } from './features/auth/infrastructure/repositories/auth.repository-impl';
+import { UsersRepository } from './features/admin/users/domain/repositories/users.repository';
+import { UsersRepositoryImpl } from './features/admin/users/infrastructure/repositories/users.repository-impl';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
     { provide: BooksRepository, useClass: BooksRepositoryImpl },
     { provide: AuthRepository, useClass: AuthRepositoryImpl },
+    { provide: UsersRepository, useClass: UsersRepositoryImpl },
   ],
 };

@@ -16,57 +16,23 @@
     <nav class="flex-1 space-y-1 px-4 py-6">
       <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Menu</p>
 
-      <a
-        href="#"
-        class="flex items-center gap-3 rounded-xl bg-[#0e3521] px-3 py-2.5 text-sm font-medium text-white"
-      >
-        <span>▦</span>
-        Dashboard
-      </a>
-
-      <a
-        href="#"
-        class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
-      >
-        <span>📚</span>
-        Books
-      </a>
-
-      <a
-        href="#"
-        class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
-      >
-        <span>✍️</span>
-        Authors
-      </a>
-
-      <a
-        href="#"
-        class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
-      >
-        <span>🏷️</span>
-        Categories
-      </a>
-
-      <a
-        href="#"
-        class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
-      >
-        <span>⭐</span>
-        Favorites
-      </a>
+      @for (module of modules; track module.id) {
+        <a
+          [routerLink]="module.route"
+          routerLinkActive="bg-[#0e3521] text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50 hover:text-gray-900"
+        >
+          <span class="text-lg">{{ module.icon }}</span>
+          <span>{{ module.name }}</span>
+        </a>
+      } @empty {
+        <p class="text-xs text-gray-400 px-4">No hay módulos disponibles.</p>
+      }
 
       <div class="my-6 border-t border-gray-100"></div>
 
       <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">System</p>
-
-      <a
-        href="#"
-        class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
-      >
-        <span>⚙️</span>
-        Settings
-      </a>
     </nav>
 
     <!-- User -->

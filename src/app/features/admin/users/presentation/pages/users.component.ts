@@ -1,0 +1,184 @@
+import { Component, OnInit, signal } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { GetAllUsersUseCase } from '../../application/use-cases/get-all-users/get-all-users.use-case';
+import { User } from '../../domain/entities/users.entity';
+import { PaginatedResponse } from '../../../../../core/types/paginated-response';
+import { TableComponent } from '../../../../../core/layouts/admin-layouts/table/table.component';
+import { RoleTypeEnum } from '../../../../../core/enums/role.enum';
+import { CreateUserUseCase } from '../../application/use-cases/create-user/create-user.use-case';
+import { CreateUserDto } from '../../application/use-cases/create-user/create-user.dto';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroXMark } from '@ng-icons/heroicons/outline';
+
+@Component({
+  selector: 'app-users',
+  standalone: true,
+  imports: [FormsModule, TableComponent, ReactiveFormsModule, NgIcon],
+  providers: [
+    GetAllUsersUseCase,
+    provideIcons({
+      heroXMark,
+    }),
+  ],
+  templateUrl: './users.component.html',
+})
+export class UsersComponent implements OnInit {
+  usersform: FormGroup;
+  isSubmitted = false;
+  isLoading = signal(false);
+  protected readonly RoleTypeEnum = RoleTypeEnum;
+  // Estado de la lista de usuarios y modales
+  users = signal<User[]>([]);
+  isModalOpen = signal<boolean>(false);
+  selectedUser: User | null = null;
+
+  // Plantilla inicial de control de la entidad
+
+  constructor(
+    private readonly getAllUsersUseCase: GetAllUsersUseCase,
+    private readonly fb: FormBuilder,
+    private readonly createUserUseCase: CreateUserUseCase,
+  ) {
+    // Validadores corregidos y limpios
+    this.usersform = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      lastName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(10),
+          Validators.pattern('^[0-9]*$'),
+        ],
+      ],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(15)]],
+      role: ['', [Validators.required]],
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.getAllUsersUseCase.execute().subscribe({
+      next: (response: PaginatedResponse<User[]>) => {
+        this.users.set(response.data);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+
+  openModal() {
+    this.selectedUser = null;
+    this.isSubmitted = false;
+
+    const emptyUser = this.getEmptyForm();
+
+    // Se reestablece el formulario con los parámetros esperados
+    this.usersform.reset({
+      firstName: emptyUser.firstName,
+      lastName: emptyUser.lastName,
+      email: emptyUser.email,
+      phone: emptyUser.phone,
+      password: '',
+      role: emptyUser.role,
+    });
+
+    // Se asegura de reactivar la validación de password para nuevos usuarios
+    this.usersform
+      .get('password')
+      ?.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(15)]);
+    this.usersform.get('password')?.updateValueAndValidity();
+
+    this.isModalOpen.set(true);
+  }
+
+  editUser(user: User) {
+    this.selectedUser = user;
+    this.isSubmitted = false;
+
+    // Setea los datos en el Formulario Reactivo
+    this.usersform.patchValue({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+    });
+
+    // Remueve validación de password al editar (ya que no la digita obligatoriamente)
+    this.usersform.get('password')?.clearValidators();
+    this.usersform.get('password')?.updateValueAndValidity();
+
+    this.isModalOpen.set(true);
+  }
+
+  closeModal() {
+    this.isModalOpen.set(false);
+  }
+
+  saveUser() {
+    this.isSubmitted = true;
+
+    if (this.usersform.invalid) {
+      this.usersform.markAllAsTouched();
+      return;
+    }
+
+    // CORREGIDO: Se extrae estrictamente todo el set de datos del formulario reactivo
+    const { firstName, lastName, email, phone, role, password } = this.usersform.value;
+
+    this.isLoading.set(true);
+
+    if (this.selectedUser === null) {
+      // CAMINO CREACIÓN: Pasamos las variables exactas que requiere tu 'CreateUserDto'
+      this.createUserUseCase
+        .execute({
+          firstName,
+          lastName,
+          email,
+          phone,
+          role,
+          password, // Ahora se envía correctamente junto con las demás propiedades requeridas
+        })
+        .subscribe({
+          next: (response) => {
+            this.isLoading.set(false);
+            this.loadUsers();
+            this.closeModal();
+          },
+          error: (err) => {
+            this.isLoading.set(false);
+            console.error(err);
+          },
+        });
+    } else {
+      // CAMINO EDICIÓN
+      console.log('Modificando al usuario existente con ID:', this.selectedUser.email);
+      this.isLoading.set(false);
+      this.closeModal();
+    }
+  }
+
+  private getEmptyForm(): CreateUserDto {
+    return {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      role: RoleTypeEnum.admin,
+      password: '',
+    };
+  }
+}

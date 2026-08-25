@@ -5,7 +5,7 @@ import { Book } from '../../domain/entities/book.entity';
 export interface BookApiResponse {
   id: number;
   title: string;
-  author: Author; 
+  author: Author;
   description: string;
   pages: number;
   publishedYear: number;

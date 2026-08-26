@@ -15,6 +15,8 @@ import { CreateUserUseCase } from '../../application/use-cases/create-user/creat
 import { CreateUserDto } from '../../application/use-cases/create-user/create-user.dto';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroXMark } from '@ng-icons/heroicons/outline';
+import { NgClass } from '@angular/common';
+import { UpdateUserUseCase } from '../../application/use-cases/update-user/update-user.use-case';
 
 @Component({
   selector: 'app-users',
@@ -30,20 +32,18 @@ import { heroXMark } from '@ng-icons/heroicons/outline';
 })
 export class UsersComponent implements OnInit {
   usersform: FormGroup;
-  isSubmitted = false;
+  isSubmitted = signal<boolean>(false);
   isLoading = signal(false);
   protected readonly RoleTypeEnum = RoleTypeEnum;
-  // Estado de la lista de usuarios y modales
   users = signal<User[]>([]);
   isModalOpen = signal<boolean>(false);
   selectedUser: User | null = null;
-
-  // Plantilla inicial de control de la entidad
 
   constructor(
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
     private readonly fb: FormBuilder,
     private readonly createUserUseCase: CreateUserUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
   ) {
     // Validadores corregidos y limpios
     this.usersform = this.fb.group({
@@ -81,7 +81,7 @@ export class UsersComponent implements OnInit {
 
   openModal() {
     this.selectedUser = null;
-    this.isSubmitted = false;
+    this.isSubmitted.set(false);
 
     const emptyUser = this.getEmptyForm();
 
@@ -91,7 +91,7 @@ export class UsersComponent implements OnInit {
       lastName: emptyUser.lastName,
       email: emptyUser.email,
       phone: emptyUser.phone,
-      password: '',
+      password: emptyUser.password,
       role: emptyUser.role,
     });
 
@@ -106,7 +106,6 @@ export class UsersComponent implements OnInit {
 
   editUser(user: User) {
     this.selectedUser = user;
-    this.isSubmitted = false;
 
     // Setea los datos en el Formulario Reactivo
     this.usersform.patchValue({
@@ -129,7 +128,7 @@ export class UsersComponent implements OnInit {
   }
 
   saveUser() {
-    this.isSubmitted = true;
+    this.isSubmitted.set(true);
 
     if (this.usersform.invalid) {
       this.usersform.markAllAsTouched();
@@ -150,7 +149,7 @@ export class UsersComponent implements OnInit {
           email,
           phone,
           role,
-          password, // Ahora se envía correctamente junto con las demás propiedades requeridas
+          password,
         })
         .subscribe({
           next: (response) => {
@@ -164,10 +163,26 @@ export class UsersComponent implements OnInit {
           },
         });
     } else {
-      // CAMINO EDICIÓN
-      console.log('Modificando al usuario existente con ID:', this.selectedUser.email);
-      this.isLoading.set(false);
-      this.closeModal();
+      this.updateUserUseCase
+        .execute({
+          id: this.selectedUser.id,
+          firstName,
+          lastName,
+          email,
+          phone,
+          role,
+        })
+        .subscribe({
+          next: (response) => {
+            this.isLoading.set(false);
+            this.loadUsers();
+            this.closeModal();
+          },
+          error: (err) => {
+            this.isLoading.set(false);
+            console.error(err);
+          },
+        });
     }
   }
 

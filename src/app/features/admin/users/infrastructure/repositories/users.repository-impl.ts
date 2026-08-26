@@ -8,7 +8,7 @@ import { environment } from '../../../../../../enviroments/enviroment';
 import { UsersApiResponse, UsersMapper } from '../mapper/user.mapper';
 import { ApiPaginatedResponse } from '../../../../../core/types/api-envelope';
 import { Injectable } from '@angular/core';
-import { CreateUserProps } from '../../domain/entities/users.props';
+import { CreateUserProps, UpdateUserProps } from '../../domain/entities/users.props';
 
 @Injectable()
 export class UsersRepositoryImpl implements UsersRepository {
@@ -20,6 +20,16 @@ export class UsersRepositoryImpl implements UsersRepository {
 
   create(input: CreateUserProps): Observable<User> {
     return this.http.post<UsersApiResponse>(`${environment.apiUrl}/users`, input).pipe(
+      map((response) => {
+        return UsersMapper.toDomain(response);
+      }),
+    );
+  }
+  
+  update(input: UpdateUserProps): Observable<User> {
+    const { id, ...body } = input;
+
+    return this.http.patch<UsersApiResponse>(`${environment.apiUrl}/users/${input.id}`, body).pipe(
       map((response) => {
         return UsersMapper.toDomain(response);
       }),

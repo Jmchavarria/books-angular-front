@@ -75,13 +75,6 @@ export class TableComponent<T extends object> {
     if (this.openMenuIndex() !== -1) this.closeMenu();
   }
 
-  // ==========================================
-  // MÉTODOS DEL COMPONENTE
-  // ==========================================
-  editItem(item: T) {
-    this.onEdit.emit(item);
-  }
-
   toggleMenu(index: number, event: Event): void {
     event.stopPropagation();
 

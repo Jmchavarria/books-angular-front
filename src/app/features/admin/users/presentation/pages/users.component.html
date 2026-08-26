@@ -16,20 +16,17 @@
     </button>
   </div>
 
-  <!-- Table -->
   <app-table
     [data]="users()"
     [columns]="['firstName', 'lastName', 'email', 'phone', 'role']"
     (onEdit)="editUser($event)"
   ></app-table>
 
-  <!-- Modal -->
   @if (isModalOpen()) {
     <div
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm"
     >
       <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
-        <!-- Modal Header -->
         <div class="flex items-start justify-between">
           <div>
             <h3 class="text-lg font-bold text-gray-900">
@@ -56,16 +53,15 @@
           </div>
         </div>
 
-        <!-- Form -->
         <form [formGroup]="usersform" (ngSubmit)="saveUser()" class="mt-5 space-y-3">
-          <!-- First Name -->
+          @let firstName = usersform.get('firstName');
+
           <div class="flex flex-col gap-1">
             <label for="firstName" class="text-xs font-semibold text-gray-800"> First Name </label>
 
             <div
-              class="flex w-full items-center gap-2 rounded-xl border bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-              [class.border-red-500]="usersform.get('firstName')?.invalid && isSubmitted"
-              [class.border-gray-300]="!(usersform.get('firstName')?.invalid && isSubmitted)"
+              class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+              [class.border-red-500]="firstName?.invalid && (firstName?.touched || isSubmitted())"
             >
               <input
                 id="firstName"
@@ -77,17 +73,17 @@
             </div>
 
             <div class="flex h-3 items-center px-1">
-              @if (usersform.get('firstName')?.invalid && isSubmitted) {
+              @if (firstName?.invalid && (firstName?.touched || isSubmitted())) {
                 <span class="text-[11px] text-red-500">
-                  @if (usersform.get('firstName')?.errors?.['required']) {
+                  @if (firstName?.errors?.['required']) {
                     El nombre es obligatorio.
                   }
 
-                  @if (usersform.get('firstName')?.errors?.['minlength']) {
+                  @if (firstName?.errors?.['minlength']) {
                     Mínimo 3 caracteres.
                   }
 
-                  @if (usersform.get('firstName')?.errors?.['maxlength']) {
+                  @if (firstName?.errors?.['maxlength']) {
                     Máximo 50 caracteres.
                   }
                 </span>
@@ -95,14 +91,13 @@
             </div>
           </div>
 
-          <!-- Last Name -->
+          @let lastName = usersform.get('lastName');
           <div class="flex flex-col gap-1">
             <label for="lastName" class="text-xs font-semibold text-gray-800"> Last Name </label>
 
             <div
-              class="flex w-full items-center gap-2 rounded-xl border bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-              [class.border-red-500]="usersform.get('lastName')?.invalid && isSubmitted"
-              [class.border-gray-300]="!(usersform.get('lastName')?.invalid && isSubmitted)"
+              class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+              [class.border-red-500]="lastName?.invalid && (lastName?.touched || isSubmitted())"
             >
               <input
                 id="lastName"
@@ -114,17 +109,17 @@
             </div>
 
             <div class="flex h-3 items-center px-1">
-              @if (usersform.get('lastName')?.invalid && isSubmitted) {
+              @if (lastName?.invalid && (lastName?.touched || isSubmitted())) {
                 <span class="text-[11px] text-red-500">
                   @if (usersform.get('lastName')?.errors?.['required']) {
                     El apellido es obligatorio.
                   }
 
-                  @if (usersform.get('lastName')?.errors?.['minlength']) {
+                  @if (lastName?.errors?.['minlength']) {
                     Mínimo 3 caracteres.
                   }
 
-                  @if (usersform.get('lastName')?.errors?.['maxlength']) {
+                  @if (lastName?.errors?.['maxlength']) {
                     Máximo 50 caracteres.
                   }
                 </span>
@@ -132,14 +127,13 @@
             </div>
           </div>
 
-          <!-- Email -->
+          @let email = usersform.get('email');
           <div class="flex flex-col gap-1">
             <label for="email" class="text-xs font-semibold text-gray-800"> Email </label>
 
             <div
-              class="flex w-full items-center gap-2 rounded-xl border bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-              [class.border-red-500]="usersform.get('email')?.invalid && isSubmitted"
-              [class.border-gray-300]="!(usersform.get('email')?.invalid && isSubmitted)"
+              class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+              [class.border-red-500]="email?.invalid && (email?.touched || isSubmitted())"
             >
               <input
                 id="email"
@@ -151,13 +145,13 @@
             </div>
 
             <div class="flex h-3 items-center px-1">
-              @if (usersform.get('email')?.invalid && isSubmitted) {
+              @if (email?.invalid && (email?.touched || isSubmitted())) {
                 <span class="text-[11px] text-red-500">
-                  @if (usersform.get('email')?.errors?.['required']) {
+                  @if (email?.errors?.['required']) {
                     El email es obligatorio.
                   }
 
-                  @if (usersform.get('email')?.errors?.['email']) {
+                  @if (email?.errors?.['email']) {
                     Ingresa un correo válido.
                   }
                 </span>
@@ -165,16 +159,14 @@
             </div>
           </div>
 
-          <!-- Phone + Role -->
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <!-- Phone -->
+            @let phone = usersform.get('phone');
             <div class="flex flex-col gap-1">
               <label for="phone" class="text-xs font-semibold text-gray-800"> Teléfono </label>
 
               <div
-                class="flex w-full items-center gap-2 rounded-xl border bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-                [class.border-red-500]="usersform.get('phone')?.invalid && isSubmitted"
-                [class.border-gray-300]="!(usersform.get('phone')?.invalid && isSubmitted)"
+                class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+                [class.border-red-500]="phone?.invalid && (phone?.touched || isSubmitted())"
               >
                 <input
                   id="phone"
@@ -186,15 +178,15 @@
               </div>
 
               <div class="flex h-3 items-center px-1">
-                @if (usersform.get('phone')?.invalid && isSubmitted) {
+                @if (phone?.invalid && (phone?.touched || isSubmitted())) {
                   <span class="text-[11px] text-red-500">
-                    @if (usersform.get('phone')?.errors?.['required']) {
+                    @if (phone?.errors?.['required']) {
                       El teléfono es obligatorio.
-                    } @else if (usersform.get('phone')?.errors?.['pattern']) {
+                    } @else if (phone?.errors?.['pattern']) {
                       Ingresa un teléfono válido.
-                    } @else if (usersform.get('phone')?.errors?.['minlength']) {
+                    } @else if (phone?.errors?.['minlength']) {
                       Mínimo 10 caracteres.
-                    } @else if (usersform.get('phone')?.errors?.['maxlength']) {
+                    } @else if (phone?.errors?.['maxlength']) {
                       Máximo 10 caracteres.
                     }
                   </span>
@@ -202,14 +194,13 @@
               </div>
             </div>
 
-            <!-- Role -->
+            @let role = usersform.get('role');
             <div class="flex flex-col gap-1">
               <label for="role" class="text-xs font-semibold text-gray-800"> Role </label>
 
               <div
-                class="flex w-full items-center gap-2 rounded-xl border bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-                [class.border-red-500]="usersform.get('role')?.invalid && isSubmitted"
-                [class.border-gray-300]="!(usersform.get('role')?.invalid && isSubmitted)"
+                class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+                [class.border-red-500]="role?.invalid && (role?.touched || isSubmitted())"
               >
                 <select
                   id="role"
@@ -222,9 +213,9 @@
               </div>
 
               <div class="flex h-3 items-center px-1">
-                @if (usersform.get('role')?.invalid && isSubmitted) {
+                @if (role?.invalid && (role?.touched || isSubmitted())) {
                   <span class="text-[11px] text-red-500">
-                    @if (usersform.get('role')?.errors?.['required']) {
+                    @if (role?.errors?.['required']) {
                       El rol es obligatorio.
                     }
                   </span>
@@ -233,15 +224,14 @@
             </div>
           </div>
 
-          <!-- Password -->
+          @let password = usersform.get('password');
           @if (!selectedUser) {
             <div class="flex flex-col gap-1">
               <label for="password" class="text-xs font-semibold text-gray-800"> Contraseña </label>
 
               <div
-                class="flex w-full items-center gap-2 rounded-xl border bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-                [class.border-red-500]="usersform.get('password')?.invalid && isSubmitted"
-                [class.border-gray-300]="!(usersform.get('password')?.invalid && isSubmitted)"
+                class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+                [class.border-red-500]="password?.invalid && (password?.touched || isSubmitted())"
               >
                 <input
                   id="password"
@@ -253,17 +243,17 @@
               </div>
 
               <div class="flex h-3 items-center px-1">
-                @if (usersform.get('password')?.invalid && isSubmitted) {
+                @if (password?.invalid && (password?.touched || isSubmitted())) {
                   <span class="text-[11px] text-red-500">
-                    @if (usersform.get('password')?.errors?.['required']) {
+                    @if (password?.errors?.['required']) {
                       La contraseña es obligatoria.
                     }
 
-                    @if (usersform.get('password')?.errors?.['minlength']) {
+                    @if (password?.errors?.['minlength']) {
                       Mínimo 6 caracteres.
                     }
 
-                    @if (usersform.get('password')?.errors?.['maxlength']) {
+                    @if (password?.errors?.['maxlength']) {
                       Máximo 15 caracteres.
                     }
                   </span>
@@ -272,7 +262,6 @@
             </div>
           }
 
-          <!-- Actions -->
           <div class="flex justify-end gap-3 pt-4">
             <button
               type="button"

@@ -18,8 +18,9 @@
 
   <app-table
     [data]="users()"
-    [columns]="['firstName', 'lastName', 'email', 'phone', 'role']"
-    (onEdit)="editUser($event)"
+    [columns]="['id', 'firstName', 'lastName', 'email', 'phone', 'role', 'status']"
+    [actions]="actions"
+    (actionClick)="onAction($event)"
   ></app-table>
 
   @if (isModalOpen()) {

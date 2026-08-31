@@ -1,56 +1,85 @@
 <!-- Sidebar -->
-<aside class="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-gray-200 bg-white lg:block">
+<aside
+  class="fixed inset-y-0 left-0 z-40 hidden border-r border-gray-200 bg-white transition-all duration-300 lg:block"
+  [class.w-20]="isCollapsed()"
+  [class.w-64]="!isCollapsed()"
+>
   <div class="flex h-full flex-col">
-    <!-- Logo -->
-    <div class="flex h-16 items-center border-b border-gray-200 px-6">
-      <div class="flex items-center gap-3">
-        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0e3521]">
+    <!-- Logo y Botón Colapsar -->
+    <div class="flex h-16 items-center justify-between border-b border-gray-200 px-4">
+      <div class="flex items-center gap-3 overflow-hidden">
+        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0e3521]">
           <span class="text-lg text-white">📚</span>
         </div>
 
-        <span class="text-lg font-bold text-[#0e3521]"> Curated Library </span>
+        @if (!isCollapsed()) {
+          <span class="truncate text-lg font-bold text-[#0e3521]">Curated Library</span>
+        }
       </div>
+
+      <!-- BOTÓN PARA ENCOGER / EXPANDIR -->
+      <button
+        type="button"
+        (click)="toggleSidebar()"
+        class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+      >
+        <ng-icon
+          [name]="isCollapsed() ? 'heroChevronRightSolid' : 'heroChevronLeftSolid'"
+        ></ng-icon>
+      </button>
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 space-y-1 px-4 py-6">
-      <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Menu</p>
+    <nav class="flex-1 space-y-1 px-3 py-6 overflow-y-auto">
+      @if (!isCollapsed()) {
+        <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Menu</p>
+      }
 
       @for (module of modules; track module.id) {
         <a
           [routerLink]="module.route"
           routerLinkActive="bg-[#0e3521] text-white"
           [routerLinkActiveOptions]="{ exact: true }"
-          class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50 hover:text-gray-900"
+          [title]="isCollapsed() ? module.name : ''"
+          class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50 hover:text-gray-900"
+          [class.justify-center]="isCollapsed()"
         >
-          <span class="text-lg">{{ module.icon }}</span>
-          <span>{{ module.name }}</span>
+          <ng-icon [name]="module.icon"></ng-icon>
+
+          @if (!isCollapsed()) {
+            <span class="truncate">{{ module.name }}</span>
+          }
         </a>
       } @empty {
-        <p class="text-xs text-gray-400 px-4">No hay módulos disponibles.</p>
+        @if (!isCollapsed()) {
+          <p class="px-3 text-xs text-gray-400">No hay módulos disponibles.</p>
+        }
       }
 
       <div class="my-6 border-t border-gray-100"></div>
 
-      <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">System</p>
+      @if (!isCollapsed()) {
+        <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">System</p>
+      }
     </nav>
 
     <!-- User -->
-    <div class="border-t border-gray-200 p-4">
-      <div class="flex items-center gap-3 rounded-xl p-2">
+    <div class="border-t border-gray-200 p-3">
+      <div class="flex items-center gap-3 rounded-xl p-1" [class.justify-center]="isCollapsed()">
         <div
-          class="flex h-10 w-10 items-center justify-center rounded-full bg-[#dbe8df] font-semibold text-[#0e3521]"
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#dbe8df] font-semibold text-[#0e3521]"
         >
           JM
         </div>
 
-        <div class="min-w-0 flex-1">
-          <p class="truncate text-sm font-semibold">Jhon Marlon</p>
+        @if (!isCollapsed()) {
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-semibold">Jhon Marlon</p>
+            <p class="truncate text-xs text-gray-500">Administrator</p>
+          </div>
 
-          <p class="truncate text-xs text-gray-500">Administrator</p>
-        </div>
-
-        <button class="text-gray-400 hover:text-gray-700">⋮</button>
+          <button type="button" class="text-gray-400 hover:text-gray-700">⋮</button>
+        }
       </div>
     </div>
   </div>

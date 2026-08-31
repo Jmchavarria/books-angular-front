@@ -9,10 +9,8 @@ export interface ApiSingleResponse<T> {
 export interface ApiPaginatedResponse<T> {
   success: boolean;
   message: string;
-  data: {
-    data: T[];
-    total: number;
-    page: number;
-    limit: number;
-  };
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
 }

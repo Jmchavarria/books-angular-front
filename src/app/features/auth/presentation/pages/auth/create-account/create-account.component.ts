@@ -9,14 +9,7 @@ import {
   heroUserSolid,
   heroEnvelopeSolid,
 } from '@ng-icons/heroicons/solid';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RegisterUseCase } from '../../../../application/register/register.use-case';
 import { ToastService } from '../../../../../../core/services/toast.service';
 @Component({

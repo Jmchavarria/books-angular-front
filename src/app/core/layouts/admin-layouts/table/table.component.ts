@@ -8,15 +8,23 @@ import {
   Injector,
   afterNextRender,
 } from '@angular/core';
-
-export interface Data<T> {
-  key: T;
-  value: T;
-}
+import { provideIcons } from '@ng-icons/core';
+import {
+  heroEnvelopeSolid,
+  heroEyeSlashSolid,
+  heroPencilSquareSolid,
+} from '@ng-icons/heroicons/solid';
 
 interface MenuPosition {
   top: number;
   left: number;
+}
+
+type TableKey = 'edit' | 'delete' | 'activate' | 'desactivate' | 'change password';
+export interface TableAction {
+  key: TableKey;
+  label: string;
+  icon: string;
 }
 
 const MENU_MARGIN = 8; // separación mínima respecto al borde del viewport
@@ -26,7 +34,7 @@ const MENU_WIDTH_FALLBACK = 160; // w-40, usado solo como posición provisional
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [],
+  providers: [provideIcons({ heroPencilSquareSolid })],
   templateUrl: './table.component.html',
 })
 export class TableComponent<T extends object> {
@@ -35,15 +43,11 @@ export class TableComponent<T extends object> {
     private injector: Injector,
   ) {}
 
-  // ==========================================
-  // INPUTS, OUTPUTS Y SIGNALS
-  // ==========================================
   data = input<T[]>([]);
   columns = input<(keyof T)[]>([]);
 
-  onEdit = output<T>();
-  onActivate = output<T>();
-  onInactivate = output<T>();
+  actions = input<TableAction[]>([]);
+  actionClick = output<{ action: TableAction; item: T }>();
 
   openMenuIndex = signal<number>(-1);
   menuPosition = signal<MenuPosition | null>(null);
@@ -51,9 +55,6 @@ export class TableComponent<T extends object> {
 
   private triggerElement: HTMLElement | null = null;
 
-  // ==========================================
-  // ESCUCHADORES GLOBALES
-  // ==========================================
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     if (

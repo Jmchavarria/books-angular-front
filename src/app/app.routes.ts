@@ -9,10 +9,8 @@ import { BooksCollectionsComponent } from './features/books/presentation/pages/b
 import { ShoppingCartComponent } from './features/shopping-cart/presentation/pages/shopping-cart/shopping-cart.component';
 import { HomeComponent } from './home/pages/home/home.component';
 import { AuthGuard } from './core/guards/auth.guard';
-import { DashboardComponent } from './features/admin/dashboard/presentation/pages/dashboard.component';
 import { rolesGuard } from './core/guards/role.guard';
 import { RoleTypeEnum } from './core/enums/role.enum';
-import { UsersComponent } from './features/admin/users/presentation/pages/users.component';
 import { AdminLayoutComponent } from './core/layouts/admin-layouts/admin-layout.component';
 
 export const routes: Routes = [
@@ -44,6 +42,15 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin/users/presentation/pages/users.component').then(
             (m) => m.UsersComponent,
+          ),
+        // canActivate: [rolesGuard],
+        data: { role: RoleTypeEnum.admin },
+      },
+      {
+        path: 'categories',
+        loadComponent: () =>
+          import('./features/admin/categories/presentation/pages/categories.component').then(
+            (m) => m.CategoriesComponent,
           ),
         // canActivate: [rolesGuard],
         data: { role: RoleTypeEnum.admin },

@@ -3,6 +3,7 @@ import { PaginatedResponse } from '../../../../../../core/types/paginated-respon
 import { UsersRepository } from '../../../domain/repositories/users.repository';
 import { User } from '../../../domain/entities/users.entity';
 import { Injectable } from '@angular/core';
+import { ApiPaginatedResponse } from '../../../../../../core/types/api-envelope';
 
 @Injectable({
   providedIn: 'root',

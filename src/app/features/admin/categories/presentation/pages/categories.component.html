@@ -1,0 +1,156 @@
+<div class="space-y-5">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-xl font-bold text-gray-900">Category Management</h2>
+
+      <p class="text-xs text-gray-500">Manage categories for all books.</p>
+    </div>
+
+    <button
+      type="button"
+      (click)="openModal()"
+      class="rounded-xl bg-[#0e3521] px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-900"
+    >
+      + Create category
+    </button>
+  </div>
+
+  <app-table
+    [data]="categories()"
+    [columns]="['id', 'name', 'description', 'status']"
+    [actions]="actions"
+    (actionClick)="onAction($event)"
+  ></app-table>
+
+  @if (isModalOpen()) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm"
+    >
+      <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-gray-900">
+              {{ selectedCategory ? 'Edit category' : 'New category' }}
+            </h3>
+
+            <p class="mt-1 text-xs text-gray-500">
+              {{
+                selectedCategory
+                  ? 'Update the category information.'
+                  : 'Please fill in the details to create a new category.'
+              }}
+            </p>
+          </div>
+          <div>
+            <button
+              type="button"
+              (click)="closeModal()"
+              aria-label="Cerrar modal"
+              class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+            >
+              <ng-icon name="heroXMark" class="text-lg"></ng-icon>
+            </button>
+          </div>
+        </div>
+
+        <form [formGroup]="categoriesform" (ngSubmit)="saveCategory()" class="mt-5 space-y-3">
+          @let name = categoriesform.get('name');
+
+          <div class="flex flex-col gap-1">
+            <label for="name" class="text-xs font-semibold text-gray-800"> Name </label>
+
+            <div
+              class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+              [class.border-red-500]="name?.invalid && (name?.touched || isSubmitted())"
+            >
+              <input
+                id="name"
+                type="text"
+                formControlName="name"
+                class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+                placeholder="e.g., Historical Fiction"
+              />
+            </div>
+
+            <div class="flex h-3 items-center px-1">
+              @if (name?.invalid && (name?.touched || isSubmitted())) {
+                <span class="text-[11px] text-red-500">
+                  @if (name?.errors?.['required']) {
+                    The name is required
+                  }
+
+                  @if (name?.errors?.['minlength']) {
+                    Minimum 3 characters
+                  }
+
+                  @if (name?.errors?.['maxlength']) {
+                    Maximum 50 characters
+                  }
+                </span>
+              }
+            </div>
+          </div>
+
+          @let description = categoriesform.get('description');
+          <div class="flex flex-col gap-1">
+            <label for="description" class="text-xs font-semibold text-gray-800">
+              Description</label
+            >
+
+            <div
+              class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+              [class.border-red-500]="
+                description?.invalid && (description?.touched || isSubmitted())
+              "
+            >
+              <input
+                id="description"
+                type="text"
+                formControlName="description"
+                class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+                placeholder="e.g., Fiction works set in historical periods..."
+              />
+            </div>
+
+            <div class="flex h-3 items-center px-1">
+              @if (description?.invalid && (description?.touched || isSubmitted())) {
+                <span class="text-[11px] text-red-500">
+                  @if (categoriesform.get('description')?.errors?.['required']) {
+                    The description is required
+                  }
+
+                  @if (description?.errors?.['minlength']) {
+                    Minimum 10 characters
+                  }
+
+                  @if (description?.errors?.['maxlength']) {
+                    Maximum 50 characters
+                  }
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-4">
+            <button
+              type="button"
+              (click)="closeModal()"
+              class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-500 transition hover:bg-gray-100"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              [disabled]="isLoading()"
+              class="rounded-xl bg-[#0e3521] px-5 py-2 text-sm font-semibold text-white transition hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {{ isLoading() ? 'Saving...' : 'Save' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

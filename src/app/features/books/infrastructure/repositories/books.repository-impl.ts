@@ -22,9 +22,16 @@ export class BooksRepositoryImpl implements BooksRepository {
       .get<ApiPaginatedResponse<BookApiResponse>>(environment.apiUrl, { params })
       .pipe(
         map((response) => {
-          const { data, total, page, limit } = response.data;
+          const { data, total, page, limit, message, success } = response;
 
-          return new PaginatedResponse(data.map(BookMapper.toDomain), total, page, limit);
+          return new PaginatedResponse(
+            success,
+            message,
+            data.map(BookMapper.toDomain),
+            total,
+            page,
+            limit,
+          );
         }),
       );
   }

@@ -28,5 +28,5 @@ export const rolesGuard: CanActivateFn = (route) => {
     router.navigate(['/']);
   }
 
-  return false; // Crucial para avisarle a Angular que bloquee la ruta original
+  return false;
 };

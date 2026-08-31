@@ -10,7 +10,9 @@ import { ApiPaginatedResponse } from '../../../../../core/types/api-envelope';
 import { Injectable } from '@angular/core';
 import { CreateUserProps, UpdateUserProps } from '../../domain/entities/users.props';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UsersRepositoryImpl implements UsersRepository {
   constructor(private readonly http: HttpClient) {}
   private userAuth$ = new BehaviorSubject<UserAuth | null>(null);
@@ -25,9 +27,9 @@ export class UsersRepositoryImpl implements UsersRepository {
       }),
     );
   }
-  
+
   update(input: UpdateUserProps): Observable<User> {
-    const { id, ...body } = input;
+    const { ...body } = input;
 
     return this.http.patch<UsersApiResponse>(`${environment.apiUrl}/users/${input.id}`, body).pipe(
       map((response) => {
@@ -41,9 +43,18 @@ export class UsersRepositoryImpl implements UsersRepository {
       .get<ApiPaginatedResponse<UsersApiResponse>>(`${environment.apiUrl}/users`)
       .pipe(
         map((response) => {
-          const { data, limit, page, total } = response.data;
+          console.log(response);
+          const { data, limit, page, total, message, success } = response;
 
-          return new PaginatedResponse(data.map(UsersMapper.toDomain), total, pageXOffset, limit);
+          console.log(data);
+          return new PaginatedResponse(
+            success,
+            message,
+            data.map((entity) => UsersMapper.toDomain(entity)),
+            total,
+            page,
+            limit,
+          );
         }),
       );
   }

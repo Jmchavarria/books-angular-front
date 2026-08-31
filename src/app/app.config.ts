@@ -8,6 +8,8 @@ import { AuthRepository } from './features/auth/domain/repositories/auth.reposit
 import { AuthRepositoryImpl } from './features/auth/infrastructure/repositories/auth.repository-impl';
 import { UsersRepository } from './features/admin/users/domain/repositories/users.repository';
 import { UsersRepositoryImpl } from './features/admin/users/infrastructure/repositories/users.repository-impl';
+import { CategoriesRepository } from './features/admin/categories/domain/repositories/categories.repository';
+import { CategoriesRepositoryImpl } from './features/admin/categories/infrastructure/repositories/categories.repository-impl';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -15,5 +17,6 @@ export const appConfig: ApplicationConfig = {
     { provide: BooksRepository, useClass: BooksRepositoryImpl },
     { provide: AuthRepository, useClass: AuthRepositoryImpl },
     { provide: UsersRepository, useClass: UsersRepositoryImpl },
+    { provide: CategoriesRepository, useClass: CategoriesRepositoryImpl },
   ],
 };

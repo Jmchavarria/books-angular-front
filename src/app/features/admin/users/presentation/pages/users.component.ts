@@ -9,21 +9,23 @@ import {
 import { GetAllUsersUseCase } from '../../application/use-cases/get-all-users/get-all-users.use-case';
 import { User } from '../../domain/entities/users.entity';
 import { PaginatedResponse } from '../../../../../core/types/paginated-response';
-import { TableComponent } from '../../../../../core/layouts/admin-layouts/table/table.component';
+import {
+  TableAction,
+  TableComponent,
+} from '../../../../../core/layouts/admin-layouts/table/table.component';
 import { RoleTypeEnum } from '../../../../../core/enums/role.enum';
 import { CreateUserUseCase } from '../../application/use-cases/create-user/create-user.use-case';
 import { CreateUserDto } from '../../application/use-cases/create-user/create-user.dto';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroXMark } from '@ng-icons/heroicons/outline';
-import { NgClass } from '@angular/common';
 import { UpdateUserUseCase } from '../../application/use-cases/update-user/update-user.use-case';
+import { Book } from '../../../../books/domain/entities/book.entity';
 
 @Component({
   selector: 'app-users',
   standalone: true,
   imports: [FormsModule, TableComponent, ReactiveFormsModule, NgIcon],
   providers: [
-    GetAllUsersUseCase,
     provideIcons({
       heroXMark,
     }),
@@ -68,9 +70,29 @@ export class UsersComponent implements OnInit {
     this.loadUsers();
   }
 
+  actions: TableAction[] = [
+    {
+      key: 'edit',
+      label: 'Edit',
+      icon: 'pencil-square',
+    },
+  ];
+
+  onAction(event: { action: TableAction; item: User }) {
+    switch (event.action.key) {
+      case 'edit':
+        this.editUser(event.item);
+        break;
+    }
+  }
+
   loadUsers(): void {
     this.getAllUsersUseCase.execute().subscribe({
       next: (response: PaginatedResponse<User[]>) => {
+
+        console.log('vamos a ver que es lo que pasa', response)
+
+        
         this.users.set(response.data);
       },
       error: (err) => {
@@ -116,7 +138,6 @@ export class UsersComponent implements OnInit {
       role: user.role,
     });
 
-    // Remueve validación de password al editar (ya que no la digita obligatoriamente)
     this.usersform.get('password')?.clearValidators();
     this.usersform.get('password')?.updateValueAndValidity();
 
@@ -135,13 +156,11 @@ export class UsersComponent implements OnInit {
       return;
     }
 
-    // CORREGIDO: Se extrae estrictamente todo el set de datos del formulario reactivo
     const { firstName, lastName, email, phone, role, password } = this.usersform.value;
 
     this.isLoading.set(true);
 
     if (this.selectedUser === null) {
-      // CAMINO CREACIÓN: Pasamos las variables exactas que requiere tu 'CreateUserDto'
       this.createUserUseCase
         .execute({
           firstName,

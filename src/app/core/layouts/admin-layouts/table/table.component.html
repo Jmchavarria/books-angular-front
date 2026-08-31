@@ -71,33 +71,35 @@
                 [style.top.px]="menuPosition()?.top"
                 [style.left.px]="menuPosition()?.left"
               >
-                <button
-                  role="menuitem"
-                  tabindex="-1"
-                  (click)="onEdit.emit(item); closeMenu()"
-                  class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 rounded-lg transition-colors outline-none"
-                >
-                  Editar
-                </button>
+                @for (action of actions(); track action.key) {
+                  <button
+                    role="menuitem"
+                    tabindex="-1"
+                    (click)="actionClick.emit({ action, item }); closeMenu()"
+                    class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 rounded-lg transition-colors outline-none"
+                  >
+                    {{ action.label }}
+                  </button>
 
-                @if (getCellValue(item, 'status').toLowerCase() === 'active') {
-                  <button
-                    role="menuitem"
-                    tabindex="-1"
-                    (click)="onInactivate.emit(item); closeMenu()"
-                    class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-red-600 hover:bg-red-50 focus-visible:bg-red-50 rounded-lg transition-colors outline-none"
-                  >
-                    Inactivar
-                  </button>
-                } @else {
-                  <button
-                    role="menuitem"
-                    tabindex="-1"
-                    (click)="onActivate.emit(item); closeMenu()"
-                    class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-emerald-600 hover:bg-emerald-50 focus-visible:bg-emerald-50 rounded-lg transition-colors outline-none"
-                  >
-                    Activar
-                  </button>
+                  @if (getCellValue(item, 'status').toLowerCase() === 'active') {
+                    <button
+                      role="menuitem"
+                      tabindex="-1"
+                      (click)="actionClick.emit({ action, item }); closeMenu()"
+                      class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-red-600 hover:bg-red-50 focus-visible:bg-red-50 rounded-lg transition-colors outline-none"
+                    >
+                      Inactivar
+                    </button>
+                  } @else {
+                    <button
+                      role="menuitem"
+                      tabindex="-1"
+                      (click)="actionClick.emit({ action, item }); closeMenu()"
+                      class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-emerald-600 hover:bg-emerald-50 focus-visible:bg-emerald-50 rounded-lg transition-colors outline-none"
+                    >
+                      Activar
+                    </button>
+                  }
                 }
               </div>
             }

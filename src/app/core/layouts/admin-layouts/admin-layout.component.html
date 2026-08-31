@@ -1,11 +1,11 @@
-<div class="min-h-screen bg-gray-50 text-gray-900">
-  <!-- Tu Sidebar -->
-  <app-sidebar />
+<app-sidebar #sidebar></app-sidebar>
 
-  <!-- El área donde se cargará Dashboard, Users, etc. -->
-  <div class="lg:pl-64">
-    <main class="p-6">
-      <router-outlet />
-    </main>
+<main
+  class="min-h-screen bg-gray-50 transition-all duration-300"
+  [class.lg:pl-20]="sidebar.isCollapsed()"
+  [class.lg:pl-64]="!sidebar.isCollapsed()"
+>
+  <div class="p-8">
+    <router-outlet></router-outlet>
   </div>
-</div>
+</main>

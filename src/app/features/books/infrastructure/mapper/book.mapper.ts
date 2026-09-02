@@ -1,5 +1,5 @@
 import { Author } from '../../../authors/domain/entities/author.entity';
-import { Category } from '../../../categories/domain/entities/category.entitie';
+import { Categories } from '../../../categories/domain/entities/categories.entity';
 import { Book } from '../../domain/entities/book.entity';
 
 export interface BookApiResponse {
@@ -9,7 +9,7 @@ export interface BookApiResponse {
   description: string;
   pages: number;
   publishedYear: number;
-  category: Category;
+  category: Categories;
 }
 
 export class BookMapper {

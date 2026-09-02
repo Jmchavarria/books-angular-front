@@ -6,10 +6,12 @@ import { BooksRepositoryImpl } from './features/books/infrastructure/repositorie
 import { BooksRepository } from './features/books/domain/repositories/books.repository';
 import { AuthRepository } from './features/auth/domain/repositories/auth.repository';
 import { AuthRepositoryImpl } from './features/auth/infrastructure/repositories/auth.repository-impl';
-import { UsersRepository } from './features/admin/users/domain/repositories/users.repository';
-import { UsersRepositoryImpl } from './features/admin/users/infrastructure/repositories/users.repository-impl';
-import { CategoriesRepository } from './features/admin/categories/domain/repositories/categories.repository';
-import { CategoriesRepositoryImpl } from './features/admin/categories/infrastructure/repositories/categories.repository-impl';
+import { UsersRepository } from './features/users/domain/repositories/users.repository';
+import { UsersRepositoryImpl } from './features/users/infrastructure/repositories/users.repository-impl';
+import { CategoriesRepository } from './features/categories/domain/repositories/categories.repository';
+import { CategoriesRepositoryImpl } from './features/categories/infrastructure/repositories/categories.repository-impl';
+import { AuthorsRepository } from './features/authors/domain/repositories/authors.repository';
+import { AuthorsRepositoryImpl } from './features/authors/infrastructure/repositories/authors.repository-impl';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -18,5 +20,7 @@ export const appConfig: ApplicationConfig = {
     { provide: AuthRepository, useClass: AuthRepositoryImpl },
     { provide: UsersRepository, useClass: UsersRepositoryImpl },
     { provide: CategoriesRepository, useClass: CategoriesRepositoryImpl },
+    { provide: BooksRepository, useClass: BooksRepositoryImpl },
+    { provide: AuthorsRepository, useClass: AuthorsRepositoryImpl },
   ],
 };

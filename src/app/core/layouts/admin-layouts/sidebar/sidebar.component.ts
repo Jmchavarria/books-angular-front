@@ -2,10 +2,12 @@ import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IconType, NgIcon, provideIcons } from '@ng-icons/core';
 import {
+  heroBookOpenSolid,
   heroChartBarSolid,
   heroChevronLeftSolid,
   heroChevronRightSolid,
   heroSquares2x2Solid,
+  heroUserGroupSolid,
   heroUsersSolid,
 } from '@ng-icons/heroicons/solid';
 
@@ -25,6 +27,8 @@ export interface ModuleItems {
     heroUsersSolid,
     heroChartBarSolid,
     heroSquares2x2Solid,
+    heroBookOpenSolid,
+    heroUserGroupSolid,
   }),
   imports: [RouterLink, RouterLinkActive, NgIcon],
   templateUrl: './sidebar.component.html',
@@ -50,6 +54,18 @@ export class SidebarAdminCompoonent {
       name: 'Categories',
       icon: 'heroSquares2x2Solid ',
       route: '/admin/categories',
+    },
+    {
+      id: 3,
+      name: 'Books',
+      icon: 'heroBookOpenSolid',
+      route: '/admin/books',
+    },
+    {
+      id: 3,
+      name: 'Authors',
+      icon: 'heroUserGroupSolid ',
+      route: '/admin/authors',
     },
   ];
 

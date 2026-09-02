@@ -8,12 +8,6 @@ import {
   Injector,
   afterNextRender,
 } from '@angular/core';
-import { provideIcons } from '@ng-icons/core';
-import {
-  heroEnvelopeSolid,
-  heroEyeSlashSolid,
-  heroPencilSquareSolid,
-} from '@ng-icons/heroicons/solid';
 
 interface MenuPosition {
   top: number;
@@ -34,7 +28,7 @@ const MENU_WIDTH_FALLBACK = 160; // w-40, usado solo como posición provisional
 @Component({
   selector: 'app-table',
   standalone: true,
-  providers: [provideIcons({ heroPencilSquareSolid })],
+  providers: [],
   templateUrl: './table.component.html',
 })
 export class TableComponent<T extends object> {

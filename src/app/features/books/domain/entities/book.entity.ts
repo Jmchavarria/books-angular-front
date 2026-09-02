@@ -1,5 +1,5 @@
 import { Author } from '../../../authors/domain/entities/author.entity';
-import { Category } from '../../../categories/domain/entities/category.entitie';
+import { Categories } from '../../../categories/domain/entities/categories.entity';
 
 export class Book {
   constructor(
@@ -9,6 +9,6 @@ export class Book {
     public readonly description: string,
     public readonly pages: number,
     public readonly publishedYear: number,
-    public readonly category: Category,
+    public readonly category: Categories,
   ) {}
 }

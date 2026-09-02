@@ -3,15 +3,15 @@ import { Routes } from '@angular/router';
 import { CreateAccountComponent } from './features/auth/presentation/pages/auth/create-account/create-account.component';
 import { LoginComponent } from './features/auth/presentation/pages/auth/login/login.component';
 import { ResetPasswordComponent } from './features/auth/presentation/pages/auth/reset-password/reset-password.component';
-import { BooksBestsellersComponents } from './features/books/presentation/pages/books-bestsellers/books-bestsellers.component';
-import { BooksCatalogComponent } from './features/books/presentation/pages/books-catalog/books-catalog.component';
-import { BooksCollectionsComponent } from './features/books/presentation/pages/books-collections/books-collections.component';
 import { ShoppingCartComponent } from './features/shopping-cart/presentation/pages/shopping-cart/shopping-cart.component';
 import { HomeComponent } from './home/pages/home/home.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { rolesGuard } from './core/guards/role.guard';
 import { RoleTypeEnum } from './core/enums/role.enum';
 import { AdminLayoutComponent } from './core/layouts/admin-layouts/admin-layout.component';
+import { BooksBestsellersComponents } from './features/books/presentation/pages/client/books-bestsellers/books-bestsellers.component';
+import { BooksCatalogComponent } from './features/books/presentation/pages/client/books-catalog/books-catalog.component';
+import { BooksCollectionsComponent } from './features/books/presentation/pages/client/books-collections/books-collections.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -32,7 +32,7 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./features/admin/dashboard/presentation/pages/dashboard.component').then(
+          import('./features/dashboard/presentation/pages/admin/dashboard.component').then(
             (m) => m.DashboardComponent,
           ),
         data: { role: RoleTypeEnum.admin },
@@ -40,7 +40,7 @@ export const routes: Routes = [
       {
         path: 'users',
         loadComponent: () =>
-          import('./features/admin/users/presentation/pages/users.component').then(
+          import('./features/users/presentation/pages/users.component').then(
             (m) => m.UsersComponent,
           ),
         // canActivate: [rolesGuard],
@@ -49,8 +49,26 @@ export const routes: Routes = [
       {
         path: 'categories',
         loadComponent: () =>
-          import('./features/admin/categories/presentation/pages/categories.component').then(
+          import('./features/categories/presentation/pages/admin/categories.component').then(
             (m) => m.CategoriesComponent,
+          ),
+        // canActivate: [rolesGuard],
+        data: { role: RoleTypeEnum.admin },
+      },
+      {
+        path: 'books',
+        loadComponent: () =>
+          import('./features/books/presentation/pages/admin/books.component').then(
+            (m) => m.BooksComponent,
+          ),
+        // canActivate: [rolesGuard],
+        data: { role: RoleTypeEnum.admin },
+      },
+      {
+        path: 'authors',
+        loadComponent: () =>
+          import('./features/authors/presentation/pages/admin/authors.component').then(
+            (m) => m.AuthorsComponent,
           ),
         // canActivate: [rolesGuard],
         data: { role: RoleTypeEnum.admin },

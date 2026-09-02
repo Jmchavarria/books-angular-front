@@ -10,7 +10,18 @@ export interface GetAllBooksProps extends Pagination {
   search?: string;
 }
 
+export interface CreateBookProps {
+  title: string;
+  categoryId?: number;
+  authorId: number;
+  description?: string;
+  pages: number;
+  isActive?: boolean;
+  publishedYear: number;
+}
+
 export abstract class BooksRepository {
   abstract getAll(input: GetAllBooksProps): Observable<PaginatedResponse<Book[]>>;
   abstract getById(id: number): Observable<Book>;
+  abstract create(input: CreateBookProps): Observable<Book>;
 }

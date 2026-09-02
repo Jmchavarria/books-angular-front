@@ -81,6 +81,9 @@
                     {{ action.label }}
                   </button>
 
+                  <!-- Luego cambiar las condiciones dependiendo del valor de action 
+                  si la accion es inactive, pintarlo de otra forma 
+                  -->
                   @if (getCellValue(item, 'status').toLowerCase() === 'active') {
                     <button
                       role="menuitem"

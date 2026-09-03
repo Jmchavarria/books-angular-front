@@ -8,6 +8,8 @@ import {
   Injector,
   afterNextRender,
 } from '@angular/core';
+import { provideIcons, NgIcon } from '@ng-icons/core';
+import { heroPencilSquare } from '@ng-icons/heroicons/outline';
 
 interface MenuPosition {
   top: number;
@@ -28,8 +30,13 @@ const MENU_WIDTH_FALLBACK = 160; // w-40, usado solo como posición provisional
 @Component({
   selector: 'app-table',
   standalone: true,
-  providers: [],
+  providers: [
+    provideIcons({
+      heroPencilSquare,
+    }),
+  ],
   templateUrl: './table.component.html',
+  imports: [NgIcon],
 })
 export class TableComponent<T extends object> {
   constructor(
@@ -51,14 +58,17 @@ export class TableComponent<T extends object> {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
-    if (
-      this.openMenuIndex() !== -1 &&
-      !this.elementRef.nativeElement.contains(event.target as Node)
-    ) {
+    if (this.openMenuIndex() === -1) return;
+
+    const target = event.target as HTMLElement;
+    const clickedInsideMenu = target.closest('[data-open-menu]');
+    const clickedTrigger = this.triggerElement?.contains(target);
+
+    if (!clickedInsideMenu && !clickedTrigger) {
       this.closeMenu();
     }
   }
-
+  
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.openMenuIndex() !== -1) this.closeMenu();
@@ -77,6 +87,7 @@ export class TableComponent<T extends object> {
       this.closeMenu();
       return;
     }
+    
 
     this.triggerElement = event.currentTarget as HTMLElement;
     this.menuReady.set(false);

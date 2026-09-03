@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AuthorsRepository } from '../../../domain/repositories/authors.repository';
+import { AuthorsRepository } from '../../../../domain/repositories/authors.repository';
 import { Observable } from 'rxjs';
-import { PaginatedResponse } from '../../../../../core/types/paginated-response';
-import { Author } from '../../../domain/entities/author.entity';
+import { PaginatedResponse } from '../../../../../../core/types/paginated-response';
+import { Author } from '../../../../domain/entities/author.entity';
 
 @Injectable({
   providedIn: 'root',

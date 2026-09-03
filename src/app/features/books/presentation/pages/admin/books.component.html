@@ -2,18 +2,12 @@
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h2 class="text-xl font-bold text-gray-900">Gestión de Books</h2>
+      <h2 class="text-xl font-bold text-gray-900">Book Management</h2>
 
-      <p class="text-xs text-gray-500">Administra los libros de la plataforma.</p>
+      <p class="text-xs text-gray-500">Manage the platform's books.</p>
     </div>
 
-    <button
-      type="button"
-      (click)="openModal()"
-      class="rounded-xl bg-[#0e3521] px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-900"
-    >
-      + Create Book
-    </button>
+    <app-button typeButton="button" (onSubmit)="openModal()" label="+ Create book" />
   </div>
 
   <!-- Table -->
@@ -74,7 +68,7 @@
                 formControlName="title"
                 class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
                 placeholder="The Lord of the Rings"
-              />au
+              />
             </div>
 
             <div class="flex min-h-3 items-center px-1">
@@ -217,13 +211,14 @@
                   formControlName="author"
                   class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
                 >
-                  <option [ngValue]="null" selected disabled hidden>
-                    {{ authors().length > 0 ? 'select a user' : 'There are no users available' }}
+                  <option disabled selected [ngValue]="null" hidden>
+                    {{
+                      authors().length > 0 ? 'Select an author' : 'There are no authors available'
+                    }}
                   </option>
-
                   @for (author of authors(); track author.id) {
-                    <option [ngValue]="author.id">
-                      {{ `${author.firstName} ${author.lastName}` }}
+                    <option [value]="author.id">
+                      {{ author.firstName }} {{ author.lastName }}
                     </option>
                   }
                 </select>
@@ -255,18 +250,19 @@
                   formControlName="category"
                   class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
                 >
-                  <option value="">Select a category</option>
+                  <option disabled selected [ngValue]="null" hidden>
+                    {{
+                      authors().length > 0
+                        ? 'Select a category'
+                        : 'There are no categories available'
+                    }}
+                  </option>
 
-                  <!--
-                    Aquí irían tus categorías.
-
-                    Ejemplo:
-                    @for (category of categories(); track category.id) {
-                      <option [value]="category.id">
-                        {{ category.name }}
-                      </option>
-                    }
-                  -->
+                  @for (category of categories(); track category.id) {
+                    <option [value]="category.id">
+                      {{ category.name }}
+                    </option>
+                  }
                 </select>
               </div>
 

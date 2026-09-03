@@ -5,6 +5,7 @@ import {
   FormsModule,
   Validators,
   ReactiveFormsModule,
+  FormControl,
 } from '@angular/forms';
 import { GetAllUsersUseCase } from '../../application/use-cases/get-all-users/get-all-users.use-case';
 import { User } from '../../domain/entities/users.entity';
@@ -15,30 +16,42 @@ import {
 } from '../../../../core/layouts/admin-layouts/table/table.component';
 import { RoleTypeEnum } from '../../../../core/enums/role.enum';
 import { CreateUserUseCase } from '../../application/use-cases/create-user/create-user.use-case';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroXMark } from '@ng-icons/heroicons/outline';
 import { UpdateUserUseCase } from '../../application/use-cases/update-user/update-user.use-case';
-import { FormContainerComponent } from "../../../../core/components/form-container/form-container.component";
+import { FormContainerComponent } from '../../../../core/components/form-container/form-container.component';
+import { ModalComponent } from '../../../../core/components/modal/modal.component';
+import { ButtonComponent } from '../../../../core/components/button/button.component';
+
+interface UsersForm {
+  firstName: FormControl<string>;
+  lastName: FormControl<string>;
+  email: FormControl<string>;
+  phone: FormControl<string>;
+  password: FormControl<string>;
+  role: FormControl<RoleTypeEnum>;
+}
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [FormsModule, TableComponent, ReactiveFormsModule, NgIcon, FormContainerComponent],
-  providers: [
-    provideIcons({
-      heroXMark,
-    }),
+  imports: [
+    FormsModule,
+    TableComponent,
+    ReactiveFormsModule,
+    FormContainerComponent,
+    ModalComponent,
+    ButtonComponent,
   ],
   templateUrl: './users.component.html',
 })
 export class UsersComponent implements OnInit {
-  usersform: FormGroup; //nos permite crear el formulario reactivo, en el cual pondremos y tomaremos cada uno de los campos con sus respectivas validaciones
+  usersform: FormGroup<UsersForm>;
   isSubmitted = signal<boolean>(false);
-  isLoading = signal(false);
+  isLoading = signal<boolean>(false);
   protected readonly RoleTypeEnum = RoleTypeEnum;
   users = signal<User[]>([]);
   isModalOpen = signal<boolean>(false);
   selectedUser: User | null = null;
+  selectedCategory: any;
 
   constructor(
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
@@ -47,7 +60,7 @@ export class UsersComponent implements OnInit {
     private readonly updateUserUseCase: UpdateUserUseCase,
   ) {
     // Validadores corregidos y limpios
-    this.usersform = this.fb.group({
+    this.usersform = this.fb.nonNullable.group({
       firstName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       lastName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email]],
@@ -61,7 +74,7 @@ export class UsersComponent implements OnInit {
         ],
       ],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(15)]],
-      role: ['', [Validators.required]],
+      role: [RoleTypeEnum.admin, [Validators.required]],
     });
   }
 
@@ -88,8 +101,6 @@ export class UsersComponent implements OnInit {
   loadUsers(): void {
     this.getAllUsersUseCase.execute().subscribe({
       next: (response: PaginatedResponse<User[]>) => {
-        console.log('vamos a ver que es lo que pasa', response);
-
         this.users.set(response.data);
       },
       error: (err) => {
@@ -142,14 +153,9 @@ export class UsersComponent implements OnInit {
   }
 
   saveUser() {
-    this.isSubmitted.set(true); // siempre cambiará a true en la funcion que envia los datos.
+    this.isSubmitted.set(true);
 
-    if (this.usersform.invalid) {
-      this.usersform.markAllAsTouched();
-      return;
-    }
-
-    const { firstName, lastName, email, phone, role, password } = this.usersform.value;
+    const { firstName, lastName, email, phone, role, password } = this.usersform.getRawValue();
 
     this.isLoading.set(true);
 
@@ -159,12 +165,12 @@ export class UsersComponent implements OnInit {
           firstName,
           lastName,
           email,
-          phone,
+          phone: `+57${phone}`,
           role,
           password,
         })
         .subscribe({
-          next: (response) => {
+          next: () => {
             this.isLoading.set(false);
             this.loadUsers();
             this.closeModal();

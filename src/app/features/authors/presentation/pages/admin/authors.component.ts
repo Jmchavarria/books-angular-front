@@ -7,32 +7,36 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { GetAllAuthorsUseCase } from '../../../application/use-cases/get-all-authors/get-all-authors.use-case';
+import { GetAllAuthorsUseCase } from '../../../application/use-cases/admin/get-all-authors/get-all-authors.use-case';
 import { PaginatedResponse } from '../../../../../core/types/paginated-response';
 import {
   TableAction,
   TableComponent,
 } from '../../../../../core/layouts/admin-layouts/table/table.component';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroXMark } from '@ng-icons/heroicons/outline';
+import { ButtonComponent } from '../../../../../core/components/button/button.component';
+import { ModalComponent } from '../../../../../core/components/modal/modal.component';
+import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
+import { CreateAuthorUseCase } from '../../../application/use-cases/admin/create-author/create-author.use-case';
+import { CommonModule } from '@angular/common';
 
 interface AuthorsForm {
-  firstName: FormControl<string | null>;
-  lastName: FormControl<string | null>;
-  biography: FormControl<string | null>;
-  birthdate: FormControl<Date | null>;
-  countryOfBirth: FormControl<string | null>;
-  // literaryGenre:FormControl< string | null>
-  // photoUrl:FormControl< string | null>
+  firstName: FormControl<string>;
+  lastName: FormControl<string>;
+  biography: FormControl<string>;
+  birthdate: FormControl<Date>;
+  countryOfBirth: FormControl<string>;
+  literaryGenre: FormControl<string>;
+  photoUrl: FormControl<string>;
 }
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [TableComponent, NgIcon, ReactiveFormsModule],
-  providers: [
-    provideIcons({
-      heroXMark,
-    }),
+  imports: [
+    TableComponent,
+    ReactiveFormsModule,
+    ButtonComponent,
+    ModalComponent,
+    FormContainerComponent,
   ],
   templateUrl: './authors.component.html',
 })
@@ -46,20 +50,23 @@ export class AuthorsComponent implements OnInit {
 
   constructor(
     private readonly getAllAuthorsUseCase: GetAllAuthorsUseCase,
+    private readonly createAuthorUseCase: CreateAuthorUseCase,
     private readonly fb: FormBuilder,
   ) {
-    this.authorsForm = this.fb.group({
+    this.authorsForm = this.fb.nonNullable.group({
       firstName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       lastName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       biography: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       birthdate: [
-        null as Date | null,
+        new Date(),
         [
           Validators.required,
           // dateInPastValidator(), // No permite fechas futuras
           // minimumAgeValidator(12) // Opcional: Requiere una edad mínima (ej: 12 años)
         ],
       ],
+      literaryGenre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      photoUrl: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       countryOfBirth: ['', Validators.required],
     });
   }
@@ -85,12 +92,32 @@ export class AuthorsComponent implements OnInit {
   }
   saveAuthor() {
     this.isSubmitted.set(true);
-    if (this.authorsForm.invalid) {
-      this.authorsForm.markAllAsTouched();
-      return;
+
+    const { biography, birthdate, countryOfBirth, firstName, lastName, literaryGenre, photoUrl } =
+      this.authorsForm.getRawValue();
+
+    if (this.selectedAuthor) {
+    } else {
+      this.createAuthorUseCase
+        .execute({
+          firstName,
+          lastName,
+          birthdate,
+          countryOfBirth,
+          biography,
+          literaryGenre,
+          photoUrl,
+        })
+        .subscribe({
+          next: () => {
+            this.isLoading.set(false);
+            this.loadAuthors();
+            this.isModalOpen.set(false);
+          },
+        });
     }
-    const rawValues = this.authorsForm.getRawValue();
   }
+
   editAuthor(author: Author) {
     this.selectedAuthor = author;
 
@@ -110,7 +137,7 @@ export class AuthorsComponent implements OnInit {
       firstName: '',
       lastName: '',
       biography: '',
-      birthdate: null,
+      birthdate: new Date(),
       countryOfBirth: '',
     });
 

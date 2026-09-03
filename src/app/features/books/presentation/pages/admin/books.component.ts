@@ -17,22 +17,25 @@ import {
   TableComponent,
 } from '../../../../../core/layouts/admin-layouts/table/table.component';
 import { NgIcon } from '@ng-icons/core';
-import { GetAllAuthorsUseCase } from '../../../../authors/application/use-cases/get-all-authors/get-all-authors.use-case';
+import { GetAllAuthorsUseCase } from '../../../../authors/application/use-cases/admin/get-all-authors/get-all-authors.use-case';
 import { Author } from '../../../../authors/domain/entities/author.entity';
+import { ButtonComponent } from '../../../../../core/components/button/button.component';
+import { Categories } from '../../../../categories/domain/entities/categories.entity';
+import { GetAllCategoriesUseCase } from '../../../../categories/application/admin/use-cases/get-all-categories/get-all-categories-use-case';
 
 export interface BookForm {
-  title: FormControl<string | null>;
-  pages: FormControl<number | null>;
-  publishedYear: FormControl<number | null>;
-  description: FormControl<string | null>;
+  title: FormControl<string>;
+  pages: FormControl<number>;
+  publishedYear: FormControl<number>;
+  description: FormControl<string>;
   author: FormControl<number | null>; // Permitir null inicialmente
-  category: FormControl<string | null>; // Permitir null inicialmente
+  category: FormControl<number | null>; // Permitir null inicialmente
 }
 
 @Component({
   selector: 'app-books',
   standalone: true,
-  imports: [FormsModule, TableComponent, ReactiveFormsModule, NgIcon],
+  imports: [FormsModule, TableComponent, ReactiveFormsModule, NgIcon, ButtonComponent],
   templateUrl: './books.component.html',
 })
 export class BooksComponent implements OnInit {
@@ -41,6 +44,7 @@ export class BooksComponent implements OnInit {
   isSubmitted = signal<boolean>(false);
   books = signal<Book[]>([]);
   authors = signal<Author[]>([]);
+  categories = signal<Categories[]>([]);
   isModalOpen = signal<boolean>(false);
   selectedBook: Book | null = null;
 
@@ -49,18 +53,16 @@ export class BooksComponent implements OnInit {
     private readonly getAllBooksUseCase: GetAllBooksUseCase,
     private readonly createBookUseCase: CreateBookUseCase,
     private readonly getAllAuthorsUseCase: GetAllAuthorsUseCase,
+    private readonly getAllCategoriesUseCase: GetAllCategoriesUseCase,
   ) {
     // Agregamos todos los campos de la interfaz BookForm para evitar errores de consistencia
-    this.booksForm = this.fb.group({
+    this.booksForm = this.fb.nonNullable.group({
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      publishedYear: [
-        null as number | null,
-        [Validators.required, Validators.min(1000), Validators.max(2026)],
-      ],
-      pages: [null as number | null, [Validators.required, Validators.min(1)]],
+      publishedYear: [0, [Validators.required, Validators.min(1000), Validators.max(2026)]],
+      pages: [0, [Validators.required, Validators.min(1)]],
       description: ['', [Validators.maxLength(255)]],
       author: [null as number | null, [Validators.required]],
-      category: ['', [Validators.required]],
+      category: [null as number | null, [Validators.required]],
     });
   }
 
@@ -83,12 +85,22 @@ export class BooksComponent implements OnInit {
   ngOnInit(): void {
     this.loadBooks();
     this.loadAuthors();
+    this.loadCategories();
   }
 
   loadAuthors(): void {
     this.getAllAuthorsUseCase.execute().subscribe({
       next: (response: PaginatedResponse<Author[]>) => {
         this.authors.set(response.data);
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  loadCategories(): void {
+    this.getAllCategoriesUseCase.execute().subscribe({
+      next: (response: PaginatedResponse<Categories[]>) => {
+        this.categories.set(response.data);
       },
       error: (err) => console.error(err),
     });
@@ -111,11 +123,11 @@ export class BooksComponent implements OnInit {
 
     this.booksForm.reset({
       title: '',
-      pages: null,
-      publishedYear: null,
+      pages: 0,
+      publishedYear: 0,
       description: '',
       author: null,
-      category: '',
+      category: null,
     });
 
     this.isModalOpen.set(true);
@@ -140,11 +152,6 @@ export class BooksComponent implements OnInit {
 
   saveUser() {
     this.isSubmitted.set(true);
-
-    if (this.booksForm.invalid) {
-      this.booksForm.markAllAsTouched();
-      return;
-    }
 
     // 1. Usamos getRawValue() para obtener los tipos directos sin 'undefined'
     const rawValues = this.booksForm.getRawValue();

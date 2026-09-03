@@ -11,28 +11,32 @@ import {
   TableAction,
   TableComponent,
 } from '../../../../../core/layouts/admin-layouts/table/table.component';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroXMark } from '@ng-icons/heroicons/outline';
 import { Categories } from '../../../domain/entities/categories.entity';
 import { GetAllCategoriesUseCase } from '../../../application/admin/use-cases/get-all-categories/get-all-categories-use-case';
 import { CreateCategoryUseCase } from '../../../application/admin/use-cases/create-category/create-category.use-case';
 import { UpdateCategoryUseCase } from '../../../application/admin/use-cases/update-category/update-category.use-case';
+import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
+import { ModalComponent } from '../../../../../core/components/modal/modal.component';
+import { ButtonComponent } from '../../../../../core/components/button/button.component';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [FormsModule, TableComponent, ReactiveFormsModule, NgIcon],
-  providers: [
-    provideIcons({
-      heroXMark,
-    }),
+  imports: [
+    FormsModule,
+    TableComponent,
+    ReactiveFormsModule,
+    FormContainerComponent,
+    ModalComponent,
+    ButtonComponent,
   ],
+
   templateUrl: './categories.component.html',
 })
 export class CategoriesComponent implements OnInit {
   categoriesform: FormGroup;
   isSubmitted = signal<boolean>(false);
-  isLoading = signal(false);
+  isLoading = signal<boolean>(false);
   categories = signal<Categories[]>([]);
   isModalOpen = signal<boolean>(false);
   selectedCategory: Categories | null = null;
@@ -58,7 +62,7 @@ export class CategoriesComponent implements OnInit {
     {
       key: 'edit',
       label: 'Edit',
-      icon: 'pencil-square',
+      icon: 'heroPencilSquare',
     },
   ];
 
@@ -99,23 +103,14 @@ export class CategoriesComponent implements OnInit {
     // Setea los datos en el Formulario Reactivo
     this.categoriesform.patchValue({
       name: category.name,
-      deiption: category.description,
+      description: category.description,
     });
 
     this.isModalOpen.set(true);
   }
 
-  closeModal() {
-    this.isModalOpen.set(false);
-  }
-
   saveCategory() {
     this.isSubmitted.set(true);
-
-    if (this.categoriesform.invalid) {
-      this.categoriesform.markAllAsTouched();
-      return;
-    }
 
     const { name, description } = this.categoriesform.value;
 
@@ -128,10 +123,10 @@ export class CategoriesComponent implements OnInit {
           description,
         })
         .subscribe({
-          next: (response) => {
+          next: () => {
             this.isLoading.set(false);
             this.loadCategories();
-            this.closeModal();
+            this.isModalOpen.set(false);
           },
           error: (err) => {
             this.isLoading.set(false);
@@ -149,7 +144,7 @@ export class CategoriesComponent implements OnInit {
           next: (response) => {
             this.isLoading.set(false);
             this.loadCategories();
-            this.closeModal();
+            this.isModalOpen.set(false);
           },
           error: (err) => {
             this.isLoading.set(false);

@@ -1,0 +1,28 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
+  <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+    <!-- header -->
+    <div class="flex items-start justify-between">
+      <div>
+        <h3 class="text-lg font-bold text-gray-900">
+          {{ title() }}
+        </h3>
+
+        <p class="mt-1 text-xs text-gray-500">
+          {{ description() }}
+        </p>
+      </div>
+      <div>
+        <button
+          type="button"
+          (click)="handleCancel()"
+          aria-label="Cerrar modal"
+          class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+        >
+          <ng-icon name="heroXMark" class="text-lg"></ng-icon>
+        </button>
+      </div>
+    </div>
+
+    <ng-content></ng-content>
+  </div>
+</div>

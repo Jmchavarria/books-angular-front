@@ -8,12 +8,22 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 })
 export class FormContainerComponent<T extends { [K in keyof T]: any }> {
   formGroup = input.required<FormGroup<T>>();
+  title = input<string>();
   isLoading = input<boolean>();
-  ngSubmit = output<void>();
+  onSubmit = output<void>();
   onCancel = output<void>();
 
   handleSubmit(): void {
-    this.ngSubmit.emit();
+    const form = this.formGroup();
+
+    form.updateValueAndValidity();
+
+    if (form.invalid) {
+      form.markAllAsTouched();
+      return;
+    }
+
+    this.onSubmit.emit();
   }
 
   handleCancel(): void {

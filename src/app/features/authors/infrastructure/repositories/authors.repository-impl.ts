@@ -7,12 +7,21 @@ import { Author } from '../../domain/entities/author.entity';
 import { AuhorsApiResponse, AuthorsMapper } from '../mappers/authors.mapper';
 import { ApiPaginatedResponse } from '../../../../core/types/api-envelope';
 import { environment } from '../../../../../enviroments/enviroment';
+import { CreateAuthorProps } from '../../domain/entities/authors.props';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthorsRepositoryImpl implements AuthorsRepository {
   constructor(private readonly http: HttpClient) {}
+
+  create(input: CreateAuthorProps): Observable<Author> {
+    return this.http.post<AuhorsApiResponse>(`${environment.apiUrl}/authors`, input).pipe(
+      map((response) => {
+        return AuthorsMapper.toDomain(response);
+      }),
+    );
+  }
 
   getAll(): Observable<PaginatedResponse<Author[]>> {
     return this.http

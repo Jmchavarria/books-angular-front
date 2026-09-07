@@ -37,7 +37,7 @@ export class CategoriesRepositoryImpl implements CategoriesRepository {
       .get<ApiPaginatedResponse<CategoriesApiResponse>>(`${environment.apiUrl}/categories`)
       .pipe(
         map((response) => {
-          const { data, limit, page, total, message, success } = response;
+          const { data, limit, page, total, message, success, totalPages } = response;
 
           return new PaginatedResponse(
             success,
@@ -46,6 +46,7 @@ export class CategoriesRepositoryImpl implements CategoriesRepository {
             total,
             page,
             limit,
+            totalPages,
           );
         }),
       );

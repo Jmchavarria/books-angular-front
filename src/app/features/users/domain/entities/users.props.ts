@@ -9,4 +9,9 @@ export interface CreateUserProps {
   password: string;
 }
 
+export interface GetAllUsersProps {
+  name?: string;
+  value?: unknown;
+}
+
 export type UpdateUserProps = Partial<CreateUserProps> & { id: number };

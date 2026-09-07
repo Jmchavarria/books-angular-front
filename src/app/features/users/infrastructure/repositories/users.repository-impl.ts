@@ -1,4 +1,4 @@
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable } from 'rxjs';
 import { UserAuth } from '../../../auth/domain/interfaces/user-auth';
 import { UsersRepository } from '../../domain/repositories/users.repository';
 import { User } from '../../domain/entities/users.entity';
@@ -8,7 +8,11 @@ import { environment } from '../../../../../enviroments/enviroment';
 import { UsersApiResponse, UsersMapper } from '../mapper/user.mapper';
 import { ApiPaginatedResponse } from '../../../../core/types/api-envelope';
 import { Injectable } from '@angular/core';
-import { CreateUserProps, UpdateUserProps } from '../../domain/entities/users.props';
+import {
+  CreateUserProps,
+  GetAllUsersProps,
+  UpdateUserProps,
+} from '../../domain/entities/users.props';
 
 @Injectable({
   providedIn: 'root',
@@ -39,15 +43,18 @@ export class UsersRepositoryImpl implements UsersRepository {
     );
   }
 
-  getAll(): Observable<PaginatedResponse<User[]>> {
+  getAll(filters?: GetAllUsersProps[]): Observable<PaginatedResponse<User[]>> {
+    const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
+
     return this.http
-      .get<ApiPaginatedResponse<UsersApiResponse>>(`${environment.apiUrl}/users`)
+      .get<ApiPaginatedResponse<UsersApiResponse>>(
+        `${environment.apiUrl}/users${filters ? `?${params}` : ''}`,
+      )
+
       .pipe(
         map((response) => {
-          console.log(response);
-          const { data, limit, page, total, message, success } = response;
+          const { data, limit, page, total, message, success, totalPages } = response;
 
-          console.log(data);
           return new PaginatedResponse(
             success,
             message,
@@ -55,6 +62,7 @@ export class UsersRepositoryImpl implements UsersRepository {
             total,
             page,
             limit,
+            totalPages,
           );
         }),
       );

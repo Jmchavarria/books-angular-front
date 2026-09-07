@@ -7,6 +7,7 @@ import {
   ElementRef,
   Injector,
   afterNextRender,
+  effect,
 } from '@angular/core';
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import { heroPencilSquare } from '@ng-icons/heroicons/outline';
@@ -21,6 +22,14 @@ export interface TableAction {
   key: TableKey;
   label: string;
   icon: string;
+}
+
+export interface objectData<T> {
+  data: T[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }
 
 const MENU_MARGIN = 8; // separación mínima respecto al borde del viewport
@@ -42,10 +51,24 @@ export class TableComponent<T extends object> {
   constructor(
     private elementRef: ElementRef<HTMLElement>,
     private injector: Injector,
-  ) {}
+  ) {
+    effect(() => {
+      console.log('Total Pages recibido:', this.data()?.totalPages);
+      console.log('Objeto data completo:', this.data());
+    });
+  }
 
-  data = input<T[]>([]);
+  data = input<objectData<T>>({
+    data: [],
+    page: 0,
+    limit: 0,
+    total: 0,
+    totalPages: 0,
+  });
+
   columns = input<(keyof T)[]>([]);
+  pageChange = output<{ name: string; value: unknown }[]>();
+  pageSizeOptions: number[] = [3, 5, 7];
 
   actions = input<TableAction[]>([]);
   actionClick = output<{ action: TableAction; item: T }>();
@@ -53,6 +76,24 @@ export class TableComponent<T extends object> {
   openMenuIndex = signal<number>(-1);
   menuPosition = signal<MenuPosition | null>(null);
   menuReady = signal(false); // true solo cuando ya calculamos la posición final
+
+  changePage(newPage: number): void {
+    if (newPage >= 1 && newPage <= this.data()?.totalPages) {
+      this.pageChange.emit([
+        { name: 'takeQuery', value: this.data().limit },
+        { name: 'pageQuery', value: newPage },
+      ]);
+    }
+  }
+
+  onchangeLimit(newLimit: Event) {
+    const element = newLimit.target as HTMLSelectElement;
+
+    this.pageChange.emit([
+      { name: 'takeQuery', value: Number(element.value) },
+      { name: 'pageQuery', value: 1 },
+    ]);
+  }
 
   private triggerElement: HTMLElement | null = null;
 
@@ -68,7 +109,7 @@ export class TableComponent<T extends object> {
       this.closeMenu();
     }
   }
-  
+
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.openMenuIndex() !== -1) this.closeMenu();
@@ -87,7 +128,6 @@ export class TableComponent<T extends object> {
       this.closeMenu();
       return;
     }
-    
 
     this.triggerElement = event.currentTarget as HTMLElement;
     this.menuReady.set(false);

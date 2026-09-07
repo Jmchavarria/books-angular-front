@@ -28,7 +28,7 @@ export class AuthorsRepositoryImpl implements AuthorsRepository {
       .get<ApiPaginatedResponse<AuhorsApiResponse>>(`${environment.apiUrl}/authors`)
       .pipe(
         map((response) => {
-          const { data, limit, page, total, message, success } = response;
+          const { data, limit, page, total, message, success, totalPages } = response;
 
           return new PaginatedResponse(
             success,
@@ -37,6 +37,7 @@ export class AuthorsRepositoryImpl implements AuthorsRepository {
             total,
             page,
             limit,
+            totalPages,
           );
         }),
       );

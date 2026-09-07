@@ -9,12 +9,12 @@
     <app-button typeButton="button" (onSubmit)="openModal()" label="+ Create category" />
   </div>
 
-  <app-table
+  <!-- <app-table
     [data]="categories()"
     [columns]="['id', 'name', 'description', 'status']"
     [actions]="actions"
     (actionClick)="onAction($event)"
-  ></app-table>
+  ></app-table> -->
 
   @if (isModalOpen()) {
     <app-modal

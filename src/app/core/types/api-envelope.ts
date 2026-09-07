@@ -13,4 +13,5 @@ export interface ApiPaginatedResponse<T> {
   total: number;
   page: number;
   limit: number;
+  totalPages: number;
 }

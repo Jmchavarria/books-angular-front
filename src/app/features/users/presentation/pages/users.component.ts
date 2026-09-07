@@ -11,6 +11,7 @@ import { GetAllUsersUseCase } from '../../application/use-cases/get-all-users/ge
 import { User } from '../../domain/entities/users.entity';
 import { PaginatedResponse } from '../../../../core/types/paginated-response';
 import {
+  objectData,
   TableAction,
   TableComponent,
 } from '../../../../core/layouts/admin-layouts/table/table.component';
@@ -20,6 +21,9 @@ import { UpdateUserUseCase } from '../../application/use-cases/update-user/updat
 import { FormContainerComponent } from '../../../../core/components/form-container/form-container.component';
 import { ModalComponent } from '../../../../core/components/modal/modal.component';
 import { ButtonComponent } from '../../../../core/components/button/button.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroEyeSlashSolid, heroEyeSolid } from '@ng-icons/heroicons/solid';
+import { GetAllUsersDto } from '../../application/use-cases/get-all-users/get-all-users.dto';
 
 interface UsersForm {
   firstName: FormControl<string>;
@@ -33,6 +37,12 @@ interface UsersForm {
 @Component({
   selector: 'app-users',
   standalone: true,
+  providers: [
+    provideIcons({
+      heroEyeSlashSolid,
+      heroEyeSolid,
+    }),
+  ],
   imports: [
     FormsModule,
     TableComponent,
@@ -40,6 +50,7 @@ interface UsersForm {
     FormContainerComponent,
     ModalComponent,
     ButtonComponent,
+    NgIcon,
   ],
   templateUrl: './users.component.html',
 })
@@ -48,10 +59,18 @@ export class UsersComponent implements OnInit {
   isSubmitted = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   protected readonly RoleTypeEnum = RoleTypeEnum;
-  users = signal<User[]>([]);
+  users = signal<objectData<User>>({
+    data: [],
+    limit: 0,
+    page: 0,
+    total: 0,
+    totalPages: 0,
+  });
+
   isModalOpen = signal<boolean>(false);
   selectedUser: User | null = null;
   selectedCategory: any;
+  showPassword = false;
 
   constructor(
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
@@ -98,10 +117,16 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  loadUsers(): void {
-    this.getAllUsersUseCase.execute().subscribe({
+  loadUsers(filters?: GetAllUsersDto[]): void {
+    this.getAllUsersUseCase.execute(filters).subscribe({
       next: (response: PaginatedResponse<User[]>) => {
-        this.users.set(response.data);
+        this.users.set({
+          data: response.data,
+          limit: response.limit,
+          page: response.page,
+          total: response.total,
+          totalPages: response.totalPages,
+        });
       },
       error: (err) => {
         console.error(err);
@@ -191,7 +216,7 @@ export class UsersComponent implements OnInit {
           role,
         })
         .subscribe({
-          next: (response) => {
+          next: () => {
             this.isLoading.set(false);
             this.loadUsers();
             this.closeModal();

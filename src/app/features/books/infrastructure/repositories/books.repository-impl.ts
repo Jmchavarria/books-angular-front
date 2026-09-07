@@ -31,9 +31,7 @@ export class BooksRepositoryImpl implements BooksRepository {
 
     return this.http.get<ApiPaginatedResponse<BookApiResponse>>(`${environment.apiUrl}/books`).pipe(
       map((response) => {
-        const { data, total, page, limit, message, success } = response;
-
-        console.log('vamos a ver', data);
+        const { data, total, page, limit, message, success, totalPages } = response;
 
         return new PaginatedResponse(
           success,
@@ -42,6 +40,7 @@ export class BooksRepositoryImpl implements BooksRepository {
           total,
           page,
           limit,
+          totalPages,
         );
       }),
     );

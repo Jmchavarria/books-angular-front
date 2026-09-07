@@ -1,124 +1,179 @@
-<div
-  class="w-full rounded-2xl border border-gray-200 bg-white shadow-sm overflow-x-auto"
-  (scroll)="closeMenu()"
->
-  <table class="w-full text-left text-sm text-gray-600 border-collapse">
-    <thead
-      class="border-b border-gray-100 bg-gray-50 text-xs font-semibold uppercase text-gray-500"
+<div class="w-full rounded-2xl bg-white shadow-sm overflow-hidden border border-gray-200">
+  <div class="w-full overflow-x-auto" (scroll)="closeMenu()">
+    <table
+      class="w-full min-w-full text-left text-sm text-gray-600 border-collapse border-b border-gray-200"
     >
-      <tr>
-        @for (col of columns(); track col) {
-          <th class="px-6 py-4">{{ formatHeader(col) }}</th>
-        }
-        <th class="px-6 py-4 text-right">Acciones</th>
-      </tr>
-    </thead>
-
-    <tbody class="divide-y divide-gray-100">
-      @for (item of data(); track $index) {
-        <tr class="hover:bg-gray-50 transition-colors">
+      <thead
+        class="border-b border-gray-200 bg-gray-50 text-xs font-semibold uppercase text-gray-500"
+      >
+        <tr>
           @for (col of columns(); track col) {
-            <td class="px-6 py-4 whitespace-nowrap">
-              @if (col === 'status') {
-                <span
-                  class="rounded-full px-2.5 py-1 text-xs font-medium uppercase"
-                  [class]="
-                    getCellValue(item, col).toLowerCase() === 'active'
-                      ? 'bg-emerald-50 text-emerald-600'
-                      : 'bg-gray-100 text-gray-500'
-                  "
+            <th class="px-6 py-4">{{ formatHeader(col) }}</th>
+          }
+          <th class="px-6 py-4 text-right">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+        @for (item of data().data; track $index) {
+          <tr class="hover:bg-gray-50 transition-colors">
+            @for (col of columns(); track col) {
+              <td class="px-6 py-4 whitespace-nowrap">
+                @if (col === 'status') {
+                  <span
+                    class="rounded-full px-2.5 py-1 text-xs font-medium uppercase"
+                    [class]="
+                      getCellValue(item, col).toLowerCase() === 'active'
+                        ? 'bg-emerald-50 text-emerald-600'
+                        : 'bg-gray-100 text-gray-500'
+                    "
+                  >
+                    {{ getCellValue(item, col) }}
+                  </span>
+                } @else if (col === 'role') {
+                  <span
+                    class="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 uppercase"
+                  >
+                    {{ getCellValue(item, col) }}
+                  </span>
+                } @else {
+                  <span class="text-gray-900 font-medium">{{ getCellValue(item, col) }}</span>
+                }
+              </td>
+            }
+
+            <td class="px-6 py-4 text-right align-middle relative">
+              <button
+                [attr.id]="'menu-trigger-' + $index"
+                [attr.aria-expanded]="openMenuIndex() === $index"
+                [attr.aria-controls]="'menu-' + $index"
+                aria-haspopup="true"
+                (click)="toggleMenu($index, $event)"
+                class="inline-flex items-center justify-center p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
+                  <path
+                    d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"
+                  />
+                </svg>
+              </button>
+
+              @if (openMenuIndex() === $index) {
+                <div
+                  data-open-menu
+                  [attr.id]="'menu-' + $index"
+                  role="menu"
+                  [attr.aria-labelledby]="'menu-trigger-' + $index"
+                  (keydown)="onMenuKeydown($event)"
+                  class="fixed z-50 w-40 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg ring-1 ring-black/5 transition-opacity duration-100"
+                  [class.invisible]="!menuReady()"
+                  [class.opacity-0]="!menuReady()"
+                  [style.top.px]="menuPosition()?.top"
+                  [style.left.px]="menuPosition()?.left"
                 >
-                  {{ getCellValue(item, col) }}
-                </span>
-              } @else if (col === 'role') {
-                <span
-                  class="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 uppercase"
-                >
-                  {{ getCellValue(item, col) }}
-                </span>
-              } @else {
-                <span class="text-gray-900 font-medium">{{ getCellValue(item, col) }}</span>
+                  @for (action of actions(); track action.key) {
+                    <button
+                      role="menuitem"
+                      tabindex="-1"
+                      (click)="actionClick.emit({ action, item }); closeMenu()"
+                      class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 rounded-lg transition-colors outline-none"
+                    >
+                      {{ action.label }}
+                      <ng-icon [name]="action.icon" />
+                    </button>
+
+                    @if (getCellValue(item, 'status').toLowerCase() === 'active') {
+                      <button
+                        role="menuitem"
+                        tabindex="-1"
+                        (click)="actionClick.emit({ action, item }); closeMenu()"
+                        class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-red-600 hover:bg-red-50 focus-visible:bg-red-50 rounded-lg transition-colors outline-none"
+                      >
+                        Inactivar
+                      </button>
+                    } @else {
+                      <button
+                        role="menuitem"
+                        tabindex="-1"
+                        (click)="actionClick.emit({ action, item }); closeMenu()"
+                        class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-emerald-600 hover:bg-emerald-50 focus-visible:bg-emerald-50 rounded-lg transition-colors outline-none"
+                      >
+                        Activar
+                      </button>
+                    }
+                  }
+                </div>
               }
             </td>
-          }
-
-          <td class="px-6 py-4 text-right align-middle relative">
-            <button
-              [attr.id]="'menu-trigger-' + $index"
-              [attr.aria-expanded]="openMenuIndex() === $index"
-              [attr.aria-controls]="'menu-' + $index"
-              aria-haspopup="true"
-              (click)="toggleMenu($index, $event)"
-              class="inline-flex items-center justify-center p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          </tr>
+        } @empty {
+          <tr>
+            <td
+              [attr.colspan]="columns().length + 1"
+              class="px-6 py-8 text-center text-xs text-gray-400"
             >
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
-                <path
-                  d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"
-                />
-              </svg>
-            </button>
+              No hay registros para mostrar.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 
-            @if (openMenuIndex() === $index) {
-              <div
-                data-open-menu
-                [attr.id]="'menu-' + $index"
-                role="menu"
-                [attr.aria-labelledby]="'menu-trigger-' + $index"
-                (keydown)="onMenuKeydown($event)"
-                class="fixed z-50 w-40 rounded-xl border border-gray-100 bg-white p-1.5 shadow-lg ring-1 ring-black/5 transition-opacity duration-100"
-                [class.invisible]="!menuReady()"
-                [class.opacity-0]="!menuReady()"
-                [style.top.px]="menuPosition()?.top"
-                [style.left.px]="menuPosition()?.left"
-              >
-                @for (action of actions(); track action.key) {
-                  <button
-                    role="menuitem"
-                    tabindex="-1"
-                    (click)="actionClick.emit({ action, item }); closeMenu()"
-                    class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 rounded-lg transition-colors outline-none"
-                  >
-                    {{ action.label }}
-                    <ng-icon [name]="action.icon" />
-                  </button>
+  <!-- Paginación Fuera del Scroll con Selector "Showing [X] Out of Y" -->
+  <div
+    class="w-full border-t border-gray-200 px-6 py-4 bg-white text-left text-sm text-gray-600 flex items-center justify-between flex-wrap gap-4"
+  >
+    <!-- Controles de límite e información del total a la izquierda -->
+    <div class="flex items-center gap-2 text-gray-500 font-medium text-xs sm:text-sm">
+      <span>Showing</span>
+      <div class="relative inline-block">
+        <select
+          [value]="data().limit"
+          (change)="onchangeLimit($event)"
+          class="appearance-none cursor-pointer bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-1.5 font-semibold text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-xs sm:text-sm shadow-sm"
+        >
+          @for (option of pageSizeOptions; track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+        <div
+          class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
+        >
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </div>
+      <span
+        >Out of <strong class="text-gray-800 font-semibold">{{ data().total }}</strong></span
+      >
+    </div>
 
-                  <!-- Luego cambiar las condiciones dependiendo del valor de action 
-                  si la accion es inactive, pintarlo de otra forma 
-                  -->
-                  @if (getCellValue(item, 'status').toLowerCase() === 'active') {
-                    <button
-                      role="menuitem"
-                      tabindex="-1"
-                      (click)="actionClick.emit({ action, item }); closeMenu()"
-                      class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-red-600 hover:bg-red-50 focus-visible:bg-red-50 rounded-lg transition-colors outline-none"
-                    >
-                      Inactivar
-                    </button>
-                  } @else {
-                    <button
-                      role="menuitem"
-                      tabindex="-1"
-                      (click)="actionClick.emit({ action, item }); closeMenu()"
-                      class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-emerald-600 hover:bg-emerald-50 focus-visible:bg-emerald-50 rounded-lg transition-colors outline-none"
-                    >
-                      Activar
-                    </button>
-                  }
-                }
-              </div>
-            }
-          </td>
-        </tr>
-      } @empty {
-        <tr>
-          <td
-            [attr.colspan]="columns().length + 1"
-            class="px-6 py-8 text-center text-xs text-gray-400"
-          >
-            No hay registros para mostrar.
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+    <!-- Navegación de páginas a la derecha -->
+    <div class="flex gap-2 items-center">
+      <span class="text-xs text-gray-400 font-medium mr-2">
+        Page {{ data().page }} of {{ data().totalPages || 1 }}
+      </span>
+      <button
+        [disabled]="data().page === 1"
+        (click)="changePage(data().page - 1)"
+        class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm cursor-pointer"
+      >
+        Previous
+      </button>
+      <button
+        [disabled]="data().page === data().totalPages || data().totalPages === 0"
+        (click)="changePage(data().page + 1)"
+        class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm cursor-pointer"
+      >
+        Next
+      </button>
+    </div>
+  </div>
 </div>

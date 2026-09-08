@@ -1,17 +1,14 @@
 // infrastructure/repositories/books-http.repository.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import {
-  BooksRepository,
-  CreateBookProps,
-  GetAllBooksProps,
-} from '../../domain/repositories/books.repository';
+import { BooksRepository, CreateBookProps } from '../../domain/repositories/books.repository';
 import { Book } from '../../domain/entities/book.entity';
 import { BookApiResponse, BookMapper } from '../mapper/book.mapper';
 import { environment } from '../../../../../enviroments/enviroment';
 import { PaginatedResponse } from '../../../../core/types/paginated-response';
 import { ApiPaginatedResponse, ApiSingleResponse } from '../../../../core/types/api-envelope';
+import { FiltersDto } from '../../../../core/interfaces/filters.interface';
 
 @Injectable()
 export class BooksRepositoryImpl implements BooksRepository {
@@ -25,25 +22,28 @@ export class BooksRepositoryImpl implements BooksRepository {
     );
   }
 
-  getAll(input: GetAllBooksProps): Observable<PaginatedResponse<Book[]>> {
-    let params = new HttpParams();
-    if (input.title) params = params.set('title', input.title);
+  getAll(filters?: FiltersDto[]): Observable<PaginatedResponse<Book[]>> {
+    const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
 
-    return this.http.get<ApiPaginatedResponse<BookApiResponse>>(`${environment.apiUrl}/books`).pipe(
-      map((response) => {
-        const { data, total, page, limit, message, success, totalPages } = response;
+    return this.http
+      .get<
+        ApiPaginatedResponse<BookApiResponse>
+      >(`${environment.apiUrl}/books${filters ? `?${params}` : ''}`)
+      .pipe(
+        map((response) => {
+          const { data, total, page, limit, message, success, totalPages } = response;
 
-        return new PaginatedResponse(
-          success,
-          message,
-          data.map((entity) => BookMapper.toDomain(entity)),
-          total,
-          page,
-          limit,
-          totalPages,
-        );
-      }),
-    );
+          return new PaginatedResponse(
+            success,
+            message,
+            data.map((entity) => BookMapper.toDomain(entity)),
+            total,
+            page,
+            limit,
+            totalPages,
+          );
+        }),
+      );
   }
 
   getById(id: number): Observable<Book> {

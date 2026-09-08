@@ -10,7 +10,8 @@
           @for (col of columns(); track col) {
             <th class="px-6 py-4">{{ formatHeader(col) }}</th>
           }
-          <th class="px-6 py-4 text-right">Acciones</th>
+
+          <th class="px-6 py-4 text-right">Actions</th>
         </tr>
       </thead>
 
@@ -37,7 +38,9 @@
                     {{ getCellValue(item, col) }}
                   </span>
                 } @else {
-                  <span class="text-gray-900 font-medium">{{ getCellValue(item, col) }}</span>
+                  <span class="text-gray-900 font-medium">
+                    {{ getCellValue(item, col) }}
+                  </span>
                 }
               </td>
             }
@@ -89,7 +92,7 @@
                         (click)="actionClick.emit({ action, item }); closeMenu()"
                         class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-red-600 hover:bg-red-50 focus-visible:bg-red-50 rounded-lg transition-colors outline-none"
                       >
-                        Inactivar
+                        Deactivate
                       </button>
                     } @else {
                       <button
@@ -98,7 +101,7 @@
                         (click)="actionClick.emit({ action, item }); closeMenu()"
                         class="flex w-full items-center px-3 py-2 text-left text-xs font-semibold text-emerald-600 hover:bg-emerald-50 focus-visible:bg-emerald-50 rounded-lg transition-colors outline-none"
                       >
-                        Activar
+                        Activate
                       </button>
                     }
                   }
@@ -112,7 +115,7 @@
               [attr.colspan]="columns().length + 1"
               class="px-6 py-8 text-center text-xs text-gray-400"
             >
-              No hay registros para mostrar.
+              No records to display.
             </td>
           </tr>
         }
@@ -120,13 +123,14 @@
     </table>
   </div>
 
-  <!-- Paginación Fuera del Scroll con Selector "Showing [X] Out of Y" -->
+  <!-- Pagination outside the scroll area -->
   <div
     class="w-full border-t border-gray-200 px-6 py-4 bg-white text-left text-sm text-gray-600 flex items-center justify-between flex-wrap gap-4"
   >
-    <!-- Controles de límite e información del total a la izquierda -->
+    <!-- Limit controls and total information on the left -->
     <div class="flex items-center gap-2 text-gray-500 font-medium text-xs sm:text-sm">
       <span>Showing</span>
+
       <div class="relative inline-block">
         <select
           [value]="data().limit"
@@ -137,6 +141,7 @@
             <option [value]="option">{{ option }}</option>
           }
         </select>
+
         <div
           class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
         >
@@ -150,16 +155,21 @@
           </svg>
         </div>
       </div>
-      <span
-        >Out of <strong class="text-gray-800 font-semibold">{{ data().total }}</strong></span
-      >
+
+      <span>
+        Out of
+        <strong class="text-gray-800 font-semibold">
+          {{ data().total }}
+        </strong>
+      </span>
     </div>
 
-    <!-- Navegación de páginas a la derecha -->
+    <!-- Page navigation on the right -->
     <div class="flex gap-2 items-center">
       <span class="text-xs text-gray-400 font-medium mr-2">
         Page {{ data().page }} of {{ data().totalPages || 1 }}
       </span>
+
       <button
         [disabled]="data().page === 1"
         (click)="changePage(data().page - 1)"
@@ -167,6 +177,7 @@
       >
         Previous
       </button>
+
       <button
         [disabled]="data().page === data().totalPages || data().totalPages === 0"
         (click)="changePage(data().page + 1)"

@@ -8,6 +8,7 @@ import { CategoriesApiResponse, CategoriesMapper } from '../mappers/categories.m
 import { ApiPaginatedResponse, ApiSingleResponse } from '../../../../core/types/api-envelope';
 import { Injectable } from '@angular/core';
 import { CreateCategoryProps, UpdateCategoryProps } from '../../domain/entities/categories.props';
+import { FiltersDto } from '../../../../core/interfaces/filters.interface';
 
 @Injectable()
 export class CategoriesRepositoryImpl implements CategoriesRepository {
@@ -32,9 +33,13 @@ export class CategoriesRepositoryImpl implements CategoriesRepository {
     );
   }
 
-  getAll(): Observable<PaginatedResponse<Categories[]>> {
+  getAll(filters: FiltersDto[]): Observable<PaginatedResponse<Categories[]>> {
+    const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
+
     return this.http
-      .get<ApiPaginatedResponse<CategoriesApiResponse>>(`${environment.apiUrl}/categories`)
+      .get<
+        ApiPaginatedResponse<CategoriesApiResponse>
+      >(`${environment.apiUrl}/categories${filters ? `?${params}` : ''}`)
       .pipe(
         map((response) => {
           const { data, limit, page, total, message, success, totalPages } = response;

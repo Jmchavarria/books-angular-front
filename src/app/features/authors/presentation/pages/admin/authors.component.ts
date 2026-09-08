@@ -10,6 +10,7 @@ import {
 import { GetAllAuthorsUseCase } from '../../../application/use-cases/admin/get-all-authors/get-all-authors.use-case';
 import { PaginatedResponse } from '../../../../../core/types/paginated-response';
 import {
+  objectData,
   TableAction,
   TableComponent,
 } from '../../../../../core/layouts/admin-layouts/table/table.component';
@@ -17,7 +18,7 @@ import { ButtonComponent } from '../../../../../core/components/button/button.co
 import { ModalComponent } from '../../../../../core/components/modal/modal.component';
 import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
 import { CreateAuthorUseCase } from '../../../application/use-cases/admin/create-author/create-author.use-case';
-import { CommonModule } from '@angular/common';
+import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
 
 interface AuthorsForm {
   firstName: FormControl<string>;
@@ -44,7 +45,13 @@ export class AuthorsComponent implements OnInit {
   authorsForm: FormGroup<AuthorsForm>;
   isSubmitted = signal<boolean>(false);
   isLoading = signal<boolean>(false);
-  authors = signal<Author[]>([]);
+  authors = signal<objectData<Author>>({
+    data: [],
+    limit: 0,
+    page: 0,
+    total: 0,
+    totalPages: 0,
+  });
   isModalOpen = signal<boolean>(false);
   selectedAuthor: Author | null = null;
 
@@ -147,10 +154,10 @@ export class AuthorsComponent implements OnInit {
     this.isModalOpen.set(false);
   }
 
-  loadAuthors(): void {
-    this.getAllAuthorsUseCase.execute().subscribe({
+  loadAuthors(filters?: FiltersDto[]): void {
+    this.getAllAuthorsUseCase.execute(filters).subscribe({
       next: (response: PaginatedResponse<Author[]>) => {
-        this.authors.set(response.data);
+        this.authors.set(response);
       },
       error: (err) => console.error(err),
     });

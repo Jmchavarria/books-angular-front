@@ -6,15 +6,19 @@
       <p class="text-xs text-gray-500">Manage categories for all books.</p>
     </div>
 
-    <app-button typeButton="button" (onSubmit)="openModal()" label="+ Create category" />
+    <div class="flex gap-2 items-center">
+      <app-search-bar (searchValue)="loadCategories($event)" />
+      <app-button typeButton="button" (onSubmit)="openModal()" label="+ Create category" />
+    </div>
   </div>
 
-  <!-- <app-table
+  <app-table
     [data]="categories()"
     [columns]="['id', 'name', 'description', 'status']"
     [actions]="actions"
     (actionClick)="onAction($event)"
-  ></app-table> -->
+    (pageChange)="loadCategories($event)"
+  ></app-table>
 
   @if (isModalOpen()) {
     <app-modal

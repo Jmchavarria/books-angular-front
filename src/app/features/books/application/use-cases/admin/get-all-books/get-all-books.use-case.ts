@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BooksRepository } from '../../../../domain/repositories/books.repository';
-import { Observable } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 import { PaginatedResponse } from '../../../../../../core/types/paginated-response';
 import { Book } from '../../../../domain/entities/book.entity';
 import { GetAllBooksDto } from './get-all-books.dto';
+import { FiltersDto } from '../../../../../../core/interfaces/filters.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ import { GetAllBooksDto } from './get-all-books.dto';
 export class GetAllBooksUseCase {
   constructor(private readonly repository: BooksRepository) {}
 
-  execute(input: GetAllBooksDto): Observable<PaginatedResponse<Book[]>> {
-    return this.repository.getAll(input);
+  execute(filters?: FiltersDto[]): Observable<PaginatedResponse<Book[]>> {
+    return this.repository.getAll(filters);
   }
 }

@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { PaginatedResponse } from '../../../../../core/types/paginated-response';
 import {
+  objectData,
   TableAction,
   TableComponent,
 } from '../../../../../core/layouts/admin-layouts/table/table.component';
@@ -18,6 +19,8 @@ import { UpdateCategoryUseCase } from '../../../application/admin/use-cases/upda
 import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
 import { ModalComponent } from '../../../../../core/components/modal/modal.component';
 import { ButtonComponent } from '../../../../../core/components/button/button.component';
+import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
+import { SearchBarComponent } from "../../../../../shared/components/search-bar/search-bar.component";
 
 @Component({
   selector: 'app-users',
@@ -29,15 +32,24 @@ import { ButtonComponent } from '../../../../../core/components/button/button.co
     FormContainerComponent,
     ModalComponent,
     ButtonComponent,
-  ],
+    SearchBarComponent
+],
 
   templateUrl: './categories.component.html',
 })
 export class CategoriesComponent implements OnInit {
+[x: string]: any;
   categoriesform: FormGroup;
   isSubmitted = signal<boolean>(false);
   isLoading = signal<boolean>(false);
-  categories = signal<Categories[]>([]);
+  categories = signal<objectData<Categories>>({
+    data: [],
+    limit: 0,
+    page: 0,
+    total: 0,
+    totalPages: 0,
+  });
+
   isModalOpen = signal<boolean>(false);
   selectedCategory: Categories | null = null;
 
@@ -74,10 +86,10 @@ export class CategoriesComponent implements OnInit {
     }
   }
 
-  loadCategories(): void {
-    this.getAllCategoriesUseCase.execute().subscribe({
+  loadCategories(filters?: FiltersDto[]): void {
+    this.getAllCategoriesUseCase.execute(filters).subscribe({
       next: (response: PaginatedResponse<Categories[]>) => {
-        this.categories.set(response.data);
+        this.categories.set(response);
       },
       error: (err) => {
         console.error(err);

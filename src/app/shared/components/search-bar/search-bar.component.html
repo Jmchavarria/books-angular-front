@@ -1,24 +1,30 @@
 <div
-  class="flex h-10 items-center rounded-full border border-gray-300 bg-white transition-all duration-300 ease-in-out focus-within:border-gray-500 focus-within:ring-2 focus-within:ring-gray-100"
-  [class.w-10]="!isSearchOpen"
-  [class.w-full]="isSearchOpen"
-  [class.max-w-md]="isSearchOpen"
-  (click)="openSearch()"
+  class="relative flex h-10 w-full max-w-md items-center rounded-xl bg-gray-50/50 border border-gray-200 px-3 transition-all duration-200 ease-out hover:bg-white hover:border-gray-300 focus-within:bg-white focus-within:border-gray-400 focus-within:ring-4 focus-within:ring-gray-100 shadow-sm"
 >
-  <button
-    type="button"
-    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-    (click)="openSearch()"
-  >
-    <ng-icon name="heroMagnifyingGlassSolid" color="#969696" class="text-xl"></ng-icon>
-  </button>
+  <!-- Icono de lupa estético a la izquierda -->
+  <ng-icon
+    name="heroMagnifyingGlassSolid"
+    class="mr-2.5 text-gray-400 text-base shrink-0 transition-colors duration-200 parent-focus-within:text-gray-500"
+  ></ng-icon>
 
   <input
+    [formControl]="searchControl"
     #searchInput
     type="text"
     placeholder="Search..."
-    class="w-full min-w-0 bg-transparent pr-4 text-sm text-gray-700 placeholder:text-gray-400 outline-none"
-    [class.hidden]="!isSearchOpen"
+    class="w-full min-w-0 bg-transparent pr-7 text-sm font-medium text-gray-800 placeholder:text-gray-400 outline-none antialiased"
     (click)="$event.stopPropagation()"
   />
+
+  @if (searchControl.value) {
+    <!-- Botón absoluto a la derecha para que no rompa el flujo y con diseño minimalista -->
+    <button
+      (click)="clearSearch()"
+      type="button"
+      class="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 active:scale-95 transition-all duration-150"
+      aria-label="Clear search"
+    >
+      <ng-icon name="heroXMarkSolid" class="text-sm font-bold"></ng-icon>
+    </button>
+  }
 </div>

@@ -2,9 +2,10 @@ import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../../../../core/types/paginated-response';
 import { Categories } from '../entities/categories.entity';
 import { CreateCategoryProps, UpdateCategoryProps } from '../entities/categories.props';
+import { FiltersDto } from '../../../../core/interfaces/filters.interface';
 
 export abstract class CategoriesRepository {
-  abstract getAll(): Observable<PaginatedResponse<Categories[]>>;
+  abstract getAll(filters?: FiltersDto[]): Observable<PaginatedResponse<Categories[]>>;
   abstract create(input: CreateCategoryProps): Observable<Categories>;
   abstract update(input: UpdateCategoryProps): Observable<Categories>;
 }

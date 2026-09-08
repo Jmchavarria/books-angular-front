@@ -1,7 +1,9 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, ElementRef, output, Signal, ViewChild } from '@angular/core';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import { heroMagnifyingGlassSolid, heroXMarkSolid } from '@ng-icons/heroicons/solid';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 @Component({
   selector: 'app-search-bar',
@@ -13,28 +15,22 @@ import { heroMagnifyingGlassSolid, heroXMarkSolid } from '@ng-icons/heroicons/so
   ],
   standalone: true,
   templateUrl: './search-bar.component.html',
-  imports: [NgIcon, FormsModule],
+  imports: [NgIcon, ReactiveFormsModule],
 })
 export class SearchBarComponent {
-  isSearchOpen = false;
-  searchTerm = '';
-
   @ViewChild('searchInput')
   searchInput!: ElementRef<HTMLInputElement>;
+  searchControl = new FormControl('');
 
-  openSearch(): void {
-    this.isSearchOpen = true;
-
-    setTimeout(() => {
-      this.searchInput?.nativeElement.focus();
-    });
-  }
-
-  clearSearch(event: Event): void {
-    event.stopPropagation();
-
-    this.searchTerm = '';
-
-    this.searchInput?.nativeElement.focus();
+  searchValue = outputFromObservable(
+    this.searchControl.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      map((text) => (text ? [{ name: 'search', value: text }] : undefined)),
+    ),
+  );
+  clearSearch() {
+    this.searchControl.setValue('');
+    this.searchInput.nativeElement.focus();
   }
 }

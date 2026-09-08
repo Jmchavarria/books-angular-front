@@ -1,12 +1,15 @@
 <div class="space-y-5">
   <div class="flex items-center justify-between">
     <div>
-      <h2 class="text-xl font-bold text-gray-900">Gestión de Usuarios</h2>
+      <h2 class="text-xl font-bold text-gray-900">User Management</h2>
 
-      <p class="text-xs text-gray-500">Administra los accesos y roles de la plataforma.</p>
+      <p class="text-xs text-gray-500">Manage platform access and roles.</p>
     </div>
 
-    <app-button typeButton="button" (onSubmit)="openModal()" label="+ Create user" />
+    <div class="flex gap-2 items-center">
+      <app-search-bar (searchValue)="loadUsers($event)" />
+      <app-button typeButton="button" (onSubmit)="openModal()" label="+ Create user" />
+    </div>
   </div>
 
   <app-table
@@ -55,15 +58,15 @@
             @if (firstName?.invalid && (firstName?.touched || isSubmitted())) {
               <span class="text-[11px] text-red-500">
                 @if (firstName?.errors?.['required']) {
-                  El nombre es obligatorio.
+                  First name is required.
                 }
 
                 @if (firstName?.errors?.['minlength']) {
-                  Mínimo 3 caracteres.
+                  Minimum 3 characters.
                 }
 
                 @if (firstName?.errors?.['maxlength']) {
-                  Máximo 50 caracteres.
+                  Maximum 50 characters.
                 }
               </span>
             }
@@ -71,6 +74,7 @@
         </div>
 
         @let lastName = usersform.get('lastName');
+
         <div class="flex flex-col gap-1">
           <label for="lastName" class="text-xs font-semibold text-gray-800"> Last Name </label>
 
@@ -91,15 +95,15 @@
             @if (lastName?.invalid && (lastName?.touched || isSubmitted())) {
               <span class="text-[11px] text-red-500">
                 @if (usersform.get('lastName')?.errors?.['required']) {
-                  El apellido es obligatorio.
+                  Last name is required.
                 }
 
                 @if (lastName?.errors?.['minlength']) {
-                  Mínimo 3 caracteres.
+                  Minimum 3 characters.
                 }
 
                 @if (lastName?.errors?.['maxlength']) {
-                  Máximo 50 caracteres.
+                  Maximum 50 characters.
                 }
               </span>
             }
@@ -107,6 +111,7 @@
         </div>
 
         @let email = usersform.get('email');
+
         <div class="flex flex-col gap-1">
           <label for="email" class="text-xs font-semibold text-gray-800"> Email </label>
 
@@ -127,11 +132,11 @@
             @if (email?.invalid && (email?.touched || isSubmitted())) {
               <span class="text-[11px] text-red-500">
                 @if (email?.errors?.['required']) {
-                  El email es obligatorio.
+                  Email is required.
                 }
 
                 @if (email?.errors?.['email']) {
-                  Ingresa un correo válido.
+                  Enter a valid email address.
                 }
               </span>
             }
@@ -140,8 +145,9 @@
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           @let phone = usersform.get('phone');
+
           <div class="flex flex-col gap-1">
-            <label for="phone" class="text-xs font-semibold text-gray-800"> Teléfono </label>
+            <label for="phone" class="text-xs font-semibold text-gray-800"> Phone </label>
 
             <div
               class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
@@ -160,13 +166,13 @@
               @if (phone?.invalid && (phone?.touched || isSubmitted())) {
                 <span class="text-[11px] text-red-500">
                   @if (phone?.errors?.['required']) {
-                    El teléfono es obligatorio.
+                    Phone number is required.
                   } @else if (phone?.errors?.['pattern']) {
-                    Ingresa un teléfono válido.
+                    Enter a valid phone number.
                   } @else if (phone?.errors?.['minlength']) {
-                    Mínimo 10 caracteres.
+                    Minimum 10 characters.
                   } @else if (phone?.errors?.['maxlength']) {
-                    Máximo 10 caracteres.
+                    Maximum 10 characters.
                   }
                 </span>
               }
@@ -174,6 +180,7 @@
           </div>
 
           @let role = usersform.get('role');
+
           <div class="flex flex-col gap-1">
             <label for="role" class="text-xs font-semibold text-gray-800"> Role </label>
 
@@ -195,7 +202,7 @@
               @if (role?.invalid && (role?.touched || isSubmitted())) {
                 <span class="text-[11px] text-red-500">
                   @if (role?.errors?.['required']) {
-                    El rol es obligatorio.
+                    Role is required.
                   }
                 </span>
               }
@@ -204,9 +211,10 @@
         </div>
 
         @let password = usersform.get('password');
+
         @if (!selectedUser) {
           <div class="flex flex-col gap-1">
-            <label for="password" class="text-xs font-semibold text-gray-800"> Contraseña </label>
+            <label for="password" class="text-xs font-semibold text-gray-800"> Password </label>
 
             <div
               class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
@@ -219,6 +227,7 @@
                 class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
                 placeholder="••••••••"
               />
+
               <button
                 type="button"
                 (click)="showPassword = !showPassword"
@@ -232,15 +241,15 @@
               @if (password?.invalid && (password?.touched || isSubmitted())) {
                 <span class="text-[11px] text-red-500">
                   @if (password?.errors?.['required']) {
-                    La contraseña es obligatoria.
+                    Password is required.
                   }
 
                   @if (password?.errors?.['minlength']) {
-                    Mínimo 6 caracteres.
+                    Minimum 6 characters.
                   }
 
                   @if (password?.errors?.['maxlength']) {
-                    Máximo 15 caracteres.
+                    Maximum 15 characters.
                   }
                 </span>
               }

@@ -24,6 +24,7 @@ import { ButtonComponent } from '../../../../core/components/button/button.compo
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroEyeSlashSolid, heroEyeSolid } from '@ng-icons/heroicons/solid';
 import { GetAllUsersDto } from '../../application/use-cases/get-all-users/get-all-users.dto';
+import { SearchBarComponent } from '../../../../shared/components/search-bar/search-bar.component';
 
 interface UsersForm {
   firstName: FormControl<string>;
@@ -51,6 +52,7 @@ interface UsersForm {
     ModalComponent,
     ButtonComponent,
     NgIcon,
+    SearchBarComponent,
   ],
   templateUrl: './users.component.html',
 })
@@ -71,7 +73,7 @@ export class UsersComponent implements OnInit {
   selectedUser: User | null = null;
   selectedCategory: any;
   showPassword = false;
-
+ 
   constructor(
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
     private readonly fb: FormBuilder,

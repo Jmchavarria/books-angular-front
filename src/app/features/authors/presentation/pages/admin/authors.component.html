@@ -1,5 +1,4 @@
 <div class="space-y-5">
-  <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
       <h2 class="text-xl font-bold text-gray-900">Gestión de Books</h2>
@@ -10,8 +9,7 @@
     <app-button typeButton="button" (onSubmit)="openModal()" label="+ Create author" />
   </div>
 
-  <!-- Table -->
-  <!-- <app-table
+  <app-table
     [data]="authors()"
     [columns]="[
       'id',
@@ -25,9 +23,9 @@
     ]"
     [actions]="actions"
     (actionClick)="onAction($event)"
-  ></app-table> -->
+    (pageChange)="loadAuthors($event)"
+  ></app-table>
 
-  <!-- Modal -->
   @if (isModalOpen()) {
     <app-modal
       (onCancel)="isModalOpen.set(false)"
@@ -77,7 +75,6 @@
           </div>
         </div>
 
-        <!-- lastName -->
         @let lastName = authorsForm.controls.lastName;
 
         <div class="flex flex-col gap-1">

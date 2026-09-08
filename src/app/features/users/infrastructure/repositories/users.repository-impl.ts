@@ -48,8 +48,7 @@ export class UsersRepositoryImpl implements UsersRepository {
 
     return this.http
       .get<ApiPaginatedResponse<UsersApiResponse>>(
-        `${environment.apiUrl}/users${filters ? `?${params}` : ''}`,
-      )
+        `${environment.apiUrl}/users${filters ? `?${params}` : ''}`,)
 
       .pipe(
         map((response) => {

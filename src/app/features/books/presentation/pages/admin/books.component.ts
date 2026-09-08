@@ -1,7 +1,6 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { Book } from '../../../domain/entities/book.entity';
 import { GetAllBooksUseCase } from '../../../application/use-cases/admin/get-all-books/get-all-books.use-case';
-import { GetAllBooksProps } from '../../../domain/repositories/books.repository';
 import { PaginatedResponse } from '../../../../../core/types/paginated-response';
 import {
   FormBuilder,
@@ -13,15 +12,18 @@ import {
 } from '@angular/forms';
 import { CreateBookUseCase } from '../../../application/use-cases/admin/create-book/create-book.use-case';
 import {
+  objectData,
   TableAction,
   TableComponent,
 } from '../../../../../core/layouts/admin-layouts/table/table.component';
-import { NgIcon } from '@ng-icons/core';
 import { GetAllAuthorsUseCase } from '../../../../authors/application/use-cases/admin/get-all-authors/get-all-authors.use-case';
 import { Author } from '../../../../authors/domain/entities/author.entity';
 import { ButtonComponent } from '../../../../../core/components/button/button.component';
 import { Categories } from '../../../../categories/domain/entities/categories.entity';
 import { GetAllCategoriesUseCase } from '../../../../categories/application/admin/use-cases/get-all-categories/get-all-categories-use-case';
+import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
+import { ModalComponent } from '../../../../../core/components/modal/modal.component';
+import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
 
 export interface BookForm {
   title: FormControl<string>;
@@ -35,14 +37,28 @@ export interface BookForm {
 @Component({
   selector: 'app-books',
   standalone: true,
-  imports: [FormsModule, TableComponent, ReactiveFormsModule, NgIcon, ButtonComponent],
+  imports: [
+    FormsModule,
+    TableComponent,
+    ReactiveFormsModule,
+    ButtonComponent,
+    ModalComponent,
+    FormContainerComponent,
+  ],
   templateUrl: './books.component.html',
 })
 export class BooksComponent implements OnInit {
   booksForm: FormGroup<BookForm>;
   isLoading = signal<boolean>(false);
   isSubmitted = signal<boolean>(false);
-  books = signal<Book[]>([]);
+  books = signal<objectData<Book>>({
+    data: [],
+    limit: 0,
+    page: 0,
+    total: 0,
+    totalPages: 0,
+  });
+
   authors = signal<Author[]>([]);
   categories = signal<Categories[]>([]);
   isModalOpen = signal<boolean>(false);
@@ -106,10 +122,10 @@ export class BooksComponent implements OnInit {
     });
   }
 
-  loadBooks(input: GetAllBooksProps = {}): void {
-    this.getAllBooksUseCase.execute(input).subscribe({
+  loadBooks(filters?: FiltersDto[]): void {
+    this.getAllBooksUseCase.execute(filters).subscribe({
       next: (response: PaginatedResponse<Book[]>) => {
-        this.books.set(response.data);
+        this.books.set(response);
       },
       error: (err) => {
         console.error(err);
@@ -150,7 +166,7 @@ export class BooksComponent implements OnInit {
     this.isModalOpen.set(false);
   }
 
-  saveUser() {
+  saveBook() {
     this.isSubmitted.set(true);
 
     // 1. Usamos getRawValue() para obtener los tipos directos sin 'undefined'

@@ -1,4 +1,3 @@
-// infrastructure/mappers/auth.mapper.ts
 import { jwtDecode } from 'jwt-decode';
 import { UserAuth } from '../../domain/interfaces/user-auth';
 import { JwtPayload } from '../../domain/interfaces/jwt-auth.interface';
@@ -12,7 +11,6 @@ export interface AuthApiResponse {
 
 export class AuthMapper {
   static toDomain(response: AuthApiResponse): UserAuth {
-    // Decodificamos el payload del accessToken que envió el backend
     const decoded = jwtDecode<JwtPayload>(response.data.accessToken);
 
     return {

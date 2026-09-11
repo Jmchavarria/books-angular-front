@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { SearchBarComponent } from '../../../../../shared/components/search-bar/search-bar.component';
 
 @Component({

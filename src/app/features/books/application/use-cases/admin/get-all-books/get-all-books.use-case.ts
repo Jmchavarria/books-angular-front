@@ -12,7 +12,7 @@ import { FiltersDto } from '../../../../../../core/interfaces/filters.interface'
 export class GetAllBooksUseCase {
   constructor(private readonly repository: BooksRepository) {}
 
-  execute(filters?: FiltersDto[]): Observable<PaginatedResponse<Book[]>> {
+  execute(filters?: FiltersDto[]): Observable<PaginatedResponse<Book>> {
     return this.repository.getAll(filters);
   }
 }

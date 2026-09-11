@@ -5,6 +5,6 @@ import { CreateAuthorProps } from '../entities/authors.props';
 import { FiltersDto } from '../../../../core/interfaces/filters.interface';
 
 export abstract class AuthorsRepository {
-  abstract getAll(filters?: FiltersDto[]): Observable<PaginatedResponse<Author[]>>;
+  abstract getAll(filters?: FiltersDto[]): Observable<PaginatedResponse<Author>>;
   abstract create(input: CreateAuthorProps): Observable<Author>;
 }

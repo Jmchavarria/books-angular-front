@@ -22,7 +22,7 @@ export class BooksRepositoryImpl implements BooksRepository {
     );
   }
 
-  getAll(filters?: FiltersDto[]): Observable<PaginatedResponse<Book[]>> {
+  getAll(filters?: FiltersDto[]): Observable<PaginatedResponse<Book>> {
     const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
 
     return this.http

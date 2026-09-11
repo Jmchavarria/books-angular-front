@@ -22,7 +22,7 @@ export interface CreateBookProps {
 }
 
 export abstract class BooksRepository {
-  abstract getAll(filters?: FiltersDto[]): Observable<PaginatedResponse<Book[]>>;
+  abstract getAll(filters?: FiltersDto[]): Observable<PaginatedResponse<Book>>;
   abstract getById(id: number): Observable<Book>;
   abstract create(input: CreateBookProps): Observable<Book>;
 }

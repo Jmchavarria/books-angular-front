@@ -7,21 +7,14 @@ import {
   ElementRef,
   Injector,
   afterNextRender,
-  effect,
 } from '@angular/core';
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import { heroPencilSquare } from '@ng-icons/heroicons/outline';
+import { TableAction } from '../../../types/table.type';
 
 interface MenuPosition {
   top: number;
   left: number;
-}
-
-type TableKey = 'edit' | 'delete' | 'activate' | 'desactivate' | 'change password';
-export interface TableAction {
-  key: TableKey;
-  label: string;
-  icon: string;
 }
 
 export interface objectData<T> {
@@ -51,12 +44,7 @@ export class TableComponent<T extends object> {
   constructor(
     private elementRef: ElementRef<HTMLElement>,
     private injector: Injector,
-  ) {
-    effect(() => {
-      console.log('Total Pages recibido:', this.data()?.totalPages);
-      console.log('Objeto data completo:', this.data());
-    });
-  }
+  ) {}
 
   data = input<objectData<T>>({
     data: [],
@@ -66,7 +54,7 @@ export class TableComponent<T extends object> {
     totalPages: 0,
   });
 
-  columns = input<(keyof T)[]>([]);
+  columns = input<string[]>([]);
   pageChange = output<{ name: string; value: unknown }[]>();
   pageSizeOptions: number[] = [3, 5, 7];
 
@@ -75,7 +63,7 @@ export class TableComponent<T extends object> {
 
   openMenuIndex = signal<number>(-1);
   menuPosition = signal<MenuPosition | null>(null);
-  menuReady = signal(false); // true solo cuando ya calculamos la posición final
+  menuReady = signal(false);
 
   changePage(newPage: number): void {
     if (newPage >= 1 && newPage <= this.data()?.totalPages) {
@@ -133,14 +121,12 @@ export class TableComponent<T extends object> {
     this.menuReady.set(false);
     this.openMenuIndex.set(index);
 
-    // Posición provisional para que el menú tenga layout y podamos medirlo
     const rect = this.triggerElement.getBoundingClientRect();
     this.menuPosition.set({
       top: rect.bottom + MENU_GAP,
       left: rect.right - MENU_WIDTH_FALLBACK,
     });
 
-    // Esperamos a que Angular pinte el menú en el DOM antes de medir su tamaño real
     afterNextRender(
       () => {
         this.positionMenu();
@@ -156,7 +142,7 @@ export class TableComponent<T extends object> {
     this.menuPosition.set(null);
     this.menuReady.set(false);
     this.triggerElement = null;
-    trigger?.focus(); // devolvemos el foco al botón que abrió el menú (accesibilidad)
+    trigger?.focus();
   }
 
   onMenuKeydown(event: KeyboardEvent): void {
@@ -182,7 +168,6 @@ export class TableComponent<T extends object> {
         items[items.length - 1]?.focus();
         break;
       case 'Tab':
-        // El foco no debe "escaparse" del menú hacia el resto de la página
         this.closeMenu();
         break;
     }
@@ -199,7 +184,6 @@ export class TableComponent<T extends object> {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
-    // --- Eje vertical: abrir hacia abajo; voltear hacia arriba si no cabe ---
     const spaceBelow = viewportHeight - triggerRect.bottom;
     const spaceAbove = triggerRect.top;
     let top: number;
@@ -209,10 +193,8 @@ export class TableComponent<T extends object> {
     } else {
       top = triggerRect.top - menuRect.height - MENU_GAP;
     }
-    // Clamp final por si ni arriba ni abajo alcanza (pantallas muy chicas)
     top = Math.min(Math.max(top, MENU_MARGIN), viewportHeight - menuRect.height - MENU_MARGIN);
 
-    // --- Eje horizontal: alineado a la derecha del botón; clamp si se sale ---
     let left = triggerRect.right - menuRect.width;
     left = Math.min(Math.max(left, MENU_MARGIN), viewportWidth - menuRect.width - MENU_MARGIN);
 
@@ -225,19 +207,69 @@ export class TableComponent<T extends object> {
     menuEl?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
   }
 
-  formatHeader(key: any): string {
-    return String(key)
-      .replace(/([A-Z])/g, ' $1')
-      .replace(/^./, (str) => str.toUpperCase());
+  formatHeader(column: string): string {
+    return column
+      .split('.')
+      .map((part) => part.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()))
+      .join(' ');
   }
 
-  getCellValue(item: T, column: any): string {
-    const value = (item as any)[column];
+  getCellValue(item: T, column: string): string {
+    const value = this.getNestedValue(item, column);
 
-    if (value === null || value === undefined || value === '') return '-';
-    if (typeof value === 'boolean') return value ? 'Sí' : 'No';
+    if (value === null || value === undefined || value === '') {
+      return '-';
+    }
+
+    if (typeof value === 'boolean') {
+      return value ? 'Sí' : 'No';
+    }
+
+    if (Array.isArray(value)) {
+      return value.length > 0 ? value.map((item) => this.formatObjectValue(item)).join(', ') : '-';
+    }
+
+    if (typeof value === 'object') {
+      return this.formatObjectValue(value);
+    }
 
     return String(value);
+  }
+
+  private getNestedValue(item: T, path: string): unknown {
+    return path.split('.').reduce<unknown>((current, key) => {
+      if (current !== null && typeof current === 'object' && key in current) {
+        return (current as Record<string, unknown>)[key];
+      }
+
+      return undefined;
+    }, item);
+  }
+
+  private formatObjectValue(value: unknown): string {
+    if (value === null || value === undefined) {
+      return '-';
+    }
+
+    if (typeof value !== 'object') {
+      return String(value);
+    }
+
+    if (Array.isArray(value)) {
+      return value.map((item) => this.formatObjectValue(item)).join(', ');
+    }
+
+    const object = value as Record<string, unknown>;
+
+    return Object.entries(object)
+      .filter(([, value]) => value !== null && value !== undefined && value !== '')
+      .map(([key, value]) => {
+        const formattedKey = this.formatHeader(key);
+        const formattedValue = this.formatObjectValue(value);
+
+        return `${formattedKey}: ${formattedValue}`;
+      })
+      .join(' | ');
   }
 
   getProperties(obj: T): { key: string; value: any }[] {

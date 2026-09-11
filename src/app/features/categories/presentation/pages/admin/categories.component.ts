@@ -6,10 +6,8 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { PaginatedResponse } from '../../../../../core/types/paginated-response';
 import {
   objectData,
-  TableAction,
   TableComponent,
 } from '../../../../../core/layouts/admin-layouts/table/table.component';
 import { Categories } from '../../../domain/entities/categories.entity';
@@ -20,7 +18,9 @@ import { FormContainerComponent } from '../../../../../core/components/form-cont
 import { ModalComponent } from '../../../../../core/components/modal/modal.component';
 import { ButtonComponent } from '../../../../../core/components/button/button.component';
 import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
-import { SearchBarComponent } from "../../../../../shared/components/search-bar/search-bar.component";
+import { SearchBarComponent } from '../../../../../shared/components/search-bar/search-bar.component';
+import { TableAction } from '../../../../../core/types/table.type';
+import { PaginatedResponse } from '../../../../../core/types/paginated-response';
 
 @Component({
   selector: 'app-users',
@@ -32,13 +32,13 @@ import { SearchBarComponent } from "../../../../../shared/components/search-bar/
     FormContainerComponent,
     ModalComponent,
     ButtonComponent,
-    SearchBarComponent
-],
+    SearchBarComponent,
+  ],
 
   templateUrl: './categories.component.html',
 })
 export class CategoriesComponent implements OnInit {
-[x: string]: any;
+  [x: string]: any;
   categoriesform: FormGroup;
   isSubmitted = signal<boolean>(false);
   isLoading = signal<boolean>(false);
@@ -88,7 +88,7 @@ export class CategoriesComponent implements OnInit {
 
   loadCategories(filters?: FiltersDto[]): void {
     this.getAllCategoriesUseCase.execute(filters).subscribe({
-      next: (response: PaginatedResponse<Categories[]>) => {
+      next: (response: PaginatedResponse<Categories>) => {
         this.categories.set(response);
       },
       error: (err) => {

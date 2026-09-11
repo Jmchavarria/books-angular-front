@@ -1,0 +1,232 @@
+<app-form-container
+  [formGroup]="usersForm"
+  [isLoading]="isLoading()"
+  (onSubmit)="handleSubmit()"
+  (onCancel)="cancelled.emit()"
+>
+  @let firstName = usersForm.get('firstName');
+
+  <div class="flex flex-col gap-1">
+    <label for="firstName" class="text-xs font-semibold text-gray-800"> First Name </label>
+
+    <div
+      class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+      [class.border-red-500]="firstName?.invalid && (firstName?.touched || isSubmitted)"
+    >
+      <input
+        id="firstName"
+        type="text"
+        formControlName="firstName"
+        class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+        placeholder="John"
+      />
+    </div>
+
+    <div class="flex h-3 items-center px-1">
+      @if (firstName?.invalid && (firstName?.touched || isSubmitted)) {
+        <span class="text-[11px] text-red-500">
+          @if (firstName?.errors?.['required']) {
+            First name is required.
+          }
+
+          @if (firstName?.errors?.['minlength']) {
+            Minimum 3 characters.
+          }
+
+          @if (firstName?.errors?.['maxlength']) {
+            Maximum 50 characters.
+          }
+        </span>
+      }
+    </div>
+  </div>
+
+  @let lastName = usersForm.get('lastName');
+
+  <div class="flex flex-col gap-1">
+    <label for="lastName" class="text-xs font-semibold text-gray-800"> Last Name </label>
+
+    <div
+      class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+      [class.border-red-500]="lastName?.invalid && (lastName?.touched || isSubmitted)"
+    >
+      <input
+        id="lastName"
+        type="text"
+        formControlName="lastName"
+        class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+        placeholder="Doe"
+      />
+    </div>
+
+    <div class="flex h-3 items-center px-1">
+      @if (lastName?.invalid && (lastName?.touched || isSubmitted)) {
+        <span class="text-[11px] text-red-500">
+          @if (lastName?.errors?.['required']) {
+            Last name is required.
+          }
+
+          @if (lastName?.errors?.['minlength']) {
+            Minimum 3 characters.
+          }
+
+          @if (lastName?.errors?.['maxlength']) {
+            Maximum 50 characters.
+          }
+        </span>
+      }
+    </div>
+  </div>
+
+  @let email = usersForm.get('email');
+
+  <div class="flex flex-col gap-1">
+    <label for="email" class="text-xs font-semibold text-gray-800"> Email </label>
+
+    <div
+      class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+      [class.border-red-500]="email?.invalid && (email?.touched || isSubmitted)"
+    >
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+        placeholder="you@example.com"
+      />
+    </div>
+
+    <div class="flex h-3 items-center px-1">
+      @if (email?.invalid && (email?.touched || isSubmitted)) {
+        <span class="text-[11px] text-red-500">
+          @if (email?.errors?.['required']) {
+            Email is required.
+          }
+
+          @if (email?.errors?.['email']) {
+            Enter a valid email address.
+          }
+        </span>
+      }
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    @let phone = usersForm.get('phone');
+
+    <div class="flex flex-col gap-1">
+      <label for="phone" class="text-xs font-semibold text-gray-800"> Phone </label>
+
+      <div
+        class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+        [class.border-red-500]="phone?.invalid && (phone?.touched || isSubmitted)"
+      >
+        <span class="shrink-0 border-r border-gray-300 pr-2 text-xs text-gray-500 sm:text-sm">
+          +57
+        </span>
+
+        <input
+          id="phone"
+          type="tel"
+          formControlName="phone"
+          class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+          placeholder="3001234567"
+        />
+      </div>
+
+      <div class="flex h-3 items-center px-1">
+        @if (phone?.invalid && (phone?.touched || isSubmitted)) {
+          <span class="text-[11px] text-red-500">
+            @if (phone?.errors?.['required']) {
+              Phone number is required.
+            } @else if (phone?.errors?.['pattern']) {
+              Enter a valid phone number.
+            } @else if (phone?.errors?.['minlength']) {
+              Minimum 10 characters.
+            } @else if (phone?.errors?.['maxlength']) {
+              Maximum 10 characters.
+            }
+          </span>
+        }
+      </div>
+    </div>
+
+    @let role = usersForm.get('role');
+
+    <div class="flex flex-col gap-1">
+      <label for="role" class="text-xs font-semibold text-gray-800"> Role </label>
+
+      <div
+        class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+        [class.border-red-500]="role?.invalid && (role?.touched || isSubmitted)"
+      >
+        <select
+          id="role"
+          formControlName="role"
+          class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+        >
+          <option [ngValue]="RoleTypeEnum.admin">Admin</option>
+
+          <option [ngValue]="RoleTypeEnum.user">User</option>
+        </select>
+      </div>
+
+      <div class="flex h-3 items-center px-1">
+        @if (role?.invalid && (role?.touched || isSubmitted)) {
+          <span class="text-[11px] text-red-500">
+            @if (role?.errors?.['required']) {
+              Role is required.
+            }
+          </span>
+        }
+      </div>
+    </div>
+  </div>
+
+  @let password = usersForm.get('password');
+
+  @if (!isEdit()) {
+    <div class="flex flex-col gap-1">
+      <label for="password" class="text-xs font-semibold text-gray-800"> Password </label>
+
+      <div
+        class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+        [class.border-red-500]="password?.invalid && (password?.touched || isSubmitted)"
+      >
+        <input
+          id="password"
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+          placeholder="••••••••"
+        />
+
+        <button
+          type="button"
+          (click)="showPassword = !showPassword"
+          class="flex shrink-0 items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+        >
+          <ng-icon [name]="showPassword ? 'heroEyeSlashSolid' : 'heroEyeSolid'" />
+        </button>
+      </div>
+
+      <div class="flex h-3 items-center px-1">
+        @if (password?.invalid && (password?.touched || isSubmitted)) {
+          <span class="text-[11px] text-red-500">
+            @if (password?.errors?.['required']) {
+              Password is required.
+            }
+
+            @if (password?.errors?.['minlength']) {
+              Minimum 6 characters.
+            }
+
+            @if (password?.errors?.['maxlength']) {
+              Maximum 15 characters.
+            }
+          </span>
+        }
+      </div>
+    </div>
+  }
+</app-form-container>

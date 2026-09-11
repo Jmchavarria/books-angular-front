@@ -1,6 +1,6 @@
-import { Component, ElementRef, output, Signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import { heroMagnifyingGlassSolid, heroXMarkSolid } from '@ng-icons/heroicons/solid';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
@@ -21,6 +21,19 @@ export class SearchBarComponent {
   @ViewChild('searchInput')
   searchInput!: ElementRef<HTMLInputElement>;
   searchControl = new FormControl('');
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyEvent(event: KeyboardEvent): void {
+    if (event.ctrlKey && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.searchInput.nativeElement.focus();
+    }
+    if (event.key === 'Escape') {
+      this.searchInput.nativeElement.blur();
+    }
+  }
 
   searchValue = outputFromObservable(
     this.searchControl.valueChanges.pipe(

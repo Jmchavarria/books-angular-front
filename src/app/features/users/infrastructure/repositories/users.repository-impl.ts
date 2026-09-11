@@ -1,4 +1,4 @@
-import { BehaviorSubject, filter, map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { UserAuth } from '../../../auth/domain/interfaces/user-auth';
 import { UsersRepository } from '../../domain/repositories/users.repository';
 import { User } from '../../domain/entities/users.entity';
@@ -43,12 +43,13 @@ export class UsersRepositoryImpl implements UsersRepository {
     );
   }
 
-  getAll(filters?: GetAllUsersProps[]): Observable<PaginatedResponse<User[]>> {
+  getAll(filters?: GetAllUsersProps[]): Observable<PaginatedResponse<User>> {
     const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
 
     return this.http
       .get<ApiPaginatedResponse<UsersApiResponse>>(
-        `${environment.apiUrl}/users${filters ? `?${params}` : ''}`,)
+        `${environment.apiUrl}/users${filters ? `?${params}` : ''}`,
+      )
 
       .pipe(
         map((response) => {

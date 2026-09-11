@@ -8,10 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { GetAllAuthorsUseCase } from '../../../application/use-cases/admin/get-all-authors/get-all-authors.use-case';
-import { PaginatedResponse } from '../../../../../core/types/paginated-response';
 import {
   objectData,
-  TableAction,
   TableComponent,
 } from '../../../../../core/layouts/admin-layouts/table/table.component';
 import { ButtonComponent } from '../../../../../core/components/button/button.component';
@@ -19,6 +17,8 @@ import { ModalComponent } from '../../../../../core/components/modal/modal.compo
 import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
 import { CreateAuthorUseCase } from '../../../application/use-cases/admin/create-author/create-author.use-case';
 import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
+import { TableAction } from '../../../../../core/types/table.type';
+import { PaginatedResponse } from '../../../../../core/types/paginated-response';
 
 interface AuthorsForm {
   firstName: FormControl<string>;
@@ -156,7 +156,7 @@ export class AuthorsComponent implements OnInit {
 
   loadAuthors(filters?: FiltersDto[]): void {
     this.getAllAuthorsUseCase.execute(filters).subscribe({
-      next: (response: PaginatedResponse<Author[]>) => {
+      next: (response: PaginatedResponse<Author>) => {
         this.authors.set(response);
       },
       error: (err) => console.error(err),

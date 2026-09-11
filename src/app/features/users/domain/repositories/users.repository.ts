@@ -6,7 +6,7 @@ import { CreateUserProps, GetAllUsersProps, UpdateUserProps } from '../entities/
 
 export abstract class UsersRepository {
   abstract currentUser(): Observable<UserAuth | null>;
-  abstract getAll(filters?: GetAllUsersProps[]): Observable<PaginatedResponse<User[]>>;
+  abstract getAll(filters?: GetAllUsersProps[]): Observable<PaginatedResponse<User>>;
   abstract create(input: CreateUserProps): Observable<User>;
   abstract update(input: UpdateUserProps): Observable<User>;
 }

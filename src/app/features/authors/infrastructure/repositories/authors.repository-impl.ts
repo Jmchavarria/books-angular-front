@@ -23,7 +23,7 @@ export class AuthorsRepositoryImpl implements AuthorsRepository {
     );
   }
 
-  getAll(): Observable<PaginatedResponse<Author[]>> {
+  getAll(): Observable<PaginatedResponse<Author>> {
     return this.http
       .get<ApiPaginatedResponse<AuhorsApiResponse>>(`${environment.apiUrl}/authors`)
       .pipe(

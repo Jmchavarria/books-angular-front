@@ -1,5 +1,4 @@
 import { RoleTypeEnum } from '../../../../core/enums/role.enum';
-import { Book } from '../../../books/domain/entities/book.entity';
 import { User } from '../../domain/entities/users.entity';
 import { UserStatusTypeEnum } from '../../domain/enums/users-status-type.enum';
 

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, HostListener, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IconType, NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -35,6 +35,11 @@ export interface ModuleItems {
 })
 export class SidebarAdminCompoonent {
   isCollapsed = signal(false);
+
+  @HostListener('document:keydown.control.b')
+  handleKeyEvent(): void {
+    this.toggleSidebar();
+  }
 
   modules: ModuleItems[] = [
     {

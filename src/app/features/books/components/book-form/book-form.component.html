@@ -152,11 +152,14 @@
           formControlName="author"
           class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
         >
-          <option disabled selected [ngValue]="null" hidden>
+          <!-- Opción por defecto (Placeholder) -->
+          <option [ngValue]="0" disabled selected hidden>
             {{ authors().data.length > 0 ? 'Select an author' : 'There are no authors available' }}
           </option>
+
+          <!-- Lista de autores -->
           @for (author of authors().data; track author.id) {
-            <option [value]="author.id">{{ author.firstName }} {{ author.lastName }}</option>
+            <option [ngValue]="author.id">{{ author.firstName }} {{ author.lastName }}</option>
           }
         </select>
       </div>
@@ -186,7 +189,7 @@
           formControlName="category"
           class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
         >
-          <option disabled selected [ngValue]="null" hidden>
+          <option disabled selected [ngValue]="0" hidden>
             {{
               authors().data.length > 0 ? 'Select a category' : 'There are no categories available'
             }}

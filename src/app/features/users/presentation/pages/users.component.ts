@@ -24,6 +24,10 @@ import { TableAction } from '../../../../core/types/table.type';
 import { PaginatedResponse } from '../../../../core/types/paginated-response';
 import { ModalHeader } from '../../../../core/types/modal.type';
 import { booksModalHeaders } from '../../../books/config/book-modal.config';
+import { UserAddressesComponent } from '../../components/user-addresses/user-addresses.component';
+import { UsersOrdersComponent } from '../../components/user-orders/user-orders.component';
+import { UserReviewsComponent } from '../../components/user-reviews/user-reviews.component';
+import { UserCartComponent } from '../../components/user-cart/user-cart.component';
 
 @Component({
   selector: 'app-users',
@@ -43,6 +47,10 @@ import { booksModalHeaders } from '../../../books/config/book-modal.config';
     SearchBarComponent,
     UserFormComponent,
     UserDetailComponent,
+    UserAddressesComponent,
+    UsersOrdersComponent,
+    UserReviewsComponent,
+    UserCartComponent,
   ],
   templateUrl: './users.component.html',
 })
@@ -60,6 +68,7 @@ export class UsersComponent implements OnInit {
   readonly actions = USER_TABLE_ACTIONS;
   selectedUser = signal<User | null>(null);
   modalMode = signal<UserModalMode>(null);
+  currentTab = signal<string>('info');
 
   constructor(
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
@@ -125,6 +134,7 @@ export class UsersComponent implements OnInit {
   closeModal() {
     this.modalMode.set(null);
     this.selectedUser.set(null);
+    this.currentTab.set('info');
   }
 
   private createUser(user: UserFormData): void {
@@ -196,5 +206,5 @@ export class UsersComponent implements OnInit {
         this.updateUser(user);
         break;
     }
-  } 
+  }
 }

@@ -2,13 +2,11 @@
   <div class="flex items-center justify-between">
     <div>
       <h2 class="text-xl font-bold text-gray-900">User Management</h2>
-
       <p class="text-xs text-gray-500">Manage platform access and roles.</p>
     </div>
 
     <div class="flex items-center gap-2">
       <app-search-bar (searchValue)="loadUsers($event)" />
-
       <app-button typeButton="button" (onSubmit)="openCreate()" label="+ Create user" />
     </div>
   </div>
@@ -25,8 +23,21 @@
     <app-modal
       [title]="modalHeader().title"
       [description]="modalHeader().description"
+      [tabs]="
+        modalMode() === 'detail'
+          ? [
+              { id: 'info', label: 'Info' },
+              { id: 'addresses', label: 'Addresses' },
+              { id: 'orders', label: 'Orders' },
+              { id: 'reviews', label: 'Reviews' },
+              { id: 'cart', label: 'Cart' },
+            ]
+          : []
+      "
+      (tabChange)="currentTab.set($event)"
       (onCancel)="closeModal()"
     >
+      <!-- VISTA FORMULARIO (Crear / Editar) -->
       @if (modalMode() === 'create' || modalMode() === 'edit') {
         <app-user-form
           [isLoading]="isLoading()"
@@ -37,8 +48,25 @@
         />
       }
 
+      <!-- VISTA DETALLE CON PESTAÑAS (Ver detalle) -->
       @if (modalMode() === 'detail') {
-        <app-user-detail [user]="selectedUser()!" />
+        @switch (currentTab()) {
+          @case ('info') {
+            <app-user-detail [user]="selectedUser()!" />
+          }
+          @case ('addresses') {
+            <app-user-addresses [addresses]="selectedUser()!.addresses" />
+          }
+          @case ('orders') {
+            <app-user-orders [orders]="selectedUser()!.orders" />
+          }
+          @case ('reviews') {
+            <app-user-reviews [reviews]="selectedUser()!.reviews" />
+          }
+          @case ('cart') {
+            <app-user-cart [cart]="selectedUser()!.cart" />
+          }
+        }
       }
     </app-modal>
   }

@@ -8,6 +8,8 @@ export class Book {
     public readonly author: Author,
     public readonly description: string,
     public readonly pages: number,
+    public readonly price: number,
+    public readonly coverImageUrl: string,
     public readonly publishedYear: number,
     public readonly category: Categories,
   ) {}

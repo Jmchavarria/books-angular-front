@@ -1,4 +1,8 @@
 import { RoleTypeEnum } from '../../../../core/enums/role.enum';
+import { Cart } from '../../../cart/domain/entities/cart.entity';
+import { Order } from '../../../orders/domain/entities/orders.entity';
+import { BookReview } from '../../../reviews/domain/entities/book-review.entity';
+import { UserAddresses } from '../../domain/entities/user-addresses.entity';
 import { User } from '../../domain/entities/users.entity';
 import { UserStatusTypeEnum } from '../../domain/enums/users-status-type.enum';
 
@@ -12,6 +16,10 @@ export interface UsersApiResponse {
   isEmailVerified: boolean;
   role: RoleTypeEnum;
   status: UserStatusTypeEnum;
+  addresses: UserAddresses[];
+  orders: Order[];
+  cart: Cart;
+  reviews: BookReview[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,6 +36,10 @@ export class UsersMapper {
       raw.avatarUrl,
       raw.role,
       raw.status,
+      raw.addresses,
+      raw.orders,
+      raw.cart,
+      raw.reviews,
       raw.createdAt,
       raw.updatedAt,
     );

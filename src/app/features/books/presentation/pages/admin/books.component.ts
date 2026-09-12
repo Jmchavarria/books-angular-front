@@ -23,6 +23,7 @@ import { SearchBarComponent } from '../../../../../shared/components/search-bar/
 import { ModalHeader } from '../../../../../core/types/modal.type';
 import { booksModalHeaders } from '../../../config/book-modal.config';
 import { UserFormComponent } from '../../../components/book-form/books-form.component';
+import { UserDetailComponent } from '../../../../users/components/user-detail/user.detail.component';
 @Component({
   selector: 'app-books',
   standalone: true,
@@ -34,6 +35,7 @@ import { UserFormComponent } from '../../../components/book-form/books-form.comp
     ModalComponent,
     SearchBarComponent,
     UserFormComponent,
+    // UserDetailComponent
   ],
   templateUrl: './books.component.html',
 })
@@ -106,8 +108,7 @@ export class BooksComponent implements OnInit {
   loadCategories(): void {
     this.getAllCategoriesUseCase.execute().subscribe({
       next: (response: PaginatedResponse<Categories>) => {
-
-        console.log(response)
+        console.log(response);
         this.categories.set(response);
       },
       error: (err) => console.error(err),

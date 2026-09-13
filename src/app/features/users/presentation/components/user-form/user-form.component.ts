@@ -1,10 +1,10 @@
-import { Component, effect, input, output } from '@angular/core';
+import { Component, input, OnChanges, output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIcon } from '@ng-icons/core';
-import { FormContainerComponent } from '../../../../core/components/form-container/form-container.component';
-import { RoleTypeEnum } from '../../../../core/enums/role.enum';
-import { User } from '../../domain/entities/users.entity';
-import { UserFormData, UsersForm } from '../../types/user-form.type';
+import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
+import { RoleTypeEnum } from '../../../../../core/enums/role.enum';
+import { User } from '../../../domain/entities/users.entity';
+import { UsersForm, UserFormData } from '../../../types/user-form.type';
 
 @Component({
   selector: 'app-user-form',
@@ -12,7 +12,7 @@ import { UserFormData, UsersForm } from '../../types/user-form.type';
   imports: [ReactiveFormsModule, FormContainerComponent, NgIcon],
   templateUrl: './user-form.component.html',
 })
-export class UserFormComponent {
+export class UserFormComponent implements OnChanges {
   usersForm: FormGroup<UsersForm>;
 
   isLoading = input(false);
@@ -36,29 +36,33 @@ export class UserFormComponent {
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(15)]],
       role: [RoleTypeEnum.admin, [Validators.required]],
     });
+  }
 
-    effect(() => {
-      const user = this.user();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['user']) {
+      return;
+    }
 
-      this.isSubmitted = false;
+    const user = this.user();
 
-      if (user) {
-        this.usersForm.patchValue({
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          phone: user.phone.replace(/^\+57/, ''),
-          role: user.role,
-        });
+    this.isSubmitted = false;
 
-        this.usersForm.controls.password.clearValidators();
-        this.usersForm.controls.password.updateValueAndValidity();
+    if (user) {
+      this.usersForm.patchValue({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone.replace(/^\+57/, ''),
+        role: user.role,
+      });
 
-        this.showPassword = false;
-      } else {
-        this.resetForm();
-      }
-    });
+      this.usersForm.controls.password.clearValidators();
+      this.usersForm.controls.password.updateValueAndValidity();
+
+      this.showPassword = false;
+    } else {
+      this.resetForm();
+    }
   }
 
   handleSubmit(): void {
@@ -96,3 +100,5 @@ export class UserFormComponent {
     this.showPassword = false;
   }
 }
+
+ 

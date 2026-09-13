@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
-import { BookReview } from '../../../reviews/domain/entities/book-review.entity';
 import { DatePipe } from '@angular/common';
+import { BookReview } from '../../../../reviews/domain/entities/book-review.entity';
 @Component({
   selector: 'app-user-reviews',
   standalone: true,

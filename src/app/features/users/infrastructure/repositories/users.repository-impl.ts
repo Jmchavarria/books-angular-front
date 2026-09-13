@@ -46,7 +46,7 @@ export class UsersRepositoryImpl implements UsersRepository {
   getAll(filters?: GetAllUsersProps[]): Observable<PaginatedResponse<User>> {
     const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
 
-    return this.http
+    return this.http 
       .get<ApiPaginatedResponse<UsersApiResponse>>(
         `${environment.apiUrl}/users${filters ? `?${params}` : ''}`,
       )

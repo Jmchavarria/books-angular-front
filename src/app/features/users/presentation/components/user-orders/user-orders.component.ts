@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
-import { Order } from '../../../orders/domain/entities/orders.entity';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { Order } from '../../../../orders/domain/entities/orders.entity';
 
 @Component({
   selector: 'app-user-orders',

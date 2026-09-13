@@ -15,8 +15,6 @@ import { provideIcons } from '@ng-icons/core';
 import { heroEyeSlashSolid, heroEyeSolid } from '@ng-icons/heroicons/solid';
 import { GetAllUsersDto } from '../../application/use-cases/get-all-users/get-all-users.dto';
 import { SearchBarComponent } from '../../../../shared/components/search-bar/search-bar.component';
-import { UserFormComponent } from '../../components/user-form/user-form.component';
-import { UserDetailComponent } from '../../components/user-detail/user.detail.component';
 import { UserModalMode } from '../../types/user-modal.type';
 import { USER_TABLE_ACTIONS } from '../../config/user-table.config';
 import { UserFormData } from '../../types/user-form.type';
@@ -24,20 +22,17 @@ import { TableAction } from '../../../../core/types/table.type';
 import { PaginatedResponse } from '../../../../core/types/paginated-response';
 import { ModalHeader } from '../../../../core/types/modal.type';
 import { booksModalHeaders } from '../../../books/config/book-modal.config';
-import { UserAddressesComponent } from '../../components/user-addresses/user-addresses.component';
-import { UsersOrdersComponent } from '../../components/user-orders/user-orders.component';
-import { UserReviewsComponent } from '../../components/user-reviews/user-reviews.component';
-import { UserCartComponent } from '../../components/user-cart/user-cart.component';
+import { UserAddressesComponent } from '../components/user-addresses/user-addresses.component';
+import { UserCartComponent } from '../components/user-cart/user-cart.component';
+import { UserDetailComponent } from '../components/user-detail/user.detail.component';
+import { UserFormComponent } from '../components/user-form/user-form.component';
+import { UsersOrdersComponent } from '../components/user-orders/user-orders.component';
+import { UserReviewsComponent } from '../components/user-reviews/user-reviews.component';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  providers: [
-    provideIcons({
-      heroEyeSlashSolid,
-      heroEyeSolid,
-    }),
-  ],
+  providers: [],
   imports: [
     FormsModule,
     TableComponent,

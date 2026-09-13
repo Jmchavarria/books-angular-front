@@ -12,6 +12,8 @@ import { CategoriesRepository } from './features/categories/domain/repositories/
 import { CategoriesRepositoryImpl } from './features/categories/infrastructure/repositories/categories.repository-impl';
 import { AuthorsRepository } from './features/authors/domain/repositories/authors.repository';
 import { AuthorsRepositoryImpl } from './features/authors/infrastructure/repositories/authors.repository-impl';
+import { UserAddressesRepository } from './features/users/domain/repositories/user-adresses.repository';
+import { UserAddressesRepositoryImpl } from './features/users/infrastructure/repositories/user-addresses.repository-impl';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -22,5 +24,6 @@ export const appConfig: ApplicationConfig = {
     { provide: CategoriesRepository, useClass: CategoriesRepositoryImpl },
     { provide: BooksRepository, useClass: BooksRepositoryImpl },
     { provide: AuthorsRepository, useClass: AuthorsRepositoryImpl },
+    { provide: UserAddressesRepository, useClass: UserAddressesRepositoryImpl },
   ],
 };

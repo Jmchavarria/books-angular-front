@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { User } from '../../domain/entities/users.entity';
+import { User } from '../../../domain/entities/users.entity';
 
 @Component({
   selector: 'app-user-detail',

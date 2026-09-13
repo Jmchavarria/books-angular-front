@@ -1,7 +1,7 @@
 export class UserAddresses {
   constructor(
     public readonly id: number,
-    public readonly userId: string,
+    public readonly userId: number,
     public readonly alias: string,
     public readonly streetAddress: string,
     public readonly apartmentOrSuite: string,

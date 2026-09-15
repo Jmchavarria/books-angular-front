@@ -10,8 +10,8 @@
         (onSubmit)="modeView.set('create')"
       />
     </div>
-    @if (userAddresses() && userAddresses().length > 0) {
-      @for (address of userAddresses(); track address.id) {
+    @if (addresses() && addresses().length > 0) {
+      @for (address of addresses(); track address.id) {
         <div
           class="flex items-start justify-between rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm transition hover:border-gray-300"
         >

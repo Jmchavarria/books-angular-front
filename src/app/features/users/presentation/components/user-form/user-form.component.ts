@@ -1,14 +1,21 @@
 import { Component, input, OnChanges, output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgIcon } from '@ng-icons/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
 import { RoleTypeEnum } from '../../../../../core/enums/role.enum';
 import { User } from '../../../domain/entities/users.entity';
 import { UsersForm, UserFormData } from '../../../types/user-form.type';
+import { heroEyeSlashSolid, heroEyeSolid } from '@ng-icons/heroicons/solid';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
+  providers: [
+    provideIcons({
+      heroEyeSlashSolid,
+      heroEyeSolid,
+    }),
+  ],
   imports: [ReactiveFormsModule, FormContainerComponent, NgIcon],
   templateUrl: './user-form.component.html',
 })
@@ -100,5 +107,3 @@ export class UserFormComponent implements OnChanges {
     this.showPassword = false;
   }
 }
-
- 

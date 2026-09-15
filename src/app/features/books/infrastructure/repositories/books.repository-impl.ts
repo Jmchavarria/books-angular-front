@@ -6,8 +6,8 @@ import { BooksRepository, CreateBookProps } from '../../domain/repositories/book
 import { Book } from '../../domain/entities/book.entity';
 import { BookApiResponse, BookMapper } from '../mapper/book.mapper';
 import { environment } from '../../../../../enviroments/enviroment';
-import { PaginatedResponse } from '../../../../core/types/paginated-response';
-import { ApiPaginatedResponse, ApiSingleResponse } from '../../../../core/types/api-envelope';
+import { PaginatedResult } from '../../../../core/types/paginated-response';
+import { ApiPaginatedResult, ApiSingleResponse } from '../../../../core/types/api-envelope';
 import { FiltersDto } from '../../../../core/interfaces/filters.interface';
 
 @Injectable()
@@ -22,27 +22,21 @@ export class BooksRepositoryImpl implements BooksRepository {
     );
   }
 
-  getAll(filters?: FiltersDto[]): Observable<PaginatedResponse<Book>> {
+  getAll(filters?: FiltersDto[]): Observable<PaginatedResult<Book>> {
     const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
 
     return this.http
       .get<
-        ApiPaginatedResponse<BookApiResponse>
+        ApiPaginatedResult<BookApiResponse>
       >(`${environment.apiUrl}/books${filters ? `?${params}` : ''}`)
       .pipe(
-        map((response) => {
-          const { data, total, page, limit, message, success, totalPages } = response;
-
-          return new PaginatedResponse(
-            success,
-            message,
-            data.map((entity) => BookMapper.toDomain(entity)),
-            total,
-            page,
-            limit,
-            totalPages,
-          );
-        }),
+        map((response) => ({
+          data: (response.data ?? []).map((entity) => BookMapper.toDomain(entity)),
+          total: response.total,
+          page: response.page,
+          limit: response.limit,
+          totalPages: response.totalPages,
+        })),
       );
   }
 

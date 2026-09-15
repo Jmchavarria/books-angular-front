@@ -10,4 +10,6 @@ import { Cart } from '../../../../cart/domain/entities/cart.entity';
 })
 export class UserCartComponent {
   cart = input<Cart | null>();
+
+  
 }

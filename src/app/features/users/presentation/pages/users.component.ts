@@ -11,15 +11,12 @@ import { CreateUserUseCase } from '../../application/use-cases/create-user/creat
 import { UpdateUserUseCase } from '../../application/use-cases/update-user/update-user.use-case';
 import { ModalComponent } from '../../../../core/components/modal/modal.component';
 import { ButtonComponent } from '../../../../core/components/button/button.component';
-import { provideIcons } from '@ng-icons/core';
-import { heroEyeSlashSolid, heroEyeSolid } from '@ng-icons/heroicons/solid';
 import { GetAllUsersDto } from '../../application/use-cases/get-all-users/get-all-users.dto';
 import { SearchBarComponent } from '../../../../shared/components/search-bar/search-bar.component';
 import { UserModalMode } from '../../types/user-modal.type';
 import { USER_TABLE_ACTIONS } from '../../config/user-table.config';
 import { UserFormData } from '../../types/user-form.type';
 import { TableAction } from '../../../../core/types/table.type';
-import { PaginatedResponse } from '../../../../core/types/paginated-response';
 import { ModalHeader } from '../../../../core/types/modal.type';
 import { booksModalHeaders } from '../../../books/config/book-modal.config';
 import { UserAddressesComponent } from '../components/user-addresses/user-addresses.component';
@@ -28,6 +25,7 @@ import { UserDetailComponent } from '../components/user-detail/user.detail.compo
 import { UserFormComponent } from '../components/user-form/user-form.component';
 import { UsersOrdersComponent } from '../components/user-orders/user-orders.component';
 import { UserReviewsComponent } from '../components/user-reviews/user-reviews.component';
+import { PaginatedResult } from '../../../../core/types/paginated-response';
 
 @Component({
   selector: 'app-users',
@@ -64,6 +62,14 @@ export class UsersComponent implements OnInit {
   selectedUser = signal<User | null>(null);
   modalMode = signal<UserModalMode>(null);
   currentTab = signal<string>('info');
+
+  readonly detailTabs = [
+    { id: 'info', label: 'Info' },
+    { id: 'addresses', label: 'Addresses' },
+    { id: 'orders', label: 'Orders' },
+    { id: 'reviews', label: 'Reviews' },
+    { id: 'cart', label: 'Cart' },
+  ];
 
   constructor(
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
@@ -111,7 +117,7 @@ export class UsersComponent implements OnInit {
 
   loadUsers(filters?: GetAllUsersDto[]): void {
     this.getAllUsersUseCase.execute(filters).subscribe({
-      next: (response: PaginatedResponse<User>) => {
+      next: (response: PaginatedResult<User>) => {
         this.users.set({
           data: response.data,
           limit: response.limit,
@@ -176,7 +182,7 @@ export class UsersComponent implements OnInit {
         role: usersForm.role,
       })
       .subscribe({
-        next: () => {
+        next: (response) => {
           this.loadUsers();
           this.closeModal();
         },

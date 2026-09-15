@@ -11,7 +11,6 @@ import { IUserAddresses } from '../../../../types/user-addresses.type';
 
 interface UserAddressesForm {
   alias: FormControl<string>;
-  userId: FormControl<number>;
   streetAddress: FormControl<string>;
   apartmentOrSuite: FormControl<string>;
   city: FormControl<string>;
@@ -38,7 +37,6 @@ export class UserAddressesFormComponent implements OnChanges {
   constructor(private fb: FormBuilder) {
     this.userAddressesForm = this.fb.nonNullable.group({
       alias: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
-      userId: [0, [Validators.required, Validators.minLength(4), Validators.maxLength(50)]], 
 
       streetAddress: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
       apartmentOrSuite: [

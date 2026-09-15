@@ -20,7 +20,7 @@ import { ButtonComponent } from '../../../../../core/components/button/button.co
 import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
 import { SearchBarComponent } from '../../../../../shared/components/search-bar/search-bar.component';
 import { TableAction } from '../../../../../core/types/table.type';
-import { PaginatedResponse } from '../../../../../core/types/paginated-response';
+import { PaginatedResult } from '../../../../../core/types/paginated-response';
 
 @Component({
   selector: 'app-users',
@@ -88,7 +88,7 @@ export class CategoriesComponent implements OnInit {
 
   loadCategories(filters?: FiltersDto[]): void {
     this.getAllCategoriesUseCase.execute(filters).subscribe({
-      next: (response: PaginatedResponse<Categories>) => {
+      next: (response: PaginatedResult<Categories>) => {
         this.categories.set(response);
       },
       error: (err) => {

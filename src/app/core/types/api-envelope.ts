@@ -6,7 +6,7 @@ export interface ApiSingleResponse<T> {
 }
 
 // Para respuestas de listas paginadas
-export interface ApiPaginatedResponse<T> {
+export interface ApiPaginatedResult<T> {
   success: boolean;
   message: string;
   data: T[];

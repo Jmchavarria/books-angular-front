@@ -15,7 +15,7 @@ import { GetAllCategoriesUseCase } from '../../../../categories/application/admi
 import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
 import { ModalComponent } from '../../../../../core/components/modal/modal.component';
 import { TableAction } from '../../../../../core/types/table.type';
-import { PaginatedResponse } from '../../../../../core/types/paginated-response';
+import { PaginatedResult } from '../../../../../core/types/paginated-response';
 import { BOOK_TABLE_ACTIONS } from '../../../config/books-table.config';
 import { BookFormData } from '../../../types/book-form.type';
 import { UserModalMode } from '../../../types/book-modal.type';
@@ -96,7 +96,7 @@ export class BooksComponent implements OnInit {
 
   loadAuthors(): void {
     this.getAllAuthorsUseCase.execute().subscribe({
-      next: (response: PaginatedResponse<Author>) => {
+      next: (response: PaginatedResult<Author>) => {
         console.log(response);
         this.authors.set(response);
       },
@@ -106,7 +106,7 @@ export class BooksComponent implements OnInit {
 
   loadCategories(): void {
     this.getAllCategoriesUseCase.execute().subscribe({
-      next: (response: PaginatedResponse<Categories>) => {
+      next: (response: PaginatedResult<Categories>) => {
         console.log(response);
         this.categories.set(response);
       },
@@ -116,7 +116,7 @@ export class BooksComponent implements OnInit {
 
   loadBooks(filters?: FiltersDto[]): void {
     this.getAllBooksUseCase.execute(filters).subscribe({
-      next: (response: PaginatedResponse<Book>) => {
+      next: (response: PaginatedResult<Book>) => {
         this.books.set(response);
       },
       error: (err) => {

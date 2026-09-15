@@ -1,11 +1,7 @@
-export class PaginatedResponse<T> {
-  constructor(
-    public readonly success: boolean,
-    public readonly message: string,
-    public readonly data: T[],
-    public readonly total: number,
-    public readonly page: number,
-    public readonly limit: number,
-    public readonly totalPages: number,
-  ) {}
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }

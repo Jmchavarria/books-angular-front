@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthorsRepository } from '../../domain/repositories/authors.repository';
 import { map, Observable } from 'rxjs';
-import { PaginatedResponse } from '../../../../core/types/paginated-response';
+import { PaginatedResult } from '../../../../core/types/paginated-response';
 import { Author } from '../../domain/entities/author.entity';
 import { AuhorsApiResponse, AuthorsMapper } from '../mappers/authors.mapper';
-import { ApiPaginatedResponse } from '../../../../core/types/api-envelope';
+import { ApiPaginatedResult } from '../../../../core/types/api-envelope';
 import { environment } from '../../../../../enviroments/enviroment';
 import { CreateAuthorProps } from '../../domain/entities/authors.props';
 
@@ -23,23 +23,17 @@ export class AuthorsRepositoryImpl implements AuthorsRepository {
     );
   }
 
-  getAll(): Observable<PaginatedResponse<Author>> {
+  getAll(): Observable<PaginatedResult<Author>> {
     return this.http
-      .get<ApiPaginatedResponse<AuhorsApiResponse>>(`${environment.apiUrl}/authors`)
+      .get<ApiPaginatedResult<AuhorsApiResponse>>(`${environment.apiUrl}/authors`)
       .pipe(
-        map((response) => {
-          const { data, limit, page, total, message, success, totalPages } = response;
-
-          return new PaginatedResponse(
-            success,
-            message,
-            data.map((entity) => AuthorsMapper.toDomain(entity)),
-            total,
-            page,
-            limit,
-            totalPages,
-          );
-        }),
+        map((response) => ({
+          data: (response.data ?? []).map((entity) => AuthorsMapper.toDomain(entity)),
+          total: response.total,
+          page: response.page,
+          limit: response.limit,
+          totalPages: response.totalPages,
+        })),
       );
   }
 }

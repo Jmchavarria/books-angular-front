@@ -18,7 +18,7 @@ import { FormContainerComponent } from '../../../../../core/components/form-cont
 import { CreateAuthorUseCase } from '../../../application/use-cases/admin/create-author/create-author.use-case';
 import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
 import { TableAction } from '../../../../../core/types/table.type';
-import { PaginatedResponse } from '../../../../../core/types/paginated-response';
+import { PaginatedResult } from '../../../../../core/types/paginated-response';
 
 interface AuthorsForm {
   firstName: FormControl<string>;
@@ -156,7 +156,7 @@ export class AuthorsComponent implements OnInit {
 
   loadAuthors(filters?: FiltersDto[]): void {
     this.getAllAuthorsUseCase.execute(filters).subscribe({
-      next: (response: PaginatedResponse<Author>) => {
+      next: (response: PaginatedResult<Author>) => {
         this.authors.set(response);
       },
       error: (err) => console.error(err),

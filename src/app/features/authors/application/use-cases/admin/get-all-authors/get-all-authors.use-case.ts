@@ -3,14 +3,14 @@ import { AuthorsRepository } from '../../../../domain/repositories/authors.repos
 import { Observable } from 'rxjs';
 import { Author } from '../../../../domain/entities/author.entity';
 import { FiltersDto } from '../../../../../../core/interfaces/filters.interface';
-import { PaginatedResponse } from '../../../../../../core/types/paginated-response';
+import { PaginatedResult } from '../../../../../../core/types/paginated-response';
 @Injectable({
   providedIn: 'root',
 })
 export class GetAllAuthorsUseCase {
   constructor(private readonly repository: AuthorsRepository) {}
 
-  execute(filters?: FiltersDto[]): Observable<PaginatedResponse<Author>> {
+  execute(filters?: FiltersDto[]): Observable<PaginatedResult<Author>> {
     return this.repository.getAll(filters);
   }
 }

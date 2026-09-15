@@ -2,17 +2,18 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { UserAuth } from '../../../auth/domain/interfaces/user-auth';
 import { UsersRepository } from '../../domain/repositories/users.repository';
 import { User } from '../../domain/entities/users.entity';
-import { PaginatedResponse } from '../../../../core/types/paginated-response';
-import { HttpClient } from '@angular/common/http';
+import { PaginatedResult } from '../../../../core/types/paginated-response';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../../enviroments/enviroment';
 import { UsersApiResponse, UsersMapper } from '../mapper/user.mapper';
-import { ApiPaginatedResponse } from '../../../../core/types/api-envelope';
+import { ApiPaginatedResult } from '../../../../core/types/api-envelope';
 import { Injectable } from '@angular/core';
 import {
   CreateUserProps,
   GetAllUsersProps,
   UpdateUserProps,
 } from '../../domain/entities/users.props';
+import { ApiResponse } from '../../../../core/interfaces/api-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -36,35 +37,35 @@ export class UsersRepositoryImpl implements UsersRepository {
   update(input: UpdateUserProps): Observable<User> {
     const { ...body } = input;
 
-    return this.http.patch<UsersApiResponse>(`${environment.apiUrl}/users/${input.id}`, body).pipe(
-      map((response) => {
-        return UsersMapper.toDomain(response);
-      }),
-    );
-  }
-
-  getAll(filters?: GetAllUsersProps[]): Observable<PaginatedResponse<User>> {
-    const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
-
-    return this.http 
-      .get<ApiPaginatedResponse<UsersApiResponse>>(
-        `${environment.apiUrl}/users${filters ? `?${params}` : ''}`,
-      )
-
+    return this.http
+      .patch<ApiResponse<UsersApiResponse>>(`${environment.apiUrl}/users/${input.id}`, body)
       .pipe(
         map((response) => {
-          const { data, limit, page, total, message, success, totalPages } = response;
-
-          return new PaginatedResponse(
-            success,
-            message,
-            data.map((entity) => UsersMapper.toDomain(entity)),
-            total,
-            page,
-            limit,
-            totalPages,
-          );
+          console.log(response);
+          return UsersMapper.toDomain(response.data);
         }),
+      );
+  }
+
+  getAll(filters?: GetAllUsersProps[]): Observable<PaginatedResult<User>> {
+    let params = new HttpParams();
+
+    filters?.forEach((f) => {
+      if (f.value) {
+        params = params.set(f.name as string, f.value as string);
+      }
+    });
+
+    return this.http
+      .get<ApiPaginatedResult<UsersApiResponse>>(`${environment.apiUrl}/users`, { params })
+      .pipe(
+        map((response) => ({
+          data: (response.data ?? []).map((entity) => UsersMapper.toDomain(entity)),
+          total: response.total,
+          page: response.page,
+          limit: response.limit,
+          totalPages: response.totalPages,
+        })),
       );
   }
 }

@@ -9,6 +9,7 @@ import {
 import { environment } from '../../../../../enviroments/enviroment';
 import { UserAddressesMapper, UsersAddressesApiResponse } from '../mapper/user-addresses.mapper';
 import { Injectable } from '@angular/core';
+import { ApiResponse } from '../../../../core/interfaces/api-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -29,10 +30,12 @@ export class UserAddressesRepositoryImpl implements UserAddressesRepository {
   update(input: UpdateUserAddressesProps): Observable<UserAddresses> {
     const { ...body } = input;
     return this.http
-      .put<UsersAddressesApiResponse>(`${environment.apiUrl}/user-addresses/${input.id}`, body)
+      .put<
+        ApiResponse<UsersAddressesApiResponse>
+      >(`${environment.apiUrl}/user-addresses/${input.id}`, body)
       .pipe(
         map((response) => {
-          return UserAddressesMapper.toDomain(response);
+          return UserAddressesMapper.toDomain(response.data);
         }),
       );
   }

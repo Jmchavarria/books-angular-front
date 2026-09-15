@@ -1,6 +1,5 @@
 export interface IUserAddresses {
   alias: string;
-  userId: number;
   streetAddress: string;
   apartmentOrSuite: string;
   city: string;

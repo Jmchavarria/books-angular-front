@@ -4,11 +4,11 @@ import { map, Observable } from 'rxjs';
 import { Categories } from '../../domain/entities/categories.entity';
 import { environment } from '../../../../../enviroments/enviroment';
 import { CategoriesApiResponse, CategoriesMapper } from '../mappers/categories.mapper';
-import { ApiPaginatedResponse } from '../../../../core/types/api-envelope';
+import { ApiPaginatedResult } from '../../../../core/types/api-envelope';
 import { Injectable } from '@angular/core';
 import { CreateCategoryProps, UpdateCategoryProps } from '../../domain/entities/categories.props';
 import { FiltersDto } from '../../../../core/interfaces/filters.interface';
-import { PaginatedResponse } from '../../../../core/types/paginated-response';
+import { PaginatedResult } from '../../../../core/types/paginated-response';
 
 @Injectable()
 export class CategoriesRepositoryImpl implements CategoriesRepository {
@@ -33,27 +33,21 @@ export class CategoriesRepositoryImpl implements CategoriesRepository {
     );
   }
 
-  getAll(filters: FiltersDto[]): Observable<PaginatedResponse<Categories>> {
+  getAll(filters: FiltersDto[]): Observable<PaginatedResult<Categories>> {
     const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
 
     return this.http
       .get<
-        ApiPaginatedResponse<CategoriesApiResponse>
+        ApiPaginatedResult<CategoriesApiResponse>
       >(`${environment.apiUrl}/categories${filters ? `?${params}` : ''}`)
       .pipe(
-        map((response) => {
-          const { data, limit, page, total, message, success, totalPages } = response;
-
-          return new PaginatedResponse(
-            success,
-            message,
-            data.map(CategoriesMapper.toDomain),
-            total,
-            page,
-            limit,
-            totalPages,
-          );
-        }),
+        map((response) => ({
+          data: (response.data ?? []).map((entity) => CategoriesMapper.toDomain(entity)),
+          total: response.total,
+          page: response.page,
+          limit: response.limit,
+          totalPages: response.totalPages,
+        })),
       );
   }
 }

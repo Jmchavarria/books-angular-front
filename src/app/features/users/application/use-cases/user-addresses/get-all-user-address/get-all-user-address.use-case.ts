@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { UserAddressesRepository } from '../../../../domain/repositories/user-adresses.repository';
-import { IQueryParams } from '../../../../../../core/interfaces/query-params.interface';
 import { PaginatedResult } from '../../../../../../core/types/paginated-response';
 import { UserAddresses } from '../../../../domain/entities/user-addresses.entity';
 import { Observable } from 'rxjs';

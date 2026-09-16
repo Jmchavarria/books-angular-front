@@ -1,7 +1,10 @@
 @if (modeView() === 'info') {
-  <div class="space-y-3 py-2">
-    <div class="flex items-center justify-end">
-      <!-- <app-search-bar (searchValue)="loadUsers($event)" /> -->
+  <div class="space-y-2">
+    <div class="flex gap-2">
+      <div class="relative flex-1">
+        <app-search-bar (searchValue)="loadUserAddresses({ filter: $event })" />
+      </div>
+
       <app-button
         typeButton="button"
         label="+ Create address"
@@ -10,63 +13,87 @@
         (onSubmit)="modeView.set('create')"
       />
     </div>
-    @if (addresses() && addresses().data.length > 0) {
-      @for (address of addresses().data; track address.id) {
-        <div
-          class="flex items-start justify-between rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm transition hover:border-gray-300"
-        >
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-gray-900">{{ address.alias }}</span>
 
-              @if (address.isDefault) {
-                <span
-                  class="rounded bg-indigo-50 px-2 py-0.5 text-[10px] font-semibold text-indigo-600 border border-indigo-100"
-                >
-                  Default
-                </span>
-              }
+    @if (addresses() && addresses().data.length > 0) {
+      <div class="space-y-2.5">
+        @for (address of addresses().data; track address.id) {
+          <div
+            class="group flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-3.5 transition hover:border-gray-300"
+          >
+            <!-- Address type icon -->
+            <div
+              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-50"
+            >
+              <!-- <ng-icon [name]="getAddressIcon(address.alias)" size="18" class="text-indigo-600" /> -->
             </div>
 
-            <p class="text-xs font-medium text-gray-700">
-              {{ address.streetAddress }}
-              @if (address.apartmentOrSuite) {
-                <span>, {{ address.apartmentOrSuite }}</span>
-              }
-            </p>
+            <div class="min-w-0 flex-1 space-y-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-medium text-gray-900">{{ address.alias }}</span>
 
-            <p class="text-xs text-gray-500">
-              {{ address.city }}, {{ address.state }} {{ address.postalCode }} ·
-              {{ address.country }}
-            </p>
-          </div>
+                @if (address.isDefault) {
+                  <span
+                    class="inline-flex items-center gap-1 rounded bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-green-700"
+                  >
+                    <ng-icon name="heroCheckCircle" size="12" />
+                    Default
+                  </span>
+                }
+              </div>
 
-          <div class="flex items-center gap-1">
-            <button
-              type="button"
-              (click)="openEdit(address)"
-              aria-label="Edit address"
-              class="rounded-lg p-2 text-gray-400 transition hover:bg-indigo-50 hover:text-indigo-600"
+              <p class="truncate text-xs text-gray-600">
+                {{ address.streetAddress }}
+                @if (address.apartmentOrSuite) {
+                  <span>, {{ address.apartmentOrSuite }}</span>
+                }
+              </p>
+
+              <p class="text-[11px] text-gray-400">
+                {{ address.city }}, {{ address.state }} {{ address.postalCode }} ·
+                {{ address.country }}
+              </p>
+            </div>
+
+            <!-- Actions: hidden until hover -->
+            <div
+              class="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100"
             >
-              <ng-icon name="heroPencilSquare" size="16" title="Edit" />
-            </button>
-            <button
-              type="button"
-              aria-label="Delete address"
-              class="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
-            >
-              <ng-icon name="heroTrash" size="16" title="Delete" />
-            </button>
+              <button
+                type="button"
+                (click)="openEdit(address)"
+                aria-label="Edit address"
+                class="rounded-lg p-2 text-gray-400 transition hover:bg-indigo-50 hover:text-indigo-600"
+              >
+                <ng-icon name="heroPencilSquare" size="16" title="Edit" />
+              </button>
+              <button
+                type="button"
+                aria-label="Delete address"
+                class="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+              >
+                <ng-icon name="heroTrash" size="16" title="Delete" />
+              </button>
+            </div>
           </div>
-        </div>
-      }
+        }
+      </div>
+
+      <app-pagination
+        [page]="addresses().page"
+        [limit]="addresses().limit"
+        [total]="addresses().total"
+        [totalPages]="addresses().totalPages"
+        (pageChange)="loadUserAddresses({ filter: $event })"
+      />
     } @else {
       <div class="rounded-xl border border-dashed border-gray-300 p-6 text-center">
+        <ng-icon name="heroMapPin" size="24" class="mx-auto mb-2 text-gray-300" />
         <p class="text-xs text-gray-500">No registered addresses found for this user.</p>
       </div>
     }
   </div>
 }
+
 @if (modeView() === 'create' || modeView() === 'edit') {
   <app-addresses-form
     [isLoading]="isLoading()"

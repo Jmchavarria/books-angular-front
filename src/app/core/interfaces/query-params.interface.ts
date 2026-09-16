@@ -1,4 +1,4 @@
-export interface IQueryParams<T = unknown> {
+export interface IQueryParams {
   name?: string;
-  value?: T | T[];
+  value?: unknown;
 }

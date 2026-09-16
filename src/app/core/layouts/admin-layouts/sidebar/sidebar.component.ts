@@ -6,6 +6,7 @@ import {
   heroChartBarSolid,
   heroChevronLeftSolid,
   heroChevronRightSolid,
+  heroShoppingBagSolid,
   heroSquares2x2Solid,
   heroUserGroupSolid,
   heroUsersSolid,
@@ -29,6 +30,7 @@ export interface ModuleItems {
     heroSquares2x2Solid,
     heroBookOpenSolid,
     heroUserGroupSolid,
+    heroShoppingBagSolid,
   }),
   imports: [RouterLink, RouterLinkActive, NgIcon],
   templateUrl: './sidebar.component.html',
@@ -71,6 +73,12 @@ export class SidebarAdminCompoonent {
       name: 'Authors',
       icon: 'heroUserGroupSolid ',
       route: '/admin/authors',
+    },
+    {
+      id: 3,
+      name: 'Orders',
+      icon: 'heroShoppingBagSolid ',
+      route: '/admin/orders',
     },
   ];
 

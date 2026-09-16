@@ -48,8 +48,10 @@ export class UserAddressesRepositoryImpl implements UserAddressesRepository {
   getAll(filters?: GetAllUserAddressesProps): Observable<PaginatedResult<UserAddresses>> {
     let params = new HttpParams();
 
-    if (filters?.value) {
-      params = params.set(filters.name as string, filters.value as string);
+    if (filters?.filter) {
+      filters.filter.map((element) => {
+        params = params.set(element.name as string, element.value as string);
+      });
     }
 
     if (filters?.userId !== undefined && filters?.userId !== null) {

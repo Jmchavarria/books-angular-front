@@ -7,16 +7,29 @@ import { UserAddresses } from '../../../domain/entities/user-addresses.entity';
 import { IUserAddresses } from '../../../types/user-addresses.type';
 import { UpdateUserAddressUseCase } from '../../../application/use-cases/user-addresses/update-user-address/update-user-address.use-case';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroPencilSquare, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
+import {
+  heroMagnifyingGlass,
+  heroPencilSquare,
+  heroPlus,
+  heroTrash,
+} from '@ng-icons/heroicons/outline';
 import { GetAllUserAddressesUseCase } from '../../../application/use-cases/user-addresses/get-all-user-address/get-all-user-address.use-case';
 import { objectData } from '../../../../../core/layouts/admin-layouts/table/table.component';
 import { PaginatedResult } from '../../../../../core/types/paginated-response';
 import { GetAllUserAdrressesDto } from '../../../application/use-cases/user-addresses/get-all-user-address/get-all-user-addresses.dto';
+import { PaginationComponent } from '../../../../../core/components/pagination/pagination.component';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-user-addresses',
   standalone: true,
-  imports: [ButtonComponent, UserAddressesFormComponent, SearchBarComponent, NgIcon],
+  imports: [
+    ButtonComponent,
+    UserAddressesFormComponent,
+    SearchBarComponent,
+    NgIcon,
+    PaginationComponent,
+  ],
   providers: [
     provideIcons({
       heroPencilSquare,
@@ -28,7 +41,7 @@ import { GetAllUserAdrressesDto } from '../../../application/use-cases/user-addr
 })
 export class UserAddressesComponent {
   userId = input.required<number>();
-  addresses = signal<objectData<UserAddresses>>({
+  addresses = signal<PaginatedResult<UserAddresses>>({
     data: [],
     limit: 0,
     page: 0,
@@ -48,18 +61,29 @@ export class UserAddressesComponent {
   ) {}
 
   loadUserAddresses(filters?: GetAllUserAdrressesDto): void {
-    this.getAllUserAddressesUseCase.execute(filters).subscribe({
-      next: (response: PaginatedResult<UserAddresses>) => {
-        this.addresses.set(response);
-      },
-    });
+    this.getAllUserAddressesUseCase
+      .execute({
+        ...filters,
+        userId: this.userId(),
+      })
+      .subscribe({
+        next: (response: PaginatedResult<UserAddresses>) => {
+          this.addresses.set({
+            data: response.data,
+            limit: response.limit,
+            page: response.page,
+            total: response.total,
+            totalPages: response.totalPages,
+          });
+        },
+      });
   }
+
   ngOnInit(): void {
     this.loadUserAddresses({
       userId: this.userId(),
     });
   }
-
   private createUserAddress(address: IUserAddresses): void {
     this.isLoading.set(true);
 

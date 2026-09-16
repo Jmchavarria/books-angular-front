@@ -39,7 +39,7 @@ const MENU_WIDTH_FALLBACK = 160; // w-40, usado solo como posición provisional
     }),
   ],
   templateUrl: './table.component.html',
-  imports: [NgIcon, PaginationComponent],
+  imports: [NgIcon],
 })
 export class TableComponent<T extends object> {
   constructor(

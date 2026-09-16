@@ -72,6 +72,15 @@ export const routes: Routes = [
         // canActivate: [rolesGuard],
         data: { role: RoleTypeEnum.admin },
       },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./features/orders/presentation/pages/admin/orders.component').then(
+            (m) => m.OrdersComponent,
+          ),
+        // canActivate: [rolesGuard],
+        data: { role: RoleTypeEnum.admin },
+      },
     ],
     // canActivate: [rolesGuard],
   },

@@ -18,7 +18,15 @@
     [actions]="actions"
     (actionClick)="onAction($event)"
     (pageChange)="loadUsers($event)"
-  />
+  >
+    <app-pagination
+      [page]="users().page"
+      [limit]="users().limit"
+      [total]="users().total"
+      [totalPages]="users().totalPages"
+      (pageChange)="loadUsers($event)"
+    ></app-pagination>
+  </app-table>
 
   <!-- 1. MODAL DE FORMULARIO (Crear / Editar - Tamaño mediano 'md') -->
   @if (modalMode() === 'create' || modalMode() === 'edit') {

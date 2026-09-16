@@ -26,6 +26,7 @@ import { UserFormComponent } from '../components/user-form/user-form.component';
 import { UsersOrdersComponent } from '../components/user-orders/user-orders.component';
 import { UserReviewsComponent } from '../components/user-reviews/user-reviews.component';
 import { PaginatedResult } from '../../../../core/types/paginated-response';
+import { PaginationComponent } from '../../../../core/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-users',
@@ -44,7 +45,8 @@ import { PaginatedResult } from '../../../../core/types/paginated-response';
     UsersOrdersComponent,
     UserReviewsComponent,
     UserCartComponent,
-  ],
+    PaginationComponent
+],
   templateUrl: './users.component.html',
 })
 export class UsersComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, OnInit, output } from '@angular/core';
 
 @Component({
   selector: 'app-pagination',
@@ -6,7 +6,7 @@ import { Component, input, output } from '@angular/core';
   imports: [],
   templateUrl: './pagination.component.html',
 })
-export class PaginationComponent {
+export class PaginationComponent implements OnInit {
   page = input.required<number>();
   limit = input.required<number>();
   total = input.required<number>();
@@ -23,6 +23,13 @@ export class PaginationComponent {
         { name: 'pageQuery', value: newPage },
       ]);
     }
+  }
+
+  ngOnInit(): void {
+    console.log('total', this.total());
+    console.log('limite', this.limit());
+    console.log('pagina', this.page());
+    console.log('total de pagina', this.totalPages());
   }
 
   onchangeLimit(newLimit: Event) {

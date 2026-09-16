@@ -12,8 +12,9 @@ export interface CreateUserAddressProps {
   isDefault: boolean;
 }
 
-export interface GetAllUserAddressesProps extends IQueryParams {
-  userId: number;
+export interface GetAllUserAddressesProps {
+  userId?: number;
+  filter?: IQueryParams[];
 }
 
 export type UpdateUserAddressesProps = Partial<CreateUserAddressProps> & { id: number };

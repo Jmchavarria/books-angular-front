@@ -182,7 +182,7 @@ export class UsersComponent implements OnInit {
         role: usersForm.role,
       })
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.loadUsers();
           this.closeModal();
         },

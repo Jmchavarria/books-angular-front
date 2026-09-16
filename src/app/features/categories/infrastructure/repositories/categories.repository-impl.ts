@@ -9,6 +9,7 @@ import { Injectable } from '@angular/core';
 import { CreateCategoryProps, UpdateCategoryProps } from '../../domain/entities/categories.props';
 import { FiltersDto } from '../../../../core/interfaces/filters.interface';
 import { PaginatedResult } from '../../../../core/types/paginated-response';
+import { IQueryParams } from '../../../../core/interfaces/query-params.interface';
 
 @Injectable()
 export class CategoriesRepositoryImpl implements CategoriesRepository {
@@ -33,7 +34,7 @@ export class CategoriesRepositoryImpl implements CategoriesRepository {
     );
   }
 
-  getAll(filters: FiltersDto[]): Observable<PaginatedResult<Categories>> {
+  getAll(filters: IQueryParams[]): Observable<PaginatedResult<Categories>> {
     const params = new URLSearchParams(filters?.map((f) => [f.name as string, f.value as string]));
 
     return this.http

@@ -1,20 +1,25 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserAddressesRepository } from '../../domain/repositories/user-adresses.repository';
-import { map, Observable } from 'rxjs';
+import { filter, map, Observable } from 'rxjs';
 import { UserAddresses } from '../../domain/entities/user-addresses.entity';
 import {
   CreateUserAddressProps,
+  GetAllUserAddressesProps,
   UpdateUserAddressesProps,
 } from '../../domain/entities/user-addresses.props';
 import { environment } from '../../../../../enviroments/enviroment';
 import { UserAddressesMapper, UsersAddressesApiResponse } from '../mapper/user-addresses.mapper';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { ApiResponse } from '../../../../core/interfaces/api-response.interface';
+import { ApiPaginatedResult } from '../../../../core/types/api-envelope';
+import { PaginatedResult } from '../../../../core/types/paginated-response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserAddressesRepositoryImpl implements UserAddressesRepository {
+  private cache = signal<PaginatedResult<UserAddresses> | null>(null);
+
   constructor(private readonly http: HttpClient) {}
 
   create(input: CreateUserAddressProps): Observable<UserAddresses> {
@@ -37,6 +42,31 @@ export class UserAddressesRepositoryImpl implements UserAddressesRepository {
         map((response) => {
           return UserAddressesMapper.toDomain(response.data);
         }),
+      );
+  }
+
+  getAll(filters?: GetAllUserAddressesProps): Observable<PaginatedResult<UserAddresses>> {
+    let params = new HttpParams();
+
+    if (filters?.value) {
+      params = params.set(filters.name as string, filters.value as string);
+    }
+
+    if (filters?.userId !== undefined && filters?.userId !== null) {
+      params = params.set('userId', filters.userId.toString());
+    }
+    return this.http
+      .get<
+        ApiPaginatedResult<UsersAddressesApiResponse>
+      >(`${environment.apiUrl}/user-addresses/`, { params })
+      .pipe(
+        map((response) => ({
+          data: (response.data ?? []).map((entity) => UserAddressesMapper.toDomain(entity)),
+          total: response.total,
+          page: response.page,
+          limit: response.limit,
+          totalPages: response.totalPages,
+        })),
       );
   }
 }

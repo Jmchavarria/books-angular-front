@@ -21,6 +21,7 @@ import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
 import { SearchBarComponent } from '../../../../../shared/components/search-bar/search-bar.component';
 import { TableAction } from '../../../../../core/types/table.type';
 import { PaginatedResult } from '../../../../../core/types/paginated-response';
+import { IQueryParams } from '../../../../../core/interfaces/query-params.interface';
 
 @Component({
   selector: 'app-users',
@@ -86,7 +87,7 @@ export class CategoriesComponent implements OnInit {
     }
   }
 
-  loadCategories(filters?: FiltersDto[]): void {
+  loadCategories(filters?: IQueryParams[]): void {
     this.getAllCategoriesUseCase.execute(filters).subscribe({
       next: (response: PaginatedResult<Categories>) => {
         this.categories.set(response);

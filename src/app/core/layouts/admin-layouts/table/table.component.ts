@@ -11,6 +11,7 @@ import {
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import { heroPencilSquare } from '@ng-icons/heroicons/outline';
 import { TableAction } from '../../../types/table.type';
+import { PaginationComponent } from '../../../components/pagination/pagination.component';
 
 interface MenuPosition {
   top: number;
@@ -38,7 +39,7 @@ const MENU_WIDTH_FALLBACK = 160; // w-40, usado solo como posición provisional
     }),
   ],
   templateUrl: './table.component.html',
-  imports: [NgIcon],
+  imports: [NgIcon, PaginationComponent],
 })
 export class TableComponent<T extends object> {
   constructor(

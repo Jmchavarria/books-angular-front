@@ -1,0 +1,63 @@
+<div
+  class="w-full border-t border-gray-200 px-6 py-4 bg-white text-left text-sm text-gray-600 flex items-center justify-between flex-wrap gap-4"
+>
+  <!-- Limit controls and total information on the left -->
+  <div class="flex items-center gap-2 text-gray-500 font-medium text-xs sm:text-sm">
+    <span>Showing</span>
+
+    <div class="relative inline-block">
+      <select
+        [value]="limit()"
+        (change)="onchangeLimit($event)"
+        class="appearance-none cursor-pointer bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-1.5 font-semibold text-gray-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-xs sm:text-sm shadow-sm"
+      >
+        @for (option of pageSizeOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select>
+
+      <div
+        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
+      >
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.5"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <span>
+      Out of
+      <strong class="text-gray-800 font-semibold">
+        {{ this.total() }}
+      </strong>
+    </span>
+  </div>
+
+  <!-- Page navigation on the right -->
+  <div class="flex gap-2 items-center">
+    <span class="text-xs text-gray-400 font-medium mr-2">
+      Page {{ this.page() }} of {{ this.totalPages() || 1 }}
+    </span>
+
+    <button
+      [disabled]="this.page() === 1"
+      (click)="changePage(this.page() - 1)"
+      class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm cursor-pointer"
+    >
+      Previous
+    </button>
+
+    <button
+      [disabled]="this.page() === this.totalPages() || this.totalPages() === 0"
+      (click)="changePage(this.page() + 1)"
+      class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm cursor-pointer"
+    >
+      Next
+    </button>
+  </div>
+</div>

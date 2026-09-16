@@ -8,6 +8,10 @@ import { IUserAddresses } from '../../../types/user-addresses.type';
 import { UpdateUserAddressUseCase } from '../../../application/use-cases/user-addresses/update-user-address/update-user-address.use-case';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroPencilSquare, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
+import { GetAllUserAddressesUseCase } from '../../../application/use-cases/user-addresses/get-all-user-address/get-all-user-address.use-case';
+import { objectData } from '../../../../../core/layouts/admin-layouts/table/table.component';
+import { PaginatedResult } from '../../../../../core/types/paginated-response';
+import { GetAllUserAdrressesDto } from '../../../application/use-cases/user-addresses/get-all-user-address/get-all-user-addresses.dto';
 
 @Component({
   selector: 'app-user-addresses',
@@ -23,10 +27,14 @@ import { heroPencilSquare, heroPlus, heroTrash } from '@ng-icons/heroicons/outli
   templateUrl: './user-addresses.component.html',
 })
 export class UserAddressesComponent {
-  userAddresses = input<UserAddresses[]>([]);
   userId = input.required<number>();
-
-  addresses = signal<UserAddresses[]>([]);
+  addresses = signal<objectData<UserAddresses>>({
+    data: [],
+    limit: 0,
+    page: 0,
+    total: 0,
+    totalPages: 0,
+  });
 
   modeView = signal<'create' | 'edit' | 'info'>('info');
   isLoading = signal<boolean>(false);
@@ -36,10 +44,20 @@ export class UserAddressesComponent {
   constructor(
     private readonly createUserAddressUseCase: CreateUserAddressUseCase,
     private readonly updateUserAddressUseCase: UpdateUserAddressUseCase,
+    private readonly getAllUserAddressesUseCase: GetAllUserAddressesUseCase,
   ) {}
 
+  loadUserAddresses(filters?: GetAllUserAdrressesDto): void {
+    this.getAllUserAddressesUseCase.execute(filters).subscribe({
+      next: (response: PaginatedResult<UserAddresses>) => {
+        this.addresses.set(response);
+      },
+    });
+  }
   ngOnInit(): void {
-    this.addresses.set(this.userAddresses());
+    this.loadUserAddresses({
+      userId: this.userId(),
+    });
   }
 
   private createUserAddress(address: IUserAddresses): void {
@@ -51,9 +69,8 @@ export class UserAddressesComponent {
         userId: this.userId(),
       })
       .subscribe({
-        next: (newAddress: UserAddresses) => {
-          this.addresses.update((addresses) => [...addresses, newAddress]);
-
+        next: () => {
+          this.loadUserAddresses();
           this.closeForm();
         },
 
@@ -84,13 +101,10 @@ export class UserAddressesComponent {
         userId: userAddress.userId,
       })
       .subscribe({
-        next: (updatedAddress: UserAddresses) => {
-          console.log(updatedAddress);
-
-          this.addresses.update((addresses) =>
-            addresses.map((item) => (item.id === updatedAddress.id ? updatedAddress : item)),
-          );
-
+        next: () => {
+          this.loadUserAddresses({
+            userId: this.userId(),
+          });
           this.closeForm();
         },
 
@@ -106,6 +120,7 @@ export class UserAddressesComponent {
   }
 
   openEdit(address: UserAddresses): void {
+    console.log(address);
     this.selectedAddress.set(address);
     this.isSubmitted.set(false);
     this.modeView.set('edit');

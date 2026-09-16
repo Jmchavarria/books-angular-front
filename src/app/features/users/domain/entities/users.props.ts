@@ -8,7 +8,6 @@ export interface CreateUserProps {
   role: RoleTypeEnum;
   password: string;
 }
-
 export interface GetAllUsersProps {
   name?: string;
   value?: unknown;

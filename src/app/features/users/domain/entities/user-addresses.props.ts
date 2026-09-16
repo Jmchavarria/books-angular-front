@@ -1,3 +1,5 @@
+import { IQueryParams } from '../../../../core/interfaces/query-params.interface';
+
 export interface CreateUserAddressProps {
   userId: number;
   alias: string;
@@ -8,6 +10,10 @@ export interface CreateUserAddressProps {
   postalCode: string;
   country: string;
   isDefault: boolean;
+}
+
+export interface GetAllUserAddressesProps extends IQueryParams {
+  userId: number;
 }
 
 export type UpdateUserAddressesProps = Partial<CreateUserAddressProps> & { id: number };

@@ -53,10 +53,7 @@
           <app-user-detail [user]="selectedUser()!" />
         }
         @case ('addresses') {
-          <app-user-addresses
-            [userAddresses]="selectedUser()!.addresses"
-            [userId]="selectedUser()!.id"
-          />
+          <app-user-addresses [userId]="selectedUser()!.id" />
         }
         @case ('orders') {
           <app-user-orders [orders]="selectedUser()!.orders" />

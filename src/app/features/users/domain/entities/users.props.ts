@@ -1,4 +1,5 @@
 import { RoleTypeEnum } from '../../../../core/enums/role.enum';
+import { IQueryParams } from '../../../../core/interfaces/query-params.interface';
 
 export interface CreateUserProps {
   firstName: string;
@@ -9,8 +10,7 @@ export interface CreateUserProps {
   password: string;
 }
 export interface GetAllUsersProps {
-  name?: string;
-  value?: unknown;
+  filter?: IQueryParams[];
 }
 
 export type UpdateUserProps = Partial<CreateUserProps> & { id: number };

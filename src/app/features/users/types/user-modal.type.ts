@@ -1,1 +1,1 @@
-export type UserModalMode = 'create' | 'edit' | 'detail' | null;
+export type ModalMode = 'create' | 'edit' | 'detail' | null;

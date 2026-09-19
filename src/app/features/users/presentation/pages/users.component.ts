@@ -13,7 +13,7 @@ import { ModalComponent } from '../../../../core/components/modal/modal.componen
 import { ButtonComponent } from '../../../../core/components/button/button.component';
 import { GetAllUsersDto } from '../../application/use-cases/get-all-users/get-all-users.dto';
 import { SearchBarComponent } from '../../../../shared/components/search-bar/search-bar.component';
-import { UserModalMode } from '../../types/user-modal.type';
+
 import { USER_TABLE_ACTIONS } from '../../config/user-table.config';
 import { UserFormData } from '../../types/user-form.type';
 import { TableAction } from '../../../../core/types/table.type';
@@ -27,6 +27,7 @@ import { UsersOrdersComponent } from '../components/user-orders/user-orders.comp
 import { UserReviewsComponent } from '../components/user-reviews/user-reviews.component';
 import { PaginatedResult } from '../../../../core/types/paginated-response';
 import { PaginationComponent } from '../../../../core/components/pagination/pagination.component';
+import { ModalMode } from '../../types/user-modal.type';
 
 @Component({
   selector: 'app-users',
@@ -45,12 +46,11 @@ import { PaginationComponent } from '../../../../core/components/pagination/pagi
     UsersOrdersComponent,
     UserReviewsComponent,
     UserCartComponent,
-    PaginationComponent
-],
+    PaginationComponent,
+  ],
   templateUrl: './users.component.html',
 })
 export class UsersComponent implements OnInit {
-  isSubmitted = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   protected readonly RoleTypeEnum = RoleTypeEnum;
   users = signal<objectData<User>>({
@@ -62,7 +62,7 @@ export class UsersComponent implements OnInit {
   });
   readonly actions = USER_TABLE_ACTIONS;
   selectedUser = signal<User | null>(null);
-  modalMode = signal<UserModalMode>(null);
+  modalMode = signal<ModalMode>(null);
   currentTab = signal<string>('info');
 
   readonly detailTabs = [
@@ -92,7 +92,6 @@ export class UsersComponent implements OnInit {
   openEdit(user: User): void {
     this.selectedUser.set(user);
 
-    this.isSubmitted.set(false);
     this.modalMode.set('edit');
   }
 
@@ -117,7 +116,7 @@ export class UsersComponent implements OnInit {
     this.modalMode.set('detail');
   }
 
-  loadUsers(filters?: GetAllUsersDto[]): void {
+  loadUsers(filters?: GetAllUsersDto): void {
     this.getAllUsersUseCase.execute(filters).subscribe({
       next: (response: PaginatedResult<User>) => {
         this.users.set({
@@ -198,8 +197,6 @@ export class UsersComponent implements OnInit {
   }
 
   saveUser(user: UserFormData): void {
-    this.isSubmitted.set(true);
-
     switch (this.modalMode()) {
       case 'create':
         this.createUser(user);

@@ -1,7 +1,7 @@
 import { ModalHeader } from '../../../core/types/modal.type';
-import { UserModalMode } from '../types/user-modal.type';
+import { ModalMode } from '../types/user-modal.type';
 
-export const UsersmodalHeaders: Record<Exclude<UserModalMode, null>, ModalHeader> = {
+export const UsersmodalHeaders: Record<Exclude<ModalMode, null>, ModalHeader> = {
   create: {
     title: 'New user',
     description: 'Fill in the information to create a new user.',

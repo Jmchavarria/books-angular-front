@@ -1,0 +1,86 @@
+<div class="space-y-5">
+  <!-- Header & Tabla principal -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-xl font-bold text-gray-900">Orders Management</h2>
+      <p class="text-xs text-gray-500">Manage platform access and roles.</p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <app-search-bar (searchValue)="loadOrders({ filter: $event })" />
+      <app-button typeButton="button" (onSubmit)="openCreate()" label="+ Create user" />
+    </div>
+  </div>
+
+  <app-table
+    [data]="orders()"
+    [columns]="[
+      'id',
+      'orderNumber',
+      'status',
+      'subtotal',
+      'shippingCost',
+      'taxAmount',
+      'discountAmount',
+      'totalAmount',
+    ]"
+    (actionClick)="onAction($event)"
+    (pageChange)="loadOrders({ filter: $event })"
+  >
+    <app-pagination
+      [page]="orders().page"
+      [limit]="orders().limit"
+      [total]="orders().total"
+      [totalPages]="orders().totalPages"
+      (pageChange)="loadOrders({ filter: $event })"
+    ></app-pagination>
+  </app-table>
+
+  <!-- 1. MODAL DE FORMULARIO (Crear / Editar - Tamaño mediano 'md') -->
+  @if (modalMode() === 'create' || modalMode() === 'edit') {
+    <app-modal
+      size="lg"
+      [title]="modalMode() === 'create' ? 'Create User' : 'Edit User'"
+      description="Fill in the user details below."
+      (onCancel)="closeModal()"
+    >
+      <app-order-form
+        [isLoading]="isLoading()"
+        [isEdit]="modalMode() === 'edit'"
+        [order]="selectedOrder()"
+        (submitted)="saveUser($event)"
+        (cancelled)="closeModal()"
+      />
+    </app-modal>
+  }
+
+  <!-- 2. MODAL DE DETALLES CON PESTAÑAS (Ancho extendido '4xl') -->
+  @if (modalMode() === 'detail') {
+    <!-- <app-modal
+      size="2xl"
+      title="User Profile Details"
+      description="View addresses, order history, and reviews."
+      [tabs]="detailTabs"
+      (tabChange)="currentTab.set($event)"
+      (onCancel)="closeModal()"
+    >
+      @switch (currentTab()) {
+        @case ('info') {
+          <app-user-detail [user]="selectedUser()!" />
+        }
+        @case ('addresses') {
+          <app-user-addresses [userId]="selectedUser()!.id" />
+        }
+        @case ('orders') {
+          <app-user-orders [orders]="selectedUser()!.orders" />
+        }
+        @case ('reviews') {
+          <app-user-reviews [reviews]="selectedUser()!.reviews" />
+        }
+        @case ('cart') {
+          <app-user-cart [cart]="selectedUser()!.cart" />
+        }
+      }
+    </app-modal> -->
+  }
+</div>

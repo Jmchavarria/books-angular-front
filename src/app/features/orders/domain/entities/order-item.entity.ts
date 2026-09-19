@@ -1,15 +1,18 @@
 import { Book } from '../../../books/domain/entities/book.entity';
+import { IOrderItem } from '../interfaces/order-item.interface';
 
-export class OrderItem {
-  constructor(
-    public readonly id: number,
-    public readonly orderId: number,
-    public readonly order: number,
-    public readonly book: Book,
-    public readonly quantity: number,
-    public readonly priceAtPurchase: number,
-    public readonly totalPrice: number,
-    public readonly createdAt: number,
-    public readonly updatedAt: number,
-  ) {}
+export class OrderItemDE {
+  id: number;
+  orderId: number;
+  bookId: number;
+  book: Book;
+  quantity: number;
+  priceAtPurchase: number;
+  totalPrice: number;
+  createdAt: Date;
+  updatedAt: Date;
+
+  constructor(attributes: IOrderItem) {
+    Object.assign(this, attributes);
+  }
 }

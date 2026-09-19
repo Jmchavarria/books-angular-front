@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Order } from '../../../../orders/domain/entities/orders.entity';
+import { OrderDE } from '../../../../orders/domain/entities/orders.entity';
 
 @Component({
   selector: 'app-user-orders',
@@ -9,5 +9,5 @@ import { Order } from '../../../../orders/domain/entities/orders.entity';
   templateUrl: './users-orders.component.html',
 })
 export class UsersOrdersComponent {
-  orders = input<Order[]>([]);
+  orders = input<OrderDE[]>([]);
 }

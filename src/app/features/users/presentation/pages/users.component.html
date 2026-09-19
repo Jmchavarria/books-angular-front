@@ -7,7 +7,7 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <app-search-bar (searchValue)="loadUsers($event)" />
+      <app-search-bar (searchValue)="loadUsers({ filter: $event })" />
       <app-button typeButton="button" (onSubmit)="openCreate()" label="+ Create user" />
     </div>
   </div>
@@ -17,14 +17,14 @@
     [columns]="['id', 'firstName', 'lastName', 'email', 'phone', 'role', 'status']"
     [actions]="actions"
     (actionClick)="onAction($event)"
-    (pageChange)="loadUsers($event)"
+    (pageChange)="loadUsers({ filter: $event })"
   >
     <app-pagination
       [page]="users().page"
       [limit]="users().limit"
       [total]="users().total"
       [totalPages]="users().totalPages"
-      (pageChange)="loadUsers($event)"
+      (pageChange)="loadUsers({ filter: $event })"
     ></app-pagination>
   </app-table>
 

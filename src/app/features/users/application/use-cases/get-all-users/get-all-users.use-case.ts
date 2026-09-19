@@ -10,7 +10,7 @@ import { PaginatedResult } from '../../../../../core/types/paginated-response';
 })
 export class GetAllUsersUseCase {
   constructor(private readonly repository: UsersRepository) {}
-  execute(filters?: GetAllUsersDto[]): Observable<PaginatedResult<User>> {
+  execute(filters?: GetAllUsersDto): Observable<PaginatedResult<User>> {
     return this.repository.getAll(filters);
   }
 }

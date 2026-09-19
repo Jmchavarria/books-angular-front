@@ -14,6 +14,8 @@ import { AuthorsRepository } from './features/authors/domain/repositories/author
 import { AuthorsRepositoryImpl } from './features/authors/infrastructure/repositories/authors.repository-impl';
 import { UserAddressesRepository } from './features/users/domain/repositories/user-adresses.repository';
 import { UserAddressesRepositoryImpl } from './features/users/infrastructure/repositories/user-addresses.repository-impl';
+import { OrdersRepository } from './features/orders/domain/repositories/orders.repository';
+import { OrdersRepositoryImpl } from './features/orders/infrastructure/repositories/orders.repository-impl';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -25,5 +27,6 @@ export const appConfig: ApplicationConfig = {
     { provide: BooksRepository, useClass: BooksRepositoryImpl },
     { provide: AuthorsRepository, useClass: AuthorsRepositoryImpl },
     { provide: UserAddressesRepository, useClass: UserAddressesRepositoryImpl },
+    { provide: OrdersRepository, useClass: OrdersRepositoryImpl },
   ],
 };

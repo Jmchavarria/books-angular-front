@@ -47,15 +47,14 @@ export class UsersRepositoryImpl implements UsersRepository {
       );
   }
 
-  getAll(filters?: GetAllUsersProps[]): Observable<PaginatedResult<User>> {
+  getAll(filters?: GetAllUsersProps): Observable<PaginatedResult<User>> {
     let params = new HttpParams();
 
-    filters?.forEach((f) => {
-      if (f.value) {
-        params = params.set(f.name as string, f.value as string);
-      }
-    });
-
+    if (filters?.filter) {
+      filters.filter.map((element) => {
+        params = params.set(element.name as string, element.value as string);
+      });
+    }
     return this.http
       .get<ApiPaginatedResult<UsersApiResponse>>(`${environment.apiUrl}/users`, { params })
       .pipe(

@@ -4,151 +4,361 @@
   (onSubmit)="handleSubmit()"
   (onCancel)="cancelled.emit()"
 >
-  @let firstName = orderForm.get('firstName');
+  <!-- User ID -->
+  @let userId = orderForm.get('userId');
 
   <div class="flex flex-col gap-1">
-    <label for="firstName" class="text-xs font-semibold text-gray-800"> First Name </label>
+    <label for="userId" class="text-xs font-semibold text-gray-800"> User ID </label>
 
     <div
       class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-      [class.border-red-500]="firstName?.invalid && (firstName?.touched || isSubmitted)"
+      [class.border-red-500]="userId?.invalid && (userId?.touched || isSubmitted)"
     >
       <input
-        id="firstName"
+        id="userId"
+        type="number"
+        formControlName="userId"
+        class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+        placeholder="1"
+      />
+    </div>
+
+    <div class="flex h-3 items-center px-1">
+      @if (userId?.invalid && (userId?.touched || isSubmitted)) {
+        <span class="text-[11px] text-red-500">
+          @if (userId?.errors?.['required']) {
+            User ID is required.
+          }
+          @if (userId?.errors?.['min']) {
+            User ID must be greater than 0.
+          }
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- Status -->
+  @let status = orderForm.get('status');
+
+  <div class="flex flex-col gap-1">
+    <label for="status" class="text-xs font-semibold text-gray-800"> Status </label>
+
+    <div
+      class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+      [class.border-red-500]="status?.invalid && (status?.touched || isSubmitted)"
+    >
+      <input
+        id="status"
         type="text"
-        formControlName="firstName"
+        formControlName="status"
         class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
-        placeholder="John"
+        placeholder="PENDING"
       />
     </div>
 
     <div class="flex h-3 items-center px-1">
-      @if (firstName?.invalid && (firstName?.touched || isSubmitted)) {
+      @if (status?.invalid && (status?.touched || isSubmitted)) {
         <span class="text-[11px] text-red-500">
-          @if (firstName?.errors?.['required']) {
-            First name is required.
-          }
-
-          @if (firstName?.errors?.['minlength']) {
-            Minimum 3 characters.
-          }
-
-          @if (firstName?.errors?.['maxlength']) {
-            Maximum 50 characters.
+          @if (status?.errors?.['required']) {
+            Status is required.
           }
         </span>
       }
     </div>
   </div>
 
-  @let lastName = orderForm.get('lastName');
-
-  <div class="flex flex-col gap-1">
-    <label for="lastName" class="text-xs font-semibold text-gray-800"> Last Name </label>
-
-    <div
-      class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-      [class.border-red-500]="lastName?.invalid && (lastName?.touched || isSubmitted)"
-    >
-      <input
-        id="lastName"
-        type="text"
-        formControlName="lastName"
-        class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
-        placeholder="Doe"
-      />
-    </div>
-
-    <div class="flex h-3 items-center px-1">
-      @if (lastName?.invalid && (lastName?.touched || isSubmitted)) {
-        <span class="text-[11px] text-red-500">
-          @if (lastName?.errors?.['required']) {
-            Last name is required.
-          }
-
-          @if (lastName?.errors?.['minlength']) {
-            Minimum 3 characters.
-          }
-
-          @if (lastName?.errors?.['maxlength']) {
-            Maximum 50 characters.
-          }
-        </span>
-      }
-    </div>
-  </div>
-
-  @let email = orderForm.get('email');
-
-  <div class="flex flex-col gap-1">
-    <label for="email" class="text-xs font-semibold text-gray-800"> Email </label>
-
-    <div
-      class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-      [class.border-red-500]="email?.invalid && (email?.touched || isSubmitted)"
-    >
-      <input
-        id="email"
-        type="email"
-        formControlName="email"
-        class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
-        placeholder="you@example.com"
-      />
-    </div>
-
-    <div class="flex h-3 items-center px-1">
-      @if (email?.invalid && (email?.touched || isSubmitted)) {
-        <span class="text-[11px] text-red-500">
-          @if (email?.errors?.['required']) {
-            Email is required.
-          }
-
-          @if (email?.errors?.['email']) {
-            Enter a valid email address.
-          }
-        </span>
-      }
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-    @let phone = orderForm.get('phone');
+  <!-- Shipping Address Snapshot (Nested FormGroup) -->
+  <ng-container formGroupName="shippingAddressSnapshot">
+    <!-- Recipient Name -->
+    @let recipientName = orderForm.get('shippingAddressSnapshot.recipientName');
 
     <div class="flex flex-col gap-1">
-      <label for="phone" class="text-xs font-semibold text-gray-800"> Phone </label>
+      <label for="recipientName" class="text-xs font-semibold text-gray-800">
+        Recipient Name
+      </label>
 
       <div
         class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
-        [class.border-red-500]="phone?.invalid && (phone?.touched || isSubmitted)"
+        [class.border-red-500]="recipientName?.invalid && (recipientName?.touched || isSubmitted)"
       >
-        <span class="shrink-0 border-r border-gray-300 pr-2 text-xs text-gray-500 sm:text-sm">
-          +57
-        </span>
-
         <input
-          id="phone"
-          type="tel"
-          formControlName="phone"
+          id="recipientName"
+          type="text"
+          formControlName="recipientName"
           class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
-          placeholder="3001234567"
+          placeholder="John Doe"
         />
       </div>
 
       <div class="flex h-3 items-center px-1">
-        @if (phone?.invalid && (phone?.touched || isSubmitted)) {
+        @if (recipientName?.invalid && (recipientName?.touched || isSubmitted)) {
           <span class="text-[11px] text-red-500">
-            @if (phone?.errors?.['required']) {
-              Phone number is required.
-            } @else if (phone?.errors?.['pattern']) {
-              Enter a valid phone number.
-            } @else if (phone?.errors?.['minlength']) {
-              Minimum 10 characters.
-            } @else if (phone?.errors?.['maxlength']) {
-              Maximum 10 characters.
+            @if (recipientName?.errors?.['required']) {
+              Recipient name is required.
             }
           </span>
         }
       </div>
     </div>
-  </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <!-- Recipient Phone -->
+      @let recipientPhone = orderForm.get('shippingAddressSnapshot.recipientPhone');
+
+      <div class="flex flex-col gap-1">
+        <label for="recipientPhone" class="text-xs font-semibold text-gray-800">
+          Recipient Phone
+        </label>
+
+        <div
+          class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+          [class.border-red-500]="
+            recipientPhone?.invalid && (recipientPhone?.touched || isSubmitted)
+          "
+        >
+          <span class="shrink-0 border-r border-gray-300 pr-2 text-xs text-gray-500 sm:text-sm">
+            +57
+          </span>
+
+          <input
+            id="recipientPhone"
+            type="tel"
+            formControlName="recipientPhone"
+            class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+            placeholder="3001234567"
+          />
+        </div>
+
+        <div class="flex h-3 items-center px-1">
+          @if (recipientPhone?.invalid && (recipientPhone?.touched || isSubmitted)) {
+            <span class="text-[11px] text-red-500">
+              @if (recipientPhone?.errors?.['required']) {
+                Phone number is required.
+              }
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Alias -->
+      @let alias = orderForm.get('shippingAddressSnapshot.alias');
+
+      <div class="flex flex-col gap-1">
+        <label for="alias" class="text-xs font-semibold text-gray-800"> Alias </label>
+
+        <div
+          class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+          [class.border-red-500]="alias?.invalid && (alias?.touched || isSubmitted)"
+        >
+          <input
+            id="alias"
+            type="text"
+            formControlName="alias"
+            class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+            placeholder="Home / Office"
+          />
+        </div>
+
+        <div class="flex h-3 items-center px-1">
+          @if (alias?.invalid && (alias?.touched || isSubmitted)) {
+            <span class="text-[11px] text-red-500">
+              @if (alias?.errors?.['required']) {
+                Alias is required.
+              }
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Street Address -->
+    @let streetAddress = orderForm.get('shippingAddressSnapshot.streetAddress');
+
+    <div class="flex flex-col gap-1">
+      <label for="streetAddress" class="text-xs font-semibold text-gray-800">
+        Street Address
+      </label>
+
+      <div
+        class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+        [class.border-red-500]="streetAddress?.invalid && (streetAddress?.touched || isSubmitted)"
+      >
+        <input
+          id="streetAddress"
+          type="text"
+          formControlName="streetAddress"
+          class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+          placeholder="123 Main St"
+        />
+      </div>
+
+      <div class="flex h-3 items-center px-1">
+        @if (streetAddress?.invalid && (streetAddress?.touched || isSubmitted)) {
+          <span class="text-[11px] text-red-500">
+            @if (streetAddress?.errors?.['required']) {
+              Street address is required.
+            }
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <!-- Apartment / Suite -->
+      @let apartmentOrSuite = orderForm.get('shippingAddressSnapshot.apartmentOrSuite');
+
+      <div class="flex flex-col gap-1">
+        <label for="apartmentOrSuite" class="text-xs font-semibold text-gray-800">
+          Apartment / Suite
+        </label>
+
+        <div
+          class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+          [class.border-red-500]="
+            apartmentOrSuite?.invalid && (apartmentOrSuite?.touched || isSubmitted)
+          "
+        >
+          <input
+            id="apartmentOrSuite"
+            type="text"
+            formControlName="apartmentOrSuite"
+            class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+            placeholder="Apt 4B"
+          />
+        </div>
+
+        <div class="flex h-3 items-center px-1">
+          @if (apartmentOrSuite?.invalid && (apartmentOrSuite?.touched || isSubmitted)) {
+            <span class="text-[11px] text-red-500">
+              @if (apartmentOrSuite?.errors?.['required']) {
+                Apartment or suite is required.
+              }
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- City -->
+      @let city = orderForm.get('shippingAddressSnapshot.city');
+
+      <div class="flex flex-col gap-1">
+        <label for="city" class="text-xs font-semibold text-gray-800"> City </label>
+
+        <div
+          class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+          [class.border-red-500]="city?.invalid && (city?.touched || isSubmitted)"
+        >
+          <input
+            id="city"
+            type="text"
+            formControlName="city"
+            class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+            placeholder="Medellin"
+          />
+        </div>
+
+        <div class="flex h-3 items-center px-1">
+          @if (city?.invalid && (city?.touched || isSubmitted)) {
+            <span class="text-[11px] text-red-500">
+              @if (city?.errors?.['required']) {
+                City is required.
+              }
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <!-- State -->
+      @let state = orderForm.get('shippingAddressSnapshot.state');
+
+      <div class="flex flex-col gap-1">
+        <label for="state" class="text-xs font-semibold text-gray-800"> State </label>
+
+        <div
+          class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+          [class.border-red-500]="state?.invalid && (state?.touched || isSubmitted)"
+        >
+          <input
+            id="state"
+            type="text"
+            formControlName="state"
+            class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+            placeholder="Antioquia"
+          />
+        </div>
+
+        <div class="flex h-3 items-center px-1">
+          @if (state?.invalid && (state?.touched || isSubmitted)) {
+            <span class="text-[11px] text-red-500">
+              @if (state?.errors?.['required']) {
+                State is required.
+              }
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Country -->
+      @let country = orderForm.get('shippingAddressSnapshot.country');
+
+      <div class="flex flex-col gap-1">
+        <label for="country" class="text-xs font-semibold text-gray-800"> Country </label>
+
+        <div
+          class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+          [class.border-red-500]="country?.invalid && (country?.touched || isSubmitted)"
+        >
+          <input
+            id="country"
+            type="text"
+            formControlName="country"
+            class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+            placeholder="Colombia"
+          />
+        </div>
+
+        <div class="flex h-3 items-center px-1">
+          @if (country?.invalid && (country?.touched || isSubmitted)) {
+            <span class="text-[11px] text-red-500">
+              @if (country?.errors?.['required']) {
+                Country is required.
+              }
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Postal Code -->
+      @let postalCode = orderForm.get('shippingAddressSnapshot.postalCode');
+
+      <div class="flex flex-col gap-1">
+        <label for="postalCode" class="text-xs font-semibold text-gray-800"> Postal Code </label>
+
+        <div
+          class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+          [class.border-red-500]="postalCode?.invalid && (postalCode?.touched || isSubmitted)"
+        >
+          <input
+            id="postalCode"
+            type="text"
+            formControlName="postalCode"
+            class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+            placeholder="050001"
+          />
+        </div>
+
+        <div class="flex h-3 items-center px-1">
+          @if (postalCode?.invalid && (postalCode?.touched || isSubmitted)) {
+            <span class="text-[11px] text-red-500">
+              @if (postalCode?.errors?.['required']) {
+                Postal code is required.
+              }
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+  </ng-container>
 </app-form-container>

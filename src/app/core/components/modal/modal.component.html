@@ -4,7 +4,6 @@
     class="flex max-h-[90vh] w-full flex-col rounded-2xl bg-white p-6 shadow-xl transition-all duration-200"
     [class]="sizeClasses[size()]"
   >
-    <!-- Header (Fijo) -->
     <div class="flex items-start justify-between">
       <div>
         @if (title()) {
@@ -24,7 +23,7 @@
       </button>
     </div>
 
-    <!-- Tab Bar (Fijo) -->
+    <!-- Tab Bar -->
     @if (tabs().length > 0) {
       <div class="mt-5 flex gap-1 border-b border-gray-200">
         @for (tab of tabs(); track tab.id) {

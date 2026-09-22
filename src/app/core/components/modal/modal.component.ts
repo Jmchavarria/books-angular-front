@@ -24,7 +24,6 @@ export class ModalComponent {
   title = input<string | null>(null);
   description = input<string | null>(null);
   size = input<ModalSize>('md'); // Valor por defecto
-
   onCancel = output<void>();
 
   // Soporte para pestañas

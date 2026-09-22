@@ -14,7 +14,7 @@ import { ButtonComponent } from '../../../../core/components/button/button.compo
 import { GetAllUsersDto } from '../../application/use-cases/get-all-users/get-all-users.dto';
 import { SearchBarComponent } from '../../../../shared/components/search-bar/search-bar.component';
 
-import { USER_TABLE_ACTIONS } from '../../config/user-table.config';
+import { USER_TABLE_ACTIONS, USERS_COLUMNS } from '../../config/user-table.config';
 import { UserFormData } from '../../types/user-form.type';
 import { TableAction } from '../../../../core/types/table.type';
 import { ModalHeader } from '../../../../core/types/modal.type';
@@ -28,11 +28,18 @@ import { UserReviewsComponent } from '../components/user-reviews/user-reviews.co
 import { PaginatedResult } from '../../../../core/types/paginated-response';
 import { PaginationComponent } from '../../../../core/components/pagination/pagination.component';
 import { ModalMode } from '../../types/user-modal.type';
+import { TableUtilsService } from '../../../../core/services/table-utils.service';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroEllipsisVerticalSolid } from '@ng-icons/heroicons/solid';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  providers: [],
+  providers: [
+    provideIcons({
+      heroEllipsisVerticalSolid,
+    }),
+  ],
   imports: [
     FormsModule,
     TableComponent,
@@ -47,6 +54,7 @@ import { ModalMode } from '../../types/user-modal.type';
     UserReviewsComponent,
     UserCartComponent,
     PaginationComponent,
+    NgIcon,
   ],
   templateUrl: './users.component.html',
 })
@@ -61,9 +69,11 @@ export class UsersComponent implements OnInit {
     totalPages: 0,
   });
   readonly actions = USER_TABLE_ACTIONS;
+  readonly columns = USERS_COLUMNS;
   selectedUser = signal<User | null>(null);
   modalMode = signal<ModalMode>(null);
   currentTab = signal<string>('info');
+  isMenuOpen = signal<boolean>(false);
 
   readonly detailTabs = [
     { id: 'info', label: 'Info' },
@@ -77,10 +87,15 @@ export class UsersComponent implements OnInit {
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
+    public readonly tableUtilsService: TableUtilsService<User>,
   ) {}
 
   ngOnInit(): void {
     this.loadUsers();
+  }
+
+  toggleMenu() {
+    this.isMenuOpen.update((value) => !value);
   }
 
   readonly modalHeader = computed<ModalHeader>(() => {

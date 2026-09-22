@@ -1,14 +1,13 @@
 <div class="space-y-5">
-  <!-- Header & Tabla principal -->
   <div class="flex items-center justify-between">
     <div>
       <h2 class="text-xl font-bold text-gray-900">Orders Management</h2>
-      <p class="text-xs text-gray-500">Manage platform access and roles.</p>
+      <p class="text-xs text-gray-500">Manage Orders.</p>
     </div>
 
     <div class="flex items-center gap-2">
       <app-search-bar (searchValue)="loadOrders({ filter: $event })" />
-      <app-button typeButton="button" (onSubmit)="openCreate()" label="+ Create user" />
+      <app-button typeButton="button" (onSubmit)="openCreate()" label="+ Create order" />
     </div>
   </div>
 
@@ -24,6 +23,7 @@
       'discountAmount',
       'totalAmount',
     ]"
+    [actions]="actions"
     (actionClick)="onAction($event)"
     (pageChange)="loadOrders({ filter: $event })"
   >
@@ -36,12 +36,11 @@
     ></app-pagination>
   </app-table>
 
-  <!-- 1. MODAL DE FORMULARIO (Crear / Editar - Tamaño mediano 'md') -->
   @if (modalMode() === 'create' || modalMode() === 'edit') {
     <app-modal
       size="lg"
-      [title]="modalMode() === 'create' ? 'Create User' : 'Edit User'"
-      description="Fill in the user details below."
+      [title]="modalMode() === 'create' ? 'New order' : 'Edit order'"
+      description="Fill in the order details below."
       (onCancel)="closeModal()"
     >
       <app-order-form

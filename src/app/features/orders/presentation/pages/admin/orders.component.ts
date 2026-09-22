@@ -20,6 +20,7 @@ import { PaginationComponent } from '../../../../../core/components/pagination/p
 import { SearchBarComponent } from '../../../../../shared/components/search-bar/search-bar.component';
 import { ButtonComponent } from '../../../../../core/components/button/button.component';
 import { OrderFormComponent } from '../../components/order-form/order-form.component';
+import { ORDERS_TABLE_ACTIONS } from '../../../config/order-table.config';
 
 @Component({
   selector: 'app-orders',
@@ -44,6 +45,7 @@ export class OrdersComponent {
     total: 0,
     totalPages: 0,
   });
+  readonly actions = ORDERS_TABLE_ACTIONS;
 
   selectedOrder = signal<OrderDE | null>(null);
   modalMode = signal<ModalMode>(null);
@@ -78,6 +80,7 @@ export class OrdersComponent {
   onAction(event: { action: TableAction; item: OrderDE }) {
     switch (event.action.key) {
       case 'edit':
+
         this.openEdit(event.item);
         break;
       case 'view detail':

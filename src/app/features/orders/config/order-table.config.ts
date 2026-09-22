@@ -1,6 +1,6 @@
 import { TableAction } from '../../../core/types/table.type';
 
-export const USER_TABLE_ACTIONS: TableAction[] = [
+export const ORDERS_TABLE_ACTIONS: TableAction[] = [
   {
     key: 'edit',
     label: 'Edit',
@@ -12,5 +12,3 @@ export const USER_TABLE_ACTIONS: TableAction[] = [
     icon: 'eye',
   },
 ];
-
-export const USERS_COLUMNS = ['id', 'firstName', 'lastName', 'email', 'phone', 'role', 'status'];

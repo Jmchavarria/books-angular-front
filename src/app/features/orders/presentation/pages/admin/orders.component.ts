@@ -20,11 +20,22 @@ import { PaginationComponent } from '../../../../../core/components/pagination/p
 import { SearchBarComponent } from '../../../../../shared/components/search-bar/search-bar.component';
 import { ButtonComponent } from '../../../../../core/components/button/button.component';
 import { OrderFormComponent } from '../../components/order-form/order-form.component';
-import { ORDERS_TABLE_ACTIONS } from '../../../config/order-table.config';
+import { ORDERS_COLUMNS, ORDERS_TABLE_ACTIONS } from '../../../config/order-table.config';
+import { UsersmodalHeaders } from '../../../../users/config/user-modal.config';
+import { DropdownComponent } from '../../../../../core/components/dropdown/dropdown.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { TableUtilsService } from '../../../../../core/services/table-utils.service';
+import { CurrencyPipe } from '@angular/common';
+import { heroEllipsisVerticalSolid } from '@ng-icons/heroicons/solid';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
+  providers: [
+    provideIcons({
+      heroEllipsisVerticalSolid,
+    }),
+  ],
   imports: [
     ModalComponent,
     PaginationComponent,
@@ -32,11 +43,15 @@ import { ORDERS_TABLE_ACTIONS } from '../../../config/order-table.config';
     SearchBarComponent,
     ButtonComponent,
     OrderFormComponent,
+    DropdownComponent,
+    NgIcon,
+    CurrencyPipe,
   ],
   templateUrl: './orders.component.html',
 })
 export class OrdersComponent {
   isLoading = signal<boolean>(false);
+  readonly columns = ORDERS_COLUMNS;
 
   orders = signal<objectData<OrderDE>>({
     data: [],
@@ -54,6 +69,7 @@ export class OrdersComponent {
     private readonly getAllOrdersUseCase: GetAllOrdersUseCase,
     private readonly createOrderUseCase: CreateOrderUseCase,
     private readonly updateOrderUseCase: UpdateOrderUseCase,
+    public readonly tableUtilsService: TableUtilsService<OrderDE>,
   ) {}
 
   ngOnInit(): void {
@@ -61,11 +77,17 @@ export class OrdersComponent {
   }
 
   readonly modalHeader = computed<ModalHeader>(() => {
-    const mode = this.modalMode();
+    const mode: Exclude<ModalMode, null> | null = this.modalMode();
 
-    return mode ? booksModalHeaders[mode] : { title: '', description: '' };
+    if (mode === null) {
+      return {
+        title: '',
+        description: '',
+      };
+    }
+
+    return UsersmodalHeaders[mode];
   });
-
   openEdit(order: OrderDE): void {
     this.selectedOrder.set(order);
 
@@ -80,7 +102,6 @@ export class OrdersComponent {
   onAction(event: { action: TableAction; item: OrderDE }) {
     switch (event.action.key) {
       case 'edit':
-
         this.openEdit(event.item);
         break;
       case 'view detail':

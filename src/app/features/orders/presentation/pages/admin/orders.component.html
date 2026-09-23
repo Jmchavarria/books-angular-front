@@ -13,28 +13,109 @@
 
   <app-table
     [data]="orders()"
-    [columns]="[
-      'id',
-      'orderNumber',
-      'status',
-      'subtotal',
-      'shippingCost',
-      'taxAmount',
-      'discountAmount',
-      'totalAmount',
-    ]"
+    [columns]="columns"
     [actions]="actions"
     (actionClick)="onAction($event)"
-    (pageChange)="loadOrders({ filter: $event })"
+    [bodyTemplate]="cuerpoTabla"
+    [paginationTemplate]="paginacionTabla"
   >
+  </app-table>
+
+  <ng-template #cuerpoTabla>
+    <tbody class="divide-y divide-gray-200">
+      @for (item of orders().data; track $index) {
+        <tr class="hover:bg-gray-50 transition-colors">
+          @for (col of columns; track col) {
+            @let cellValue = tableUtilsService.getCellValue(item, col);
+
+            <td class="px-6 py-4 whitespace-nowrap">
+              @if (col === 'status') {
+                <span
+                  class="rounded-full px-2.5 py-1 text-xs font-medium uppercase"
+                  [class]="
+                    cellValue.toLowerCase() === 'active'
+                      ? 'bg-emerald-50 text-emerald-600'
+                      : 'bg-gray-100 text-gray-500'
+                  "
+                >
+                  {{ cellValue }}
+                </span>
+              } @else if (
+                col === 'subtotal' ||
+                col === 'shippingCost' ||
+                col === 'taxAmount' ||
+                col === 'discountAmount' ||
+                col === 'totalAmount'
+              ) {
+                <span class="text-gray-900 font-medium">
+                  {{ cellValue | currency }}
+                </span>
+              } @else {
+                <span class="text-gray-900 font-medium">
+                  {{ cellValue }}
+                </span>
+              }
+            </td>
+          }
+
+          <td class="px-6 py-4 text-right align-middle">
+            <app-dropdown
+              [triggerId]="'order-menu-trigger-' + $index"
+              [menuId]="'order-menu-' + $index"
+            >
+              <ng-container trigger>
+                <ng-icon
+                  name="heroEllipsisVerticalSolid"
+                  class="text-xl text-gray-400 cursor-pointer"
+                />
+              </ng-container>
+
+              <ng-container content>
+                <div class="p-1 text-xs text-gray-700">
+                  <p class="font-bold px-3 py-1.5 text-gray-400 border-b border-gray-100 mb-1">
+                    Quick Actions
+                  </p>
+
+                  @for (action of actions; track $index) {
+                    @if (item.status === 'PENDING' || action.key !== 'edit') {
+                      <button
+                        type="button"
+                        role="menuitem"
+                        tabindex="0"
+                        (click)="onAction({ action, item })"
+                        class="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors font-semibold outline-none focus-visible:bg-gray-50"
+                      >
+                        {{ action.label }}
+                      </button>
+                    }
+                  }
+                </div>
+              </ng-container>
+            </app-dropdown>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td
+            [attr.colspan]="columns.length + 1"
+            class="px-6 py-8 text-center text-xs text-gray-400"
+          >
+            No hay registros para mostrar.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </ng-template>
+
+  <ng-template #paginacionTabla>
     <app-pagination
       [page]="orders().page"
       [limit]="orders().limit"
       [total]="orders().total"
       [totalPages]="orders().totalPages"
       (pageChange)="loadOrders({ filter: $event })"
-    ></app-pagination>
-  </app-table>
+    />
+  </ng-template>
 
   @if (modalMode() === 'create' || modalMode() === 'edit') {
     <app-modal
@@ -51,35 +132,5 @@
         (cancelled)="closeModal()"
       />
     </app-modal>
-  }
-
-  <!-- 2. MODAL DE DETALLES CON PESTAÑAS (Ancho extendido '4xl') -->
-  @if (modalMode() === 'detail') {
-    <!-- <app-modal
-      size="2xl"
-      title="User Profile Details"
-      description="View addresses, order history, and reviews."
-      [tabs]="detailTabs"
-      (tabChange)="currentTab.set($event)"
-      (onCancel)="closeModal()"
-    >
-      @switch (currentTab()) {
-        @case ('info') {
-          <app-user-detail [user]="selectedUser()!" />
-        }
-        @case ('addresses') {
-          <app-user-addresses [userId]="selectedUser()!.id" />
-        }
-        @case ('orders') {
-          <app-user-orders [orders]="selectedUser()!.orders" />
-        }
-        @case ('reviews') {
-          <app-user-reviews [reviews]="selectedUser()!.reviews" />
-        }
-        @case ('cart') {
-          <app-user-cart [cart]="selectedUser()!.cart" />
-        }
-      }
-    </app-modal> -->
   }
 </div>

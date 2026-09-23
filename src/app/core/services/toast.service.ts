@@ -16,12 +16,12 @@ export class ToastService {
 
   show(text: string, type: ToastType, duration = 3000) {
     // verifica si ya existe una alerta, para evitar duplicado
-    const exist = this.toasts().some((toast) => toast.text === text);
+    const exist = this.toasts().some((toast: ToastMessage) => toast.text === text);
 
     if (exist) return;
     const id = Date.now();
 
-    this.toasts.update((current) => [...current, { id, text, type }]);
+    this.toasts.update((current: ToastMessage[]) => [...current, { id, text, type }]);
 
     setTimeout(() => {
       this.remove(id);
@@ -29,6 +29,6 @@ export class ToastService {
   }
 
   remove(id: number) {
-    this.toasts.update((current) => current.filter((t) => t.id !== id));
+    this.toasts.update((current: ToastMessage[]) => current.filter((t) => t.id !== id));
   }
 }

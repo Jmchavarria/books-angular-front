@@ -11,6 +11,7 @@ import {
   heroUserGroupSolid,
   heroUsersSolid,
 } from '@ng-icons/heroicons/solid';
+import { BooksCollectionsComponent } from '../../../../features/books/presentation/pages/client/books-collections/books-collections.component';
 
 export interface ModuleItems {
   id: number;
@@ -36,7 +37,7 @@ export interface ModuleItems {
   templateUrl: './sidebar.component.html',
 })
 export class SidebarAdminCompoonent {
-  isCollapsed = signal(false);
+  isCollapsed = signal<boolean>(false);
 
   @HostListener('document:keydown.control.b')
   handleKeyEvent(): void {
@@ -83,6 +84,6 @@ export class SidebarAdminCompoonent {
   ];
 
   toggleSidebar(): void {
-    this.isCollapsed.update((v) => !v);
+    this.isCollapsed.update((v: boolean) => !v);
   }
 }

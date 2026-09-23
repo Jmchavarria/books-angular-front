@@ -13,12 +13,10 @@ import { ModalComponent } from '../../../../core/components/modal/modal.componen
 import { ButtonComponent } from '../../../../core/components/button/button.component';
 import { GetAllUsersDto } from '../../application/use-cases/get-all-users/get-all-users.dto';
 import { SearchBarComponent } from '../../../../shared/components/search-bar/search-bar.component';
-
 import { USER_TABLE_ACTIONS, USERS_COLUMNS } from '../../config/user-table.config';
 import { UserFormData } from '../../types/user-form.type';
 import { TableAction } from '../../../../core/types/table.type';
 import { ModalHeader } from '../../../../core/types/modal.type';
-import { booksModalHeaders } from '../../../books/config/book-modal.config';
 import { UserAddressesComponent } from '../components/user-addresses/user-addresses.component';
 import { UserCartComponent } from '../components/user-cart/user-cart.component';
 import { UserDetailComponent } from '../components/user-detail/user.detail.component';
@@ -31,6 +29,8 @@ import { ModalMode } from '../../types/user-modal.type';
 import { TableUtilsService } from '../../../../core/services/table-utils.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroEllipsisVerticalSolid } from '@ng-icons/heroicons/solid';
+import { DropdownComponent } from '../../../../core/components/dropdown/dropdown.component';
+import { USER_DETAIL_TABS, UsersmodalHeaders } from '../../config/user-modal.config';
 
 @Component({
   selector: 'app-users',
@@ -55,6 +55,7 @@ import { heroEllipsisVerticalSolid } from '@ng-icons/heroicons/solid';
     UserCartComponent,
     PaginationComponent,
     NgIcon,
+    DropdownComponent,
   ],
   templateUrl: './users.component.html',
 })
@@ -70,18 +71,11 @@ export class UsersComponent implements OnInit {
   });
   readonly actions = USER_TABLE_ACTIONS;
   readonly columns = USERS_COLUMNS;
+  readonly detailTabs = USER_DETAIL_TABS;
   selectedUser = signal<User | null>(null);
   modalMode = signal<ModalMode>(null);
   currentTab = signal<string>('info');
   isMenuOpen = signal<boolean>(false);
-
-  readonly detailTabs = [
-    { id: 'info', label: 'Info' },
-    { id: 'addresses', label: 'Addresses' },
-    { id: 'orders', label: 'Orders' },
-    { id: 'reviews', label: 'Reviews' },
-    { id: 'cart', label: 'Cart' },
-  ];
 
   constructor(
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
@@ -95,13 +89,20 @@ export class UsersComponent implements OnInit {
   }
 
   toggleMenu() {
-    this.isMenuOpen.update((value) => !value);
+    this.isMenuOpen.update((value: boolean) => !value);
   }
 
   readonly modalHeader = computed<ModalHeader>(() => {
-    const mode = this.modalMode();
+    const mode: Exclude<ModalMode, null> | null = this.modalMode();
 
-    return mode ? booksModalHeaders[mode] : { title: '', description: '' };
+    if (mode === null) {
+      return {
+        title: '',
+        description: '',
+      };
+    }
+
+    return UsersmodalHeaders[mode];
   });
 
   openEdit(user: User): void {

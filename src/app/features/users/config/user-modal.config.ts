@@ -15,3 +15,11 @@ export const UsersmodalHeaders: Record<Exclude<ModalMode, null>, ModalHeader> = 
     description: "View the user's information.",
   },
 };
+
+export const USER_DETAIL_TABS = [
+  { id: 'info', label: 'Info' },
+  { id: 'addresses', label: 'Addresses' },
+  { id: 'orders', label: 'Orders' },
+  { id: 'reviews', label: 'Reviews' },
+  { id: 'cart', label: 'Cart' },
+];

@@ -23,6 +23,7 @@ import { SearchBarComponent } from '../../../../../shared/components/search-bar/
 import { ModalHeader } from '../../../../../core/types/modal.type';
 import { booksModalHeaders } from '../../../config/book-modal.config';
 import { UserFormComponent } from '../../../components/book-form/books-form.component';
+import { ModalMode } from '../../../../users/types/user-modal.type';
 @Component({
   selector: 'app-books',
   standalone: true,
@@ -83,9 +84,16 @@ export class BooksComponent implements OnInit {
   }
 
   readonly modalHeader = computed<ModalHeader>(() => {
-    const mode = this.modalMode();
+    const mode: Exclude<ModalMode, null> | null = this.modalMode();
 
-    return mode ? booksModalHeaders[mode] : { title: '', description: '' };
+    if (mode === null) {
+      return {
+        title: '',
+        description: '',
+      };
+    }
+
+    return booksModalHeaders[mode];
   });
 
   ngOnInit(): void {

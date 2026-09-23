@@ -7,14 +7,12 @@ import {
   ElementRef,
   Injector,
   afterNextRender,
+  TemplateRef,
 } from '@angular/core';
 import { provideIcons } from '@ng-icons/core';
 import { heroPencilSquare } from '@ng-icons/heroicons/outline';
 import { TableAction } from '../../../types/table.type';
-import {
-  NgComponentOutlet,
-  NgTemplateOutlet,
-} from '../../../../../../node_modules/@angular/common/types/_common_module-chunk';
+import { NgTemplateOutlet } from '@angular/common';
 
 interface MenuPosition {
   top: number;
@@ -42,15 +40,15 @@ const MENU_WIDTH_FALLBACK = 160; // w-40, usado solo como posición provisional
     }),
   ],
   templateUrl: './table.component.html',
-  imports: [NgComponentOutlet, NgTemplateOutlet],
+  imports: [NgTemplateOutlet],
 })
 export class TableComponent<T extends object> {
   constructor(
     private elementRef: ElementRef<HTMLElement>,
     private injector: Injector,
   ) {}
-  bodyTemplate = input<void | null>(null);
-  paginationTemplate = input<void | null>(null);
+  bodyTemplate = input<TemplateRef<unknown>>();
+  paginationTemplate = input<TemplateRef<unknown>>();
 
   data = input<objectData<T>>({
     data: [],

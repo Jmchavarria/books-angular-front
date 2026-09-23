@@ -1,5 +1,4 @@
 <div class="space-y-5">
-  <!-- Header & Tabla principal -->
   <div class="flex items-center justify-between">
     <div>
       <h2 class="text-xl font-bold text-gray-900">User Management</h2>
@@ -8,6 +7,7 @@
 
     <div class="flex items-center gap-2">
       <app-search-bar (searchValue)="loadUsers({ filter: $event })" />
+
       <app-button typeButton="button" (onSubmit)="openCreate()" label="+ Create user" />
     </div>
   </div>
@@ -17,130 +17,115 @@
     [columns]="['id', 'firstName', 'lastName', 'email', 'phone', 'role', 'status']"
     [actions]="actions"
     (actionClick)="onAction($event)"
-    (pageChange)="loadUsers({ filter: $event })"
-    [paginationTemplate]=""
+    [bodyTemplate]="cuerpoTabla"
+    [paginationTemplate]="paginacionTabla"
   >
+  </app-table>
+
+  <ng-template #cuerpoTabla>
+    <tbody class="divide-y divide-gray-200">
+      @for (item of users().data; track $index) {
+        <tr class="hover:bg-gray-50 transition-colors">
+          @for (col of columns; track col) {
+            @let cellValue = tableUtilsService.getCellValue(item, col);
+
+            <td class="px-6 py-4 whitespace-nowrap">
+              @if (col === 'status') {
+                <span
+                  class="rounded-full px-2.5 py-1 text-xs font-medium uppercase"
+                  [class]="
+                    cellValue.toLowerCase() === 'active'
+                      ? 'bg-emerald-50 text-emerald-600'
+                      : 'bg-gray-100 text-gray-500'
+                  "
+                >
+                  {{ cellValue }}
+                </span>
+              } @else if (col === 'role') {
+                <span
+                  class="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 uppercase"
+                >
+                  {{ cellValue }}
+                </span>
+              } @else {
+                <span class="text-gray-900 font-medium">
+                  {{ cellValue }}
+                </span>
+              }
+            </td>
+          }
+
+          <td class="px-6 py-4 text-right align-middle">
+            <app-dropdown
+              [triggerId]="'user-menu-trigger-' + $index"
+              [menuId]="'user-menu-' + $index"
+            >
+              <ng-container trigger>
+                <ng-icon
+                  name="heroEllipsisVerticalSolid"
+                  class="text-xl text-gray-400 cursor-pointer"
+                />
+              </ng-container>
+
+              <!-- Contenido -->
+              <ng-container content>
+                <div class="p-1 text-xs text-gray-700">
+                  <p class="font-bold px-3 py-1.5 text-gray-400 border-b border-gray-100 mb-1">
+                    Quick Actions
+                  </p>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    tabindex="0"
+                    (click)="openEdit(item)"
+                    class="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors font-semibold outline-none focus:bg-gray-50"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    tabindex="0"
+                    (click)="openDetail(item)"
+                    class="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors font-semibold outline-none focus:bg-gray-50"
+                  >
+                    View Detail
+                  </button>
+                </div>
+              </ng-container>
+            </app-dropdown>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td
+            [attr.colspan]="columns.length + 1"
+            class="px-6 py-8 text-center text-xs text-gray-400"
+          >
+            No hay registros para mostrar.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </ng-template>
+
+  <ng-template #paginacionTabla>
     <app-pagination
       [page]="users().page"
       [limit]="users().limit"
       [total]="users().total"
       [totalPages]="users().totalPages"
       (pageChange)="loadUsers({ filter: $event })"
-    ></app-pagination>
-  </app-table>
+    />
+  </ng-template>
 
-  <tbody class="divide-y divide-gray-200">
-    @for (item of users().data; track $index) {
-      <tr class="hover:bg-gray-50 transition-colors">
-        @for (col of columns; track col) {
-          @let cellValue = tableUtilsService.getCellValue(item, col);
-
-          <td class="px-6 py-4 whitespace-nowrap">
-            @if (col === 'status') {
-              <span
-                class="rounded-full px-2.5 py-1 text-xs font-medium uppercase"
-                [class]="
-                  cellValue.toLowerCase() === 'active'
-                    ? 'bg-emerald-50 text-emerald-600'
-                    : 'bg-gray-100 text-gray-500'
-                "
-              >
-                {{ cellValue }}
-              </span>
-            } @else if (col === 'role') {
-              <span
-                class="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 uppercase"
-              >
-                {{ cellValue }}
-              </span>
-            } @else {
-              <span class="text-gray-900 font-medium">
-                {{ cellValue }}
-              </span>
-            }
-          </td>
-        }
-
-        <!-- Columna de Acciones -->
-        <td class="px-6 py-4 text-right align-middle relative">
-          <button
-            [attr.id]="'menu-trigger-' + $index"
-            [attr.aria-expanded]="openMenuIndex() === $index"
-            [attr.aria-controls]="'menu-' + $index"
-            aria-haspopup="true"
-            (click)="toggleMenu($index, $event)"
-            class="inline-flex items-center justify-center p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-          >
-            <ng-icon name="heroEllipsisVerticalSolid" class="text-sm text-gray-400" />
-          </button>
-
-          @if (openMenuIndex() === $index) {
-            <div
-              data-open-menu
-              [attr.id]="'menu-' + $index"
-              role="menu"
-              [attr.aria-labelledby]="'menu-trigger-' + $index"
-              (keydown)="onMenuKeydown($event)"
-              class="fixed z-50 w-44 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg ring-1 ring-black/5 transition-opacity duration-100 space-y-1"
-              [class.invisible]="!menuReady()"
-              [class.opacity-0]="!menuReady()"
-              [style.top.px]="menuPosition()?.top"
-              [style.left.px]="menuPosition()?.left"
-            >
-              <!-- Acciones estándar configuradas desde el componente -->
-              @for (action of actions(); track action.key) {
-                <button
-                  role="menuitem"
-                  tabindex="-1"
-                  (click)="actionClick.emit({ action: action.key, item }); closeMenu()"
-                  class="flex w-full items-center justify-between px-3 py-2 text-left text-xs font-semibold text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 rounded-lg transition-colors outline-none"
-                >
-                  <span>{{ action.label }}</span>
-                  @if (action.icon) {
-                    <ng-icon [name]="action.icon" class="text-sm text-gray-400" />
-                  }
-                </button>
-              }
-
-              <!-- Acción condicional según el estado del usuario -->
-              @let isActive =
-                tableUtilsService.getCellValue(item, 'status').toLowerCase() === 'active';
-              <button
-                role="menuitem"
-                tabindex="-1"
-                (click)="
-                  actionClick.emit({ action: isActive ? 'deactivate' : 'activate', item });
-                  closeMenu()
-                "
-                class="flex w-full items-center justify-between px-3 py-2 text-left text-xs font-semibold rounded-lg transition-colors outline-none"
-                [class]="
-                  isActive
-                    ? 'text-red-600 hover:bg-red-50 focus-visible:bg-red-50'
-                    : 'text-emerald-600 hover:bg-emerald-50 focus-visible:bg-emerald-50'
-                "
-              >
-                <span>{{ isActive ? 'Desactivar' : 'Activar' }}</span>
-                <ng-icon [name]="isActive ? 'heroUserMinus' : 'heroUserCheck'" class="text-sm" />
-              </button>
-            </div>
-          }
-        </td>
-      </tr>
-    } @empty {
-      <tr>
-        <td [attr.colspan]="columns.length + 1" class="px-6 py-8 text-center text-xs text-gray-400">
-          No hay registros para mostrar.
-        </td>
-      </tr>
-    }
-  </tbody>
-
-  <!-- 1. MODAL DE FORMULARIO (Crear / Editar - Tamaño mediano 'md') -->
   @if (modalMode() === 'create' || modalMode() === 'edit') {
     <app-modal
       size="lg"
-      [title]="modalMode() === 'create' ? 'New User' : 'Edit User'"
-      description="Fill in the user details below."
+      [title]="modalHeader().title"
+      [description]="modalHeader().description"
       (onCancel)="closeModal()"
     >
       <app-user-form
@@ -153,12 +138,11 @@
     </app-modal>
   }
 
-  <!-- 2. MODAL DE DETALLES CON PESTAÑAS (Ancho extendido '4xl') -->
   @if (modalMode() === 'detail') {
     <app-modal
       size="2xl"
-      title="User Profile Details"
-      description="View addresses, order history, and reviews."
+      [title]="modalHeader().title"
+      [description]="modalHeader().description"
       [tabs]="detailTabs"
       (tabChange)="currentTab.set($event)"
       (onCancel)="closeModal()"
@@ -167,15 +151,19 @@
         @case ('info') {
           <app-user-detail [user]="selectedUser()!" />
         }
+
         @case ('addresses') {
           <app-user-addresses [userId]="selectedUser()!.id" />
         }
+
         @case ('orders') {
           <app-user-orders [orders]="selectedUser()!.orders" />
         }
+
         @case ('reviews') {
           <app-user-reviews [reviews]="selectedUser()!.reviews" />
         }
+
         @case ('cart') {
           <app-user-cart [cart]="selectedUser()!.cart" />
         }

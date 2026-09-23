@@ -12,3 +12,14 @@ export const ORDERS_TABLE_ACTIONS: TableAction[] = [
     icon: 'eye',
   },
 ];
+
+export const ORDERS_COLUMNS = [
+  'id',
+  'orderNumber',
+  'status',
+  'subtotal',
+  'shippingCost',
+  'taxAmount',
+  'discountAmount',
+  'totalAmount',
+];

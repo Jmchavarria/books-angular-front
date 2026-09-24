@@ -52,6 +52,11 @@ export class ModalComponent {
     });
   }
 
+  handleBackdropClick(event: MouseEvent): void {
+    if (event?.target === event?.currentTarget) {
+      this.handleCancel();
+    }
+  }
   selectTab(tabId: string) {
     this.activeTab.set(tabId);
     this.tabChange.emit(tabId);

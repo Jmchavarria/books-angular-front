@@ -17,7 +17,6 @@ import { UpdateCategoryUseCase } from '../../../application/admin/use-cases/upda
 import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
 import { ModalComponent } from '../../../../../core/components/modal/modal.component';
 import { ButtonComponent } from '../../../../../core/components/button/button.component';
-import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
 import { SearchBarComponent } from '../../../../../shared/components/search-bar/search-bar.component';
 import { TableAction } from '../../../../../core/types/table.type';
 import { PaginatedResult } from '../../../../../core/types/paginated-response';
@@ -60,7 +59,6 @@ export class CategoriesComponent implements OnInit {
     private readonly createCategoryUseCase: CreateCategoryUseCase,
     private readonly updateCategoryUseCase: UpdateCategoryUseCase,
   ) {
-    // Validadores corregidos y limpios
     this.categoriesform = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(155)]],

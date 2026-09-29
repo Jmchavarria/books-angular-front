@@ -25,12 +25,12 @@ import { UsersOrdersComponent } from '../components/user-orders/user-orders.comp
 import { UserReviewsComponent } from '../components/user-reviews/user-reviews.component';
 import { PaginatedResult } from '../../../../core/types/paginated-response';
 import { PaginationComponent } from '../../../../core/components/pagination/pagination.component';
-import { ModalMode } from '../../types/user-modal.type';
 import { TableUtilsService } from '../../../../core/services/table-utils.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroEllipsisVerticalSolid } from '@ng-icons/heroicons/solid';
 import { DropdownComponent } from '../../../../core/components/dropdown/dropdown.component';
 import { USER_DETAIL_TABS, UsersmodalHeaders } from '../../config/user-modal.config';
+import { ModalMode } from '../../../../core/types/modal-mode.type';
 
 @Component({
   selector: 'app-users',

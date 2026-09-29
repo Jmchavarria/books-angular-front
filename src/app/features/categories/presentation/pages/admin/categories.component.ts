@@ -1,11 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import {
   objectData,
   TableComponent,
@@ -14,32 +7,45 @@ import { Categories } from '../../../domain/entities/categories.entity';
 import { GetAllCategoriesUseCase } from '../../../application/admin/use-cases/get-all-categories/get-all-categories-use-case';
 import { CreateCategoryUseCase } from '../../../application/admin/use-cases/create-category/create-category.use-case';
 import { UpdateCategoryUseCase } from '../../../application/admin/use-cases/update-category/update-category.use-case';
-import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
 import { ModalComponent } from '../../../../../core/components/modal/modal.component';
 import { ButtonComponent } from '../../../../../core/components/button/button.component';
 import { SearchBarComponent } from '../../../../../shared/components/search-bar/search-bar.component';
 import { TableAction } from '../../../../../core/types/table.type';
 import { PaginatedResult } from '../../../../../core/types/paginated-response';
-import { IQueryParams } from '../../../../../core/interfaces/query-params.interface';
+import { DropdownComponent } from '../../../../../core/components/dropdown/dropdown.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  CATEGORIES_COLUMNS,
+  CATEGORIES_TABLE_ACTIONS,
+} from '../../../config/categories-table.config';
+import { TableUtilsService } from '../../../../../core/services/table-utils.service';
+import { PaginationComponent } from '../../../../../core/components/pagination/pagination.component';
+import { ModalHeader } from '../../../../../core/types/modal.type';
+import { CategoriesModalHeaders } from '../../../config/categories-modal.config';
+import { ModalMode } from '../../../../../core/types/modal-mode.type';
+import { GetAllCategoriesDto } from '../../../application/admin/use-cases/get-all-categories/get-all-categories.dto';
+import { CategoryFormData } from '../../../types/category-form.types';
+import { UserFormComponent } from '../../../components/category-form/category-form.component';
+import { heroEllipsisVerticalSolid } from '@ng-icons/heroicons/solid';
 
 @Component({
   selector: 'app-users',
   standalone: true,
+  providers: [provideIcons({ heroEllipsisVerticalSolid })],
   imports: [
-    FormsModule,
     TableComponent,
-    ReactiveFormsModule,
-    FormContainerComponent,
     ModalComponent,
     ButtonComponent,
     SearchBarComponent,
+    DropdownComponent,
+    NgIcon,
+    PaginationComponent,
+    UserFormComponent,
   ],
 
   templateUrl: './categories.component.html',
 })
 export class CategoriesComponent implements OnInit {
-  [x: string]: any;
-  categoriesform: FormGroup;
   isSubmitted = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   categories = signal<objectData<Categories>>({
@@ -49,43 +55,51 @@ export class CategoriesComponent implements OnInit {
     total: 0,
     totalPages: 0,
   });
-
+  modalMode = signal<ModalMode>(null);
+  readonly columns = CATEGORIES_COLUMNS;
+  readonly actions = CATEGORIES_TABLE_ACTIONS;
   isModalOpen = signal<boolean>(false);
-  selectedCategory: Categories | null = null;
+  selectedCategory = signal<Categories | null>(null);
 
   constructor(
     private readonly getAllCategoriesUseCase: GetAllCategoriesUseCase,
-    private readonly fb: FormBuilder,
     private readonly createCategoryUseCase: CreateCategoryUseCase,
     private readonly updateCategoryUseCase: UpdateCategoryUseCase,
-  ) {
-    this.categoriesform = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(155)]],
-    });
-  }
+    public readonly tableUtilsService: TableUtilsService<Categories>,
+  ) {}
+
+  readonly modalHeader = computed<ModalHeader>(() => {
+    const mode: Exclude<ModalMode, null> | null = this.modalMode();
+
+    if (mode === null) {
+      return {
+        title: '',
+        description: '',
+      };
+    }
+
+    return CategoriesModalHeaders[mode];
+  });
 
   ngOnInit(): void {
     this.loadCategories();
   }
 
-  actions: TableAction[] = [
-    {
-      key: 'edit',
-      label: 'Edit',
-      icon: 'heroPencilSquare',
-    },
-  ];
+  closeModal() {
+    this.modalMode.set(null);
+    this.selectedCategory.set(null);
+    // this.currentTab.set('info');
+  }
 
   onAction(event: { action: TableAction; item: Categories }) {
     switch (event.action.key) {
       case 'edit':
-        this.editCategory(event.item);
+        this.openEdit(event.item);
         break;
     }
   }
 
-  loadCategories(filters?: IQueryParams[]): void {
+  loadCategories(filters?: GetAllCategoriesDto): void {
     this.getAllCategoriesUseCase.execute(filters).subscribe({
       next: (response: PaginatedResult<Categories>) => {
         this.categories.set(response);
@@ -96,72 +110,81 @@ export class CategoriesComponent implements OnInit {
     });
   }
 
-  openModal() {
-    this.selectedCategory = null;
-    this.isSubmitted.set(false);
+  openEdit(category: Categories): void {
+    this.selectedCategory.set(category);
 
-    this.categoriesform.reset({
-      name: '',
-      description: '',
-    });
-
-    this.isModalOpen.set(true);
+    this.modalMode.set('edit');
   }
 
-  editCategory(category: Categories) {
-    this.selectedCategory = category;
-
-    // Setea los datos en el Formulario Reactivo
-    this.categoriesform.patchValue({
-      name: category.name,
-      description: category.description,
-    });
-
-    this.isModalOpen.set(true);
+  openCreate(): void {
+    this.selectedCategory.set(null);
+    this.modalMode.set('create');
   }
 
-  saveCategory() {
-    this.isSubmitted.set(true);
+  openDetail(category: Categories): void {
+    this.selectedCategory.set(category);
+    this.modalMode.set('detail');
+  }
 
-    const { name, description } = this.categoriesform.value;
+  private createCategory(category: CategoryFormData): void {
+    this.isLoading.set(true);
+
+    this.createCategoryUseCase
+      .execute({
+        name: category.name,
+        description: category.description,
+      })
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.loadCategories();
+          this.closeModal();
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+          console.error(err);
+        },
+      });
+  }
+
+  private updateCategory(categoryForm: CategoryFormData): void {
+    const category = this.selectedCategory();
+
+    if (!category) {
+      return;
+    }
 
     this.isLoading.set(true);
 
-    if (this.selectedCategory === null) {
-      this.createCategoryUseCase
-        .execute({
-          name,
-          description,
-        })
-        .subscribe({
-          next: () => {
-            this.isLoading.set(false);
-            this.loadCategories();
-            this.isModalOpen.set(false);
-          },
-          error: (err) => {
-            this.isLoading.set(false);
-            console.error(err);
-          },
-        });
-    } else {
-      this.updateCategoryUseCase
-        .execute({
-          id: this.selectedCategory.id,
-          name,
-          description,
-        })
-        .subscribe({
-          next: (response) => {
-            this.isLoading.set(false);
-            this.loadCategories();
-            this.isModalOpen.set(false);
-          },
-          error: (err) => {
-            this.isLoading.set(false);
-            console.error(err);
-          },
-        });
+    this.updateCategoryUseCase
+      .execute({
+        id: category.id,
+        name: categoryForm.name,
+        description: categoryForm.description,
+      })
+      .subscribe({
+        next: () => {
+          this.loadCategories();
+          this.closeModal();
+        },
+        error: (err) => {
+          console.error(err);
+        },
+        complete: () => {
+          this.isLoading.set(false);
+        },
+      });
+  }
+
+  saveCategory(category: CategoryFormData): void {
+    switch (this.modalMode()) {
+      case 'create':
+        this.createCategory(category);
+        break;
+
+      case 'edit':
+        this.updateCategory(category);
+        break;
     }
   }
 }

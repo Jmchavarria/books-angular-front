@@ -4,6 +4,7 @@ import { Categories } from '../../../../domain/entities/categories.entity';
 import { CategoriesRepository } from '../../../../domain/repositories/categories.repository';
 import { PaginatedResult } from '../../../../../../core/types/paginated-response';
 import { IQueryParams } from '../../../../../../core/interfaces/query-params.interface';
+import { GetAllCategoriesDto } from './get-all-categories.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ import { IQueryParams } from '../../../../../../core/interfaces/query-params.int
 export class GetAllCategoriesUseCase {
   constructor(private readonly repository: CategoriesRepository) {}
 
-  execute(filters?: IQueryParams[]): Observable<PaginatedResult<Categories>> {
+  execute(filters?: GetAllCategoriesDto): Observable<PaginatedResult<Categories>> {
     return this.repository.getAll(filters);
   }
 }

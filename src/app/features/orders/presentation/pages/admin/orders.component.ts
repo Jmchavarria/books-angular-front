@@ -3,7 +3,6 @@ import {
   objectData,
   TableComponent,
 } from '../../../../../core/layouts/admin-layouts/table/table.component';
-import { ModalMode } from '../../../../users/types/user-modal.type';
 import { GetAllOrdersUseCase } from '../../../application/use-cases/get-all-orders/get-all-orders.use-case';
 import { UpdateOrderUseCase } from '../../../application/use-cases/update-order/update-order.use-case';
 import { CreateOrderUseCase } from '../../../application/use-cases/create-order/create-order.use-case';
@@ -11,7 +10,6 @@ import { OrderDE } from '../../../domain/entities/orders.entity';
 import { ModalHeader } from '../../../../../core/types/modal.type';
 import { PaginatedResult } from '../../../../../core/types/paginated-response';
 import { TableAction } from '../../../../../core/types/table.type';
-import { booksModalHeaders } from '../../../../books/config/book-modal.config';
 import { GetAllOrdersDto } from '../../../application/use-cases/get-all-orders/get-all-orders.dto';
 import { OrderFormData } from '../../../types/orders-form.type';
 import { CreateOrderProps } from '../../../domain/entities/orders.props';
@@ -27,6 +25,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { TableUtilsService } from '../../../../../core/services/table-utils.service';
 import { CurrencyPipe } from '@angular/common';
 import { heroEllipsisVerticalSolid } from '@ng-icons/heroicons/solid';
+import { ModalMode } from '../../../../../core/types/modal-mode.type';
 
 @Component({
   selector: 'app-orders',
@@ -173,7 +172,6 @@ export class OrdersComponent {
       .execute({
         id: order.id,
         items: orderForm.items,
-
         shippingAddressSnapshot: orderForm.shippingAddressSnapshot,
       })
       .subscribe({

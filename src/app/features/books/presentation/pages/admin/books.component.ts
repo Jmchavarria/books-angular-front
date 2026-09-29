@@ -23,7 +23,7 @@ import { SearchBarComponent } from '../../../../../shared/components/search-bar/
 import { ModalHeader } from '../../../../../core/types/modal.type';
 import { booksModalHeaders } from '../../../config/book-modal.config';
 import { UserFormComponent } from '../../../components/book-form/books-form.component';
-import { ModalMode } from '../../../../users/types/user-modal.type';
+import { ModalMode } from '../../../../../core/types/modal-mode.type';
 @Component({
   selector: 'app-books',
   standalone: true,

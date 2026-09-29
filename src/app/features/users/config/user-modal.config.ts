@@ -1,5 +1,5 @@
+import { ModalMode } from '../../../core/types/modal-mode.type';
 import { ModalHeader } from '../../../core/types/modal.type';
-import { ModalMode } from '../types/user-modal.type';
 
 export const UsersmodalHeaders: Record<Exclude<ModalMode, null>, ModalHeader> = {
   create: {

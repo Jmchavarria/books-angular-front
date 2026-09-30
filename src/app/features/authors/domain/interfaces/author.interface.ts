@@ -1,4 +1,5 @@
 import { IBook } from '../../../books/domain/interfaces/book.interfaces';
+import { UserStatusTypeEnum } from '../../../users/domain/enums/users-status-type.enum';
 
 export interface IAuthor {
   id: number;
@@ -10,7 +11,7 @@ export interface IAuthor {
   biography: string;
   countryOfBirth: string;
   photoUrl: string;
-  isActive: boolean;
+  status: UserStatusTypeEnum;
   createdAt: Date;
   updatedAt: Date;
   books: IBook[];

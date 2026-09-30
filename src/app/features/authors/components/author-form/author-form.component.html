@@ -1,0 +1,113 @@
+<app-form-container
+  [formGroup]="authorForm"
+  [isLoading]="isLoading()"
+  (onSubmit)="handleSubmit()"
+  (onCancel)="cancelled.emit()"
+>
+  @let firstName = authorForm.controls.firstName;
+
+  <div class="flex flex-col gap-1">
+    <label for="firstName" class="text-xs font-semibold text-gray-800"> First Name </label>
+
+    <div
+      class="flex w-full items-center gap-2 rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521] sm:py-2.5"
+      [class.border-red-500]="firstName?.invalid && (firstName?.touched || isSubmitted)"
+    >
+      <input
+        id="firstName"
+        type="text"
+        formControlName="firstName"
+        class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+        placeholder="John"
+      />
+    </div>
+
+    <div class="flex min-h-3 items-center px-1">
+      @if (firstName.invalid && (firstName.touched || isSubmitted)) {
+        <span class="text-[11px] text-red-500">
+          @if (firstName.errors?.['required']) {
+            El título es obligatorio.
+          } @else if (firstName.errors?.['minlength']) {
+            Mínimo 3 caracteres.
+          } @else if (firstName.errors?.['maxlength']) {
+            Máximo 50 caracteres.
+          }
+        </span>
+      }
+    </div>
+  </div>
+
+  @let lastName = authorForm.controls.lastName;
+
+  <div class="flex flex-col gap-1">
+    <label for="lastName" class="text-xs font-semibold text-gray-800"> Last Name </label>
+
+    <div
+      class="w-full rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521]"
+      [class.border-red-500]="lastName.invalid && (lastName.touched || isSubmitted)"
+    >
+      <input
+        id="lastName"
+        type="text"
+        formControlName="lastName"
+        class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm"
+        placeholder="Doe"
+      />
+    </div>
+
+    <div class="flex h-3 items-center px-1">
+      @if (lastName?.invalid && (lastName?.touched || isSubmitted)) {
+        <span class="text-[11px] text-red-500">
+          @if (lastName?.errors?.['required']) {
+            El apellido es obligatorio.
+          }
+
+          @if (lastName?.errors?.['minlength']) {
+            Mínimo 3 caracteres.
+          }
+
+          @if (lastName?.errors?.['maxlength']) {
+            Máximo 50 caracteres.
+          }
+        </span>
+      }
+    </div>
+  </div>
+
+  @let biography = authorForm.controls.biography;
+
+  <div class="flex flex-col gap-1">
+    <label for="biography" class="text-xs font-semibold text-gray-800"> Biography </label>
+
+    <div
+      class="w-full rounded-xl border border-gray-300 bg-gray-100 px-3 py-2 transition-colors focus-within:border-[#0e3521]"
+      [class.border-red-500]="biography?.invalid && (biography?.touched || isSubmitted)"
+    >
+      <textarea
+        id="biography"
+        formControlName="biography"
+        class="w-full bg-transparent text-xs text-gray-800 outline-none sm:text-sm resize-none"
+        placeholder="e.g., Fiction works set in historical periods..."
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="flex h-3 items-center px-1">
+      @if (biography?.invalid && (biography?.touched || isSubmitted)) {
+        <span class="text-[11px] text-red-500">
+          @if (biography?.errors?.['required']) {
+            El apellido es obligatorio.
+          }
+
+          @if (biography?.errors?.['minlength']) {
+            Mínimo 3 caracteres.
+          }
+
+          @if (biography?.errors?.['maxlength']) {
+            Máximo 50 caracteres.
+          }
+        </span>
+      }
+    </div>
+  </div>
+</app-form-container>

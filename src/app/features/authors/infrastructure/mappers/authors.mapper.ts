@@ -1,7 +1,8 @@
 import { Book } from '../../../books/domain/entities/book.entity';
+import { UserStatusTypeEnum } from '../../../users/domain/enums/users-status-type.enum';
 import { Author } from '../../domain/entities/author.entity';
 
-export interface AuhorsApiResponse {
+export interface AuthorsApiResponse {
   id: number;
   firstName: string;
   lastName: string;
@@ -11,14 +12,14 @@ export interface AuhorsApiResponse {
   biography: string;
   countryOfBirth: string;
   photoUrl: string;
-  isActive: boolean;
+  status: UserStatusTypeEnum;
   createdAt: Date;
   updatedAt: Date;
   books: Book[];
 }
 
 export class AuthorsMapper {
-  static toDomain(author: AuhorsApiResponse): Author {
+  static toDomain(author: AuthorsApiResponse): Author {
     return new Author(
       author.id,
       author.firstName,
@@ -29,7 +30,7 @@ export class AuthorsMapper {
       author.biography,
       author.countryOfBirth,
       author.photoUrl,
-      author.isActive,
+      author.status,
       author.createdAt,
       author.updatedAt,
       author.books,

@@ -1,12 +1,6 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { Author } from '../../../domain/entities/author.entity';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+
 import { GetAllAuthorsUseCase } from '../../../application/use-cases/admin/get-all-authors/get-all-authors.use-case';
 import {
   objectData,
@@ -16,33 +10,44 @@ import { ButtonComponent } from '../../../../../core/components/button/button.co
 import { ModalComponent } from '../../../../../core/components/modal/modal.component';
 import { FormContainerComponent } from '../../../../../core/components/form-container/form-container.component';
 import { CreateAuthorUseCase } from '../../../application/use-cases/admin/create-author/create-author.use-case';
-import { FiltersDto } from '../../../../../core/interfaces/filters.interface';
 import { TableAction } from '../../../../../core/types/table.type';
 import { PaginatedResult } from '../../../../../core/types/paginated-response';
+import { ModalMode } from '../../../../../core/types/modal-mode.type';
+import { TableUtilsService } from '../../../../../core/services/table-utils.service';
+import { DropdownComponent } from '../../../../../core/components/dropdown/dropdown.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { PaginationComponent } from '../../../../../core/components/pagination/pagination.component';
+import { AUTHORS_COLUMNS, AUTHORS_TABLE_ACTIONS } from '../../../config/author-table.config';
+import { GetAllAuthorsDto } from '../../../application/use-cases/admin/get-all-authors/get-all-authors.dto';
+import { ModalHeader } from '../../../../../core/types/modal.type';
+import { AuthorsModalHeaders } from '../../../config/author-modal.config';
+import { AuthorFormData } from '../../../types/authors-form-types';
+import { UpdateAuthorUseCase } from '../../../application/use-cases/admin/update-author/update-author.use-case';
+import { UserFormComponent } from '../../../components/author-form/author-form.component';
+import { SearchBarComponent } from '../../../../../shared/components/search-bar/search-bar.component';
+import { heroEllipsisVerticalSolid } from '@ng-icons/heroicons/solid';
 
-interface AuthorsForm {
-  firstName: FormControl<string>;
-  lastName: FormControl<string>;
-  biography: FormControl<string>;
-  birthdate: FormControl<Date>;
-  countryOfBirth: FormControl<string>;
-  literaryGenre: FormControl<string>;
-  photoUrl: FormControl<string>;
-}
 @Component({
   selector: 'app-home',
   standalone: true,
+  providers: [
+    provideIcons({
+      heroEllipsisVerticalSolid,
+    }),
+  ],
   imports: [
     TableComponent,
-    ReactiveFormsModule,
     ButtonComponent,
     ModalComponent,
-    FormContainerComponent,
+    DropdownComponent,
+    NgIcon,
+    PaginationComponent,
+    UserFormComponent,
+    SearchBarComponent,
   ],
   templateUrl: './authors.component.html',
 })
 export class AuthorsComponent implements OnInit {
-  authorsForm: FormGroup<AuthorsForm>;
   isSubmitted = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   authors = signal<objectData<Author>>({
@@ -52,44 +57,36 @@ export class AuthorsComponent implements OnInit {
     total: 0,
     totalPages: 0,
   });
+  modalMode = signal<ModalMode>(null);
   isModalOpen = signal<boolean>(false);
-  selectedAuthor: Author | null = null;
+  selectedAuthor = signal<Author | null>(null);
+  readonly columns = AUTHORS_COLUMNS;
+  readonly actions = AUTHORS_TABLE_ACTIONS;
 
   constructor(
     private readonly getAllAuthorsUseCase: GetAllAuthorsUseCase,
-    private readonly createAuthorUseCase: CreateAuthorUseCase,
-    private readonly fb: FormBuilder,
-  ) {
-    this.authorsForm = this.fb.nonNullable.group({
-      firstName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      lastName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      biography: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
-      birthdate: [
-        new Date(),
-        [
-          Validators.required,
-          // dateInPastValidator(), // No permite fechas futuras
-          // minimumAgeValidator(12) // Opcional: Requiere una edad mínima (ej: 12 años)
-        ],
-      ],
-      literaryGenre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      photoUrl: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      countryOfBirth: ['', Validators.required],
-    });
-  }
+    private readonly createAuhtorUseCase: CreateAuthorUseCase,
+    private readonly updateAuthorUseCase: UpdateAuthorUseCase,
+    public readonly tableUtilsService: TableUtilsService<Author>,
+  ) {}
 
-  actions: TableAction[] = [
-    {
-      key: 'edit',
-      label: 'Edit',
-      icon: 'pencil-square',
-    },
-  ];
+  readonly modalHeader = computed<ModalHeader>(() => {
+    const mode: Exclude<ModalMode, null> | null = this.modalMode();
+
+    if (mode === null) {
+      return {
+        title: '',
+        description: '',
+      };
+    }
+
+    return AuthorsModalHeaders[mode];
+  });
 
   onAction(event: { action: TableAction; item: Author }) {
     switch (event.action.key) {
       case 'edit':
-        // this.editCategory(event.item);
+        this.openEdit(event.item);
         break;
     }
   }
@@ -97,69 +94,101 @@ export class AuthorsComponent implements OnInit {
   ngOnInit(): void {
     this.loadAuthors();
   }
-  saveAuthor() {
-    this.isSubmitted.set(true);
 
-    const { biography, birthdate, countryOfBirth, firstName, lastName, literaryGenre, photoUrl } =
-      this.authorsForm.getRawValue();
+  saveAuthor(author: AuthorFormData): void {
+    switch (this.modalMode()) {
+      case 'create':
+        this.createAuthor(author);
+        break;
 
-    if (this.selectedAuthor) {
-    } else {
-      this.createAuthorUseCase
-        .execute({
-          firstName,
-          lastName,
-          birthdate,
-          countryOfBirth,
-          biography,
-          literaryGenre,
-          photoUrl,
-        })
-        .subscribe({
-          next: () => {
-            this.isLoading.set(false);
-            this.loadAuthors();
-            this.isModalOpen.set(false);
-          },
-        });
+      case 'edit':
+        this.updateAuthor(author);
+        break;
     }
   }
 
-  editAuthor(author: Author) {
-    this.selectedAuthor = author;
+  private createAuthor(author: AuthorFormData): void {
+    this.isLoading.set(true);
 
-    this.authorsForm.patchValue({
-      firstName: author.firstName,
-      lastName: author.lastName,
-      biography: author.biography,
-      birthdate: author.birthdate,
-      countryOfBirth: author.countryOfBirth,
-    });
+    this.createAuhtorUseCase
+      .execute({
+        firstName: author.firstName,
+        lastName: author.lastName,
+        birthdate: author.birthdate,
+        countryOfBirth: author.countryOfBirth,
+        biography: author.biography,
+      })
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.loadAuthors();
+          this.closeModal();
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+          console.error(err);
+        },
+      });
   }
-  openModal() {
-    this.selectedAuthor = null;
-    this.isSubmitted.set(false);
 
-    this.authorsForm.reset({
-      firstName: '',
-      lastName: '',
-      biography: '',
-      birthdate: new Date(),
-      countryOfBirth: '',
-    });
+  private updateAuthor(authorForm: AuthorFormData): void {
+    const author = this.selectedAuthor();
 
-    this.isModalOpen.set(true);
+    if (!author) {
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    this.updateAuthorUseCase
+      .execute({
+        id: author.id,
+        firstName: authorForm.firstName,
+        lastName: authorForm.lastName,
+        biography: authorForm.biography,
+        birthdate: authorForm.birthdate,
+        countryOfBirth: authorForm.countryOfBirth,
+      })
+      .subscribe({
+        next: () => {
+          this.loadAuthors();
+          this.closeModal();
+        },
+        error: (err) => {
+          console.error(err);
+        },
+        complete: () => {
+          this.isLoading.set(false);
+        },
+      });
   }
+
   closeModal() {
     this.isModalOpen.set(false);
   }
 
-  loadAuthors(filters?: FiltersDto[]): void {
+  loadAuthors(filters?: GetAllAuthorsDto): void {
     this.getAllAuthorsUseCase.execute(filters).subscribe({
       next: (response: PaginatedResult<Author>) => {
         this.authors.set(response);
       },
       error: (err) => console.error(err),
     });
+  }
+
+  openEdit(author: Author): void {
+    this.selectedAuthor.set(author);
+
+    this.modalMode.set('edit');
+  }
+
+  openCreate(): void {
+    this.selectedAuthor.set(null);
+    this.modalMode.set('create');
+  }
+
+  openDetail(author: Author): void {
+    this.selectedAuthor.set(author);
+    this.modalMode.set('detail');
   }
 }
